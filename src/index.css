@@ -1,0 +1,105 @@
+/* src/index.css */
+:root {
+  --bg-dark: #0a0a0c;
+  --glass-bg: rgba(255, 255, 255, 0.03);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --neon-purple: #bc13fe;
+  --neon-blue: #00f2ff;
+  --neon-orange: #ff8c00;
+  --text-main: #ffffff;
+  --text-muted: rgba(255, 255, 255, 0.6);
+  --accent-gradient: linear-gradient(135deg, #bc13fe 0%, #7d12ff 100%);
+  --blur-amount: 20px;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Inter', sans-serif;
+}
+
+body {
+  background-color: var(--bg-dark);
+  color: var(--text-main);
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
+}
+
+/* Background Glows */
+.bg-glow {
+  position: fixed;
+  top: -10%;
+  right: -10%;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(188, 19, 254, 0.15) 0%, transparent 70%);
+  z-index: -1;
+  pointer-events: none;
+}
+
+.bg-glow-2 {
+  position: fixed;
+  bottom: -10%;
+  left: -10%;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(0, 242, 255, 0.1) 0%, transparent 70%);
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* Glassmorphism & Neon */
+.glass-panel {
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--blur-amount));
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+}
+
+.neon-text-blue {
+  color: var(--neon-blue);
+  text-shadow: 0 0 10px rgba(0, 242, 255, 0.5);
+}
+
+.neon-text-purple {
+  color: var(--neon-purple);
+  text-shadow: 0 0 10px rgba(188, 19, 254, 0.5);
+}
+
+.animate-fade {
+  animation: fadeIn 0.5s ease forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* New Interactive Labels */
+.carbon-interest {
+  font-weight: 800;
+  font-family: 'Outfit', sans-serif;
+  letter-spacing: -0.5px;
+}
+
+.logic-spark {
+  border-left: 3px solid var(--neon-blue);
+  padding-left: 1rem;
+  margin: 1rem 0;
+}
