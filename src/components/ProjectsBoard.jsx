@@ -13,11 +13,14 @@ const ProjectsBoard = ({ onProjectSelect, identity }) => {
             .from('projects')
             .select(`
                 *,
-                profiles ( username )
+                profiles!owner_id ( username )
             `)
             .order('created_at', { ascending: false });
 
-        if (!error && data) {
+        if (error) {
+            console.error("Error fetching projects:", error);
+            // alert("Failed to fetch projects. Please check the SQL setup.");
+        } else if (data) {
             setProjects(data.map(p => ({
                 id: p.id,
                 name: p.name,

@@ -34,6 +34,10 @@ function App() {
     name: '',
     role: 'engineer',
     bio: '',
+    location: '',
+    experience_years: 0,
+    github_url: '',
+    portfolio_url: '',
     tier: 'Unranked',
     vouches: 0,
     proofs: []
@@ -42,16 +46,21 @@ function App() {
   const loadProfileAndSolutions = async (user) => {
     try {
       // Fetch base profile
-      const { data: profileData } = await supabase
+      const { data: profileList, error: profileError } = await supabase
         .from('profiles')
         .select('*')
-        .eq('id', user.id)
-        .single();
+        .eq('id', user.id);
+
+      const profileData = (profileList && profileList.length > 0) ? profileList[0] : null;
+
+      if (profileError) {
+        console.error("Error loading profile:", profileError);
+      }
 
       // Fetch accepted solutions as proofs
       const { data: solutionsData } = await supabase
         .from('solutions')
-        .select(`*, opportunities(title)`)
+        .select(`*, opportunities!opportunity_id(title)`)
         .eq('user_id', user.id)
         .eq('status', 'accepted');
 
@@ -65,6 +74,10 @@ function App() {
         name: profileData?.username || user.email.split('@')[0],
         role: profileData?.role || 'engineer',
         bio: profileData?.bio || '',
+        location: profileData?.location || '',
+        experience_years: profileData?.experience_years || 0,
+        github_url: profileData?.github_url || '',
+        portfolio_url: profileData?.portfolio_url || '',
         tier: profileData?.tier || 'Unranked',
         vouches: profileData?.vouches || 0,
         proofs: proofs
@@ -140,7 +153,7 @@ function App() {
       abstract: newOpp.abstract,
       code_snippet: newOpp.codeSnippet,
       is_anonymous: newOpp.isAnonymous
-    }]).select(`*, profiles(username, email)`);
+    }]).select(`*, profiles!owner_id(username, email)`);
 
     if (error) {
       console.error("Failed to publish problem:", error);

@@ -17,9 +17,11 @@ const EngineerProfile = ({ userId, currentUser, onClose, identity, onProfileUpda
         const fetchProfile = async () => {
             if (!userId) return;
             setLoading(true);
-            const { data: pData } = await supabase.from('profiles').select('*').eq('id', userId).single();
+            const { data: pList } = await supabase.from('profiles').select('*').eq('id', userId);
+            const pData = (pList && pList.length > 0) ? pList[0] : null;
+
             const { data: sData } = await supabase.from('solutions')
-                .select('*, opportunities(title)')
+                .select('*, opportunities!opportunity_id(title)')
                 .eq('user_id', userId)
                 .eq('status', 'accepted');
 
@@ -34,6 +36,10 @@ const EngineerProfile = ({ userId, currentUser, onClose, identity, onProfileUpda
                 vouches: pData?.vouches || 0,
                 role: pData?.role || 'engineer',
                 bio: pData?.bio || 'This user prefers to keep their ingenuity mysterious.',
+                location: pData?.location || 'Unknown Sector',
+                experience: pData?.experience_years || 0,
+                github: pData?.github_url || '',
+                portfolio: pData?.portfolio_url || '',
                 proofs: proofs
             });
             setLoading(false);
@@ -131,13 +137,29 @@ It's amazing what we can achieve when we solve problems proactively. Code is pub
                                 </h2>
                                 <p style={{ color: 'var(--text-main)', fontSize: '0.9rem', marginBottom: '1rem', fontStyle: 'italic', maxWidth: '500px' }}>"{profileData.bio}"</p>
 
-                                <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap' }}>
+                                <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap', marginBottom: '1rem' }}>
                                     <span style={{ color: 'var(--neon-blue)', fontWeight: 700 }}>{profileData.tier} Rank</span>
                                     <span style={{ color: 'var(--neon-purple)', fontWeight: 700 }}>{profileData.vouches} Logic Vouches</span>
+                                    <span style={{ color: 'var(--neon-orange)', fontWeight: 700 }}>{profileData.experience}Y EXP</span>
+                                    <span style={{ color: 'var(--text-muted)' }}><i className="fas fa-location-dot"></i> {profileData.location}</span>
+                                </div>
+                                <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap', marginBottom: '1rem' }}>
+                                    {profileData.github && (
+                                        <a href={profileData.github} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--neon-blue)', textDecoration: 'none', fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                            <i className="fab fa-github"></i> GitHub Profile
+                                        </a>
+                                    )}
+                                    {profileData.portfolio && (
+                                        <a href={profileData.portfolio} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--neon-purple)', textDecoration: 'none', fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                            <i className="fas fa-globe"></i> Portfolio Site
+                                        </a>
+                                    )}
+                                </div>
+                                <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap' }}>
                                     {profileData.role === 'engineer' && (
                                         <>
                                             <span style={{ color: 'var(--text-muted)' }}>{profileData.proofs.length} Problems Solved</span>
-                                            <span style={{ color: 'var(--neon-orange)', fontWeight: 700 }}>92% Acceptance Rate</span>
+                                            <span style={{ color: 'var(--neon-blue)', fontWeight: 700 }}>92% Acceptance Rate</span>
                                         </>
                                     )}
                                 </div>

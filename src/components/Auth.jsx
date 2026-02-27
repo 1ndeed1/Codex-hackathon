@@ -7,6 +7,11 @@ const Auth = ({ onLogin }) => {
     const [password, setPassword] = useState('');
     const [username, setUsername] = useState('');
     const [role, setRole] = useState('engineer');
+    const [bio, setBio] = useState('');
+    const [experienceYears, setExperienceYears] = useState('0');
+    const [location, setLocation] = useState('');
+    const [githubUrl, setGithubUrl] = useState('');
+    const [portfolioUrl, setPortfolioUrl] = useState('');
     const [loading, setLoading] = useState(false);
     const [errorMsg, setErrorMsg] = useState('');
     const [successMsg, setSuccessMsg] = useState('');
@@ -40,7 +45,19 @@ const Auth = ({ onLogin }) => {
                         const { error: profileError } = await supabase
                             .from('profiles')
                             .insert([
-                                { id: data.user.id, email: data.user.email, username, role, tier: 'Unranked', vouches: 0 }
+                                {
+                                    id: data.user.id,
+                                    email: data.user.email,
+                                    username,
+                                    role,
+                                    bio,
+                                    experience_years: parseInt(experienceYears),
+                                    location,
+                                    github_url: githubUrl,
+                                    portfolio_url: portfolioUrl,
+                                    tier: 'Unranked',
+                                    vouches: 0
+                                }
                             ]);
 
                         if (profileError) {
@@ -178,6 +195,77 @@ const Auth = ({ onLogin }) => {
                                     <option value="producer">Producer (Agreements & Sourcing)</option>
                                     <option value="sponsor">Sponsor (Funding / Investments)</option>
                                 </select>
+                            </div>
+
+                            <div style={{ marginBottom: '1.5rem' }}>
+                                <label style={{ display: 'block', fontSize: '0.7rem', color: 'var(--neon-green)', marginBottom: '8px', textTransform: 'uppercase', fontWeight: 800 }}>Professional Bio</label>
+                                <textarea
+                                    placeholder="Briefly describe your expertise or goals..."
+                                    value={bio}
+                                    onChange={(e) => setBio(e.target.value)}
+                                    rows="3"
+                                    style={{
+                                        width: '100%', padding: '14px', background: 'rgba(255,255,255,0.03)', border: '1px solid var(--glass-border)',
+                                        borderRadius: '12px', color: 'var(--text-main)', outline: 'none', fontSize: '0.9rem', resize: 'vertical'
+                                    }}
+                                ></textarea>
+                            </div>
+
+                            <div style={{ display: 'flex', gap: '1rem', marginBottom: '1.5rem' }}>
+                                <div style={{ flex: 1 }}>
+                                    <label style={{ display: 'block', fontSize: '0.7rem', color: 'var(--neon-blue)', marginBottom: '8px', textTransform: 'uppercase', fontWeight: 800 }}>Years of EXP</label>
+                                    <input
+                                        type="number"
+                                        value={experienceYears}
+                                        onChange={(e) => setExperienceYears(e.target.value)}
+                                        style={{
+                                            width: '100%', padding: '14px', background: 'rgba(255,255,255,0.03)', border: '1px solid var(--glass-border)',
+                                            borderRadius: '12px', color: 'var(--text-main)', outline: 'none', fontSize: '1rem'
+                                        }}
+                                    />
+                                </div>
+                                <div style={{ flex: 2 }}>
+                                    <label style={{ display: 'block', fontSize: '0.7rem', color: 'var(--neon-orange)', marginBottom: '8px', textTransform: 'uppercase', fontWeight: 800 }}>Location (Remote/City)</label>
+                                    <input
+                                        type="text"
+                                        placeholder="San Francisco, CA"
+                                        value={location}
+                                        onChange={(e) => setLocation(e.target.value)}
+                                        style={{
+                                            width: '100%', padding: '14px', background: 'rgba(255,255,255,0.03)', border: '1px solid var(--glass-border)',
+                                            borderRadius: '12px', color: 'var(--text-main)', outline: 'none', fontSize: '1rem'
+                                        }}
+                                    />
+                                </div>
+                            </div>
+
+                            <div style={{ display: 'flex', gap: '1rem', marginBottom: '1.5rem' }}>
+                                <div style={{ flex: 1 }}>
+                                    <label style={{ display: 'block', fontSize: '0.7rem', color: 'var(--neon-blue)', marginBottom: '8px', textTransform: 'uppercase', fontWeight: 800 }}>GitHub Profile URL</label>
+                                    <input
+                                        type="url"
+                                        placeholder="https://github.com/..."
+                                        value={githubUrl}
+                                        onChange={(e) => setGithubUrl(e.target.value)}
+                                        style={{
+                                            width: '100%', padding: '14px', background: 'rgba(255,255,255,0.03)', border: '1px solid var(--glass-border)',
+                                            borderRadius: '12px', color: 'var(--text-main)', outline: 'none', fontSize: '0.9rem'
+                                        }}
+                                    />
+                                </div>
+                                <div style={{ flex: 1 }}>
+                                    <label style={{ display: 'block', fontSize: '0.7rem', color: 'var(--neon-purple)', marginBottom: '8px', textTransform: 'uppercase', fontWeight: 800 }}>Portfolio / Site</label>
+                                    <input
+                                        type="url"
+                                        placeholder="https://myportfolio.com"
+                                        value={portfolioUrl}
+                                        onChange={(e) => setPortfolioUrl(e.target.value)}
+                                        style={{
+                                            width: '100%', padding: '14px', background: 'rgba(255,255,255,0.03)', border: '1px solid var(--glass-border)',
+                                            borderRadius: '12px', color: 'var(--text-main)', outline: 'none', fontSize: '0.9rem'
+                                        }}
+                                    />
+                                </div>
                             </div>
                         </>
                     )}

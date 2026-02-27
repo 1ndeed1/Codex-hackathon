@@ -2,9 +2,13 @@ import React, { useState } from 'react';
 import { supabase } from '../services/supabase';
 
 const ProfileSettings = ({ identity, onClose, onUpdate }) => {
-    const [username, setUsername] = useState(identity?.username || '');
+    const [username, setUsername] = useState(identity?.name || '');
     const [bio, setBio] = useState(identity?.bio || '');
     const [role, setRole] = useState(identity?.role || 'engineer');
+    const [location, setLocation] = useState(identity?.location || '');
+    const [experienceYears, setExperienceYears] = useState(identity?.experience_years?.toString() || '0');
+    const [githubUrl, setGithubUrl] = useState(identity?.github_url || '');
+    const [portfolioUrl, setPortfolioUrl] = useState(identity?.portfolio_url || '');
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState('');
 
@@ -14,7 +18,11 @@ const ProfileSettings = ({ identity, onClose, onUpdate }) => {
         const { error } = await supabase.from('profiles').update({
             username,
             bio,
-            role
+            role,
+            location,
+            experience_years: parseInt(experienceYears),
+            github_url: githubUrl,
+            portfolio_url: portfolioUrl
         }).eq('id', identity.id);
 
         setLoading(false);
@@ -23,7 +31,16 @@ const ProfileSettings = ({ identity, onClose, onUpdate }) => {
         } else {
             setMessage('Profile updated successfully!');
             setTimeout(() => {
-                onUpdate({ ...identity, username, bio, role });
+                onUpdate({
+                    ...identity,
+                    name: username,
+                    bio,
+                    role,
+                    location,
+                    experience_years: parseInt(experienceYears),
+                    github_url: githubUrl,
+                    portfolio_url: portfolioUrl
+                });
                 onClose();
             }, 1000);
         }
@@ -81,15 +98,36 @@ const ProfileSettings = ({ identity, onClose, onUpdate }) => {
                     </select>
                 </div>
 
-                <div style={{ marginBottom: '2.5rem' }}>
+                <div style={{ marginBottom: '1.5rem' }}>
                     <label style={{ display: 'block', color: 'var(--neon-orange)', fontSize: '0.8rem', textTransform: 'uppercase', marginBottom: '8px', fontWeight: 'bold' }}>Bio / Mission Statement</label>
                     <textarea
                         value={bio}
                         onChange={e => setBio(e.target.value)}
-                        rows="4"
+                        rows="3"
                         placeholder="Tell the community about your goals or investment thesis..."
                         style={{ width: '100%', padding: '12px', background: 'rgba(0,0,0,0.4)', border: '1px solid var(--glass-border)', borderRadius: '8px', color: 'white', fontSize: '0.9rem', resize: 'vertical' }}
                     ></textarea>
+                </div>
+
+                <div style={{ display: 'flex', gap: '1rem', marginBottom: '2rem' }}>
+                    <div style={{ flex: 1 }}>
+                        <label style={{ display: 'block', color: 'var(--neon-blue)', fontSize: '0.8rem', textTransform: 'uppercase', marginBottom: '8px', fontWeight: 'bold' }}>GitHub URL</label>
+                        <input
+                            type="url"
+                            value={githubUrl}
+                            onChange={e => setGithubUrl(e.target.value)}
+                            style={{ width: '100%', padding: '12px', background: 'rgba(0,0,0,0.4)', border: '1px solid var(--glass-border)', borderRadius: '8px', color: 'white', fontSize: '0.9rem' }}
+                        />
+                    </div>
+                    <div style={{ flex: 1 }}>
+                        <label style={{ display: 'block', color: 'var(--neon-purple)', fontSize: '0.8rem', textTransform: 'uppercase', marginBottom: '8px', fontWeight: 'bold' }}>Portfolio</label>
+                        <input
+                            type="url"
+                            value={portfolioUrl}
+                            onChange={e => setPortfolioUrl(e.target.value)}
+                            style={{ width: '100%', padding: '12px', background: 'rgba(0,0,0,0.4)', border: '1px solid var(--glass-border)', borderRadius: '8px', color: 'white', fontSize: '0.9rem' }}
+                        />
+                    </div>
                 </div>
 
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>

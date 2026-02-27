@@ -18,7 +18,7 @@ export const fetchOpportunities = async () => {
             .from('opportunities')
             .select(`
                 *,
-                profiles ( username, email )
+                author:profiles!owner_id ( username, email )
             `)
             .order('created_at', { ascending: false });
 
@@ -46,7 +46,7 @@ export const fetchOpportunities = async () => {
             abstract: item.abstract,
             codeSnippet: item.code_snippet,
             isAnonymous: item.is_anonymous,
-            authorProfile: item.profiles
+            authorProfile: item.author
         }));
     } catch (err) {
         console.error("Unexpected error fetching opportunities:", err);

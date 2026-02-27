@@ -32,7 +32,7 @@ const IngenuityDetail = ({ task, role, identity, onClose, onReward, onDelete, on
                 .from('solutions')
                 .select(`
                     id, content, status, vouchers, created_at, type, file_url,
-                    profiles ( username )
+                    profiles!user_id ( username )
                 `)
                 .eq('opportunity_id', task.id)
                 .order('created_at', { ascending: false });
@@ -65,7 +65,7 @@ const IngenuityDetail = ({ task, role, identity, onClose, onReward, onDelete, on
             type: 'Architecture/Code',
             status: 'pending',
             file_url: proposal.fileUrl
-        }]).select(`*, profiles(username)`);
+        }]).select(`*, profiles!user_id(username)`);
 
         if (!error && data && data.length > 0) {
             const newSol = data[0];
@@ -82,7 +82,17 @@ const IngenuityDetail = ({ task, role, identity, onClose, onReward, onDelete, on
         setShowProposer(false);
     };
 
-    const handleAccept = (sol) => {
+    const handleAccept = async (sol) => {
+        const { error } = await supabase
+            .from('solutions')
+            .update({ status: 'accepted' })
+            .eq('id', sol.id);
+
+        if (error) {
+            alert("Failed to accept logic: " + error.message);
+            return;
+        }
+
         setSolutions(solutions.map(s => ({
             ...s,
             isAccepted: s.id === sol.id
