@@ -11,6 +11,7 @@ import EngineerProfile from './components/EngineerProfile';
 import Auth from './components/Auth';
 import ProjectsBoard from './components/ProjectsBoard';
 import ProjectDetail from './components/ProjectDetail';
+import ProfilesDirectory from './components/ProfilesDirectory';
 import { fetchOpportunities } from './services/discovery_service';
 
 function App() {
@@ -20,7 +21,7 @@ function App() {
   const [selectedOpp, setSelectedOpp] = useState(null);
   const [showSubmission, setShowSubmission] = useState(false);
   const [activeProof, setActiveProof] = useState(null);
-  const [showProfile, setShowProfile] = useState(false);
+  const [showProfile, setShowProfile] = useState(null);
 
   // New States for Auth & Projects
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -28,14 +29,50 @@ function App() {
   const [activeTab, setActiveTab] = useState('radar'); // 'radar', 'projects'
   const [selectedProject, setSelectedProject] = useState(null);
 
-  // Refactored Identity (Non-monetary)
   const [identity, setIdentity] = useState({
-    tier: 'Gold',
-    vouches: 12,
-    proofs: [
-      { title: "Virtual Grid Memory Leak", optimization: "+64% Efficiency" }
-    ]
+    id: null,
+    name: '',
+    role: 'engineer',
+    bio: '',
+    tier: 'Unranked',
+    vouches: 0,
+    proofs: []
   });
+
+  const loadProfileAndSolutions = async (user) => {
+    try {
+      // Fetch base profile
+      const { data: profileData } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', user.id)
+        .single();
+
+      // Fetch accepted solutions as proofs
+      const { data: solutionsData } = await supabase
+        .from('solutions')
+        .select(`*, opportunities(title)`)
+        .eq('user_id', user.id)
+        .eq('status', 'accepted');
+
+      const proofs = (solutionsData || []).map(sol => ({
+        title: sol.opportunities?.title || "Unknown Mission",
+        optimization: sol.content.substring(0, 50) + '...'
+      }));
+
+      setIdentity({
+        id: user.id,
+        name: profileData?.username || user.email.split('@')[0],
+        role: profileData?.role || 'engineer',
+        bio: profileData?.bio || '',
+        tier: profileData?.tier || 'Unranked',
+        vouches: profileData?.vouches || 0,
+        proofs: proofs
+      });
+    } catch (err) {
+      console.error("Failed to load full profile", err);
+    }
+  };
 
   useEffect(() => {
     async function loadOpp() {
@@ -52,7 +89,7 @@ function App() {
         if (session) {
           setIsLoggedIn(true);
           setCurrentUser(session.user.email);
-          setIdentity(prev => ({ ...prev, name: session.user.email.split('@')[0] }));
+          loadProfileAndSolutions(session.user);
         }
       });
 
@@ -62,7 +99,7 @@ function App() {
         if (session) {
           setIsLoggedIn(true);
           setCurrentUser(session.user.email);
-          setIdentity(prev => ({ ...prev, name: session.user.email.split('@')[0] }));
+          loadProfileAndSolutions(session.user);
         } else {
           setIsLoggedIn(false);
           setCurrentUser('');
@@ -81,8 +118,82 @@ function App() {
     }
   };
 
-  const handlePublishProblem = (newOpp) => {
-    setOpportunities([newOpp, ...opportunities]);
+  const handlePublishProblem = async (newOpp) => {
+    if (!identity || !identity.id) {
+      alert("You must be logged in to broadcast a signal.");
+      return;
+    }
+
+    const { data, error } = await supabase.from('opportunities').insert([{
+      type: newOpp.type,
+      source: newOpp.source,
+      channel: newOpp.channel,
+      title: newOpp.title,
+      signal: newOpp.title, // using title as signal for direct posts
+      inference: newOpp.inference || "Directly reported by engineer.",
+      logic_gap: newOpp.logicGap,
+      job_probability: newOpp.jobProbability,
+      hiring_urgency: newOpp.hiringUrgency,
+      tags: newOpp.tags,
+      difficulty: newOpp.difficulty,
+      owner_id: identity.id,
+      abstract: newOpp.abstract,
+      code_snippet: newOpp.codeSnippet,
+      is_anonymous: newOpp.isAnonymous
+    }]).select(`*, profiles(username, email)`);
+
+    if (error) {
+      console.error("Failed to publish problem:", error);
+      alert("Could not publish problem. " + error.message);
+      return;
+    }
+
+    if (data && data.length > 0) {
+      // Reload all opportunities to get the freshest data
+      const freshData = await fetchOpportunities();
+      setOpportunities(freshData);
+    }
+  };
+
+  const handleDeleteOpportunity = async (oppId) => {
+    const { error } = await supabase.from('opportunities').delete().eq('id', oppId);
+    if (error) {
+      console.error("Failed to delete opportunity:", error);
+      alert("Could not delete. " + error.message);
+      return;
+    }
+    setOpportunities(opportunities.filter(o => o.id !== oppId));
+    setSelectedOpp(null);
+  };
+
+  const handleEditOpportunity = async (oppId, updatedFields) => {
+    // Map frontend camelCase back to snake_case for Supabase
+    const updatePayload = {};
+    if (updatedFields.title !== undefined) updatePayload.title = updatedFields.title;
+    if (updatedFields.abstract !== undefined) updatePayload.abstract = updatedFields.abstract;
+    if (updatedFields.codeSnippet !== undefined) updatePayload.code_snippet = updatedFields.codeSnippet;
+    if (updatedFields.isAnonymous !== undefined) updatePayload.is_anonymous = updatedFields.isAnonymous;
+
+    const { data, error } = await supabase
+      .from('opportunities')
+      .update(updatePayload)
+      .eq('id', oppId)
+      .select(`*, profiles(username, email)`);
+
+    if (error) {
+      console.error("Failed to update opportunity:", error);
+      alert("Could not update. " + error.message);
+      return;
+    }
+
+    if (data && data.length > 0) {
+      const freshData = await fetchOpportunities();
+      setOpportunities(freshData);
+
+      // Update the currently selected opp so the detail view refreshes
+      const updatedOpp = freshData.find(o => o.id === oppId);
+      if (updatedOpp) setSelectedOpp(updatedOpp);
+    }
   };
 
   const handleReward = ({ proof }) => {
@@ -95,10 +206,8 @@ function App() {
   };
 
   if (!isLoggedIn) {
-    return <Auth onLogin={(user) => {
+    return <Auth onLogin={(userEmail) => {
       setIsLoggedIn(true);
-      setCurrentUser(user);
-      setIdentity(prev => ({ ...prev, name: user.split('@')[0] }));
     }} />;
   }
 
@@ -109,12 +218,12 @@ function App() {
       <div className="bg-glow-2"></div>
 
       <Header
-        role={role}
-        setRole={setRole}
+        role={identity.role} // Sync Header with identity role
+        setRole={(r) => setIdentity(prev => ({ ...prev, role: r }))}
         identity={identity}
         activeTab={activeTab}
         setActiveTab={setActiveTab}
-        onProfileClick={() => setShowProfile(true)}
+        onProfileClick={() => setShowProfile(identity.id)}
         onLogout={handleLogout}
       />
 
@@ -135,7 +244,7 @@ function App() {
                 <h3>Scanning Global Market Signals...</h3>
                 <p>Connecting to Supabase and analyzing live network data.</p>
               </div>
-            ) : role === 'engineer' ? (
+            ) : identity.role === 'engineer' ? (
               <div style={{
                 display: 'grid',
                 gridTemplateColumns: 'repeat(auto-fill, minmax(420px, 1fr))',
@@ -184,13 +293,17 @@ function App() {
         )}
 
         {activeTab === 'projects' && (
-          <ProjectsBoard onProjectSelect={(proj) => setSelectedProject(proj)} />
+          <ProjectsBoard onProjectSelect={(proj) => setSelectedProject(proj)} identity={identity} />
+        )}
+
+        {activeTab === 'community' && (
+          <ProfilesDirectory onProfileSelect={(id) => setShowProfile(id)} />
         )}
       </main>
 
       {selectedProject && (
         <div style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', background: 'var(--bg-dark)', zIndex: 1000, overflowY: 'auto' }}>
-          <ProjectDetail project={selectedProject} currentUser={currentUser} onClose={() => setSelectedProject(null)} />
+          <ProjectDetail project={selectedProject} currentUser={currentUser} onClose={() => setSelectedProject(null)} identity={identity} />
         </div>
       )}
 
@@ -205,8 +318,11 @@ function App() {
         <IngenuityDetail
           task={selectedOpp}
           role={role}
+          identity={identity}
           onClose={() => setSelectedOpp(null)}
           onReward={handleReward}
+          onDelete={handleDeleteOpportunity}
+          onEdit={handleEditOpportunity}
         />
       )}
 
@@ -218,7 +334,13 @@ function App() {
       )}
 
       {showProfile && (
-        <EngineerProfile identity={identity} onClose={() => setShowProfile(false)} />
+        <EngineerProfile
+          userId={showProfile}
+          currentUser={identity}
+          identity={identity}
+          onClose={() => setShowProfile(null)}
+          onProfileUpdate={(updated) => setIdentity(updated)}
+        />
       )}
     </div>
   );

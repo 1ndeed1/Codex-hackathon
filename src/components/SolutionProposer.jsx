@@ -1,18 +1,60 @@
-/* src/components/SolutionProposer.jsx */
 import React, { useState } from 'react';
+import { supabase } from '../services/supabase';
 
 const SolutionProposer = ({ task, onCancel, onSubmit }) => {
     const [logic, setLogic] = useState('');
     const [code, setCode] = useState('');
+    const [file, setFile] = useState(null);
+    const [uploading, setUploading] = useState(false);
+    const [errorMsg, setErrorMsg] = useState('');
 
-    const handleSubmit = () => {
-        if (!logic || !code) return;
+    const handleFileChange = (e) => {
+        if (e.target.files && e.target.files.length > 0) {
+            setFile(e.target.files[0]);
+        }
+    };
+
+    const handleSubmit = async () => {
+        if (!logic || (!code && !file)) {
+            setErrorMsg("Please provide logic and either a code snippet or an attached file.");
+            return;
+        }
+
+        setErrorMsg('');
+        setUploading(true);
+        let publicUrl = null;
+
+        if (file) {
+            // Upload file to Supabase Storage bucket 'solution_files'
+            const fileExt = file.name.split('.').pop();
+            const fileName = `${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
+            const filePath = `${task.id}/${fileName}`;
+
+            const { data, error } = await supabase.storage
+                .from('solution_files')
+                .upload(filePath, file);
+
+            if (error) {
+                console.error("Upload error:", error);
+                setErrorMsg("Failed to upload file: " + error.message);
+                setUploading(false);
+                return;
+            }
+
+            // Get Public URL
+            const { data: urlData } = supabase.storage
+                .from('solution_files')
+                .getPublicUrl(filePath);
+
+            publicUrl = urlData.publicUrl;
+        }
+
         onSubmit({
-            engineer: "Technical Mercenary",
             logic,
             code,
-            timestamp: new Date().toLocaleTimeString()
+            fileUrl: publicUrl
         });
+        setUploading(false);
     };
 
     return (
@@ -49,11 +91,11 @@ const SolutionProposer = ({ task, onCancel, onSubmit }) => {
             </div>
 
             <div style={{ marginBottom: '1.5rem' }}>
-                <label style={{ display: 'block', fontSize: '0.7rem', color: 'var(--text-muted)', marginBottom: '8px', textTransform: 'uppercase' }}>Optimized Code, Architecture Diagram Link, or Files snippet</label>
+                <label style={{ display: 'block', fontSize: '0.7rem', color: 'var(--text-muted)', marginBottom: '8px', textTransform: 'uppercase' }}>Optimized Code or Architecture Snippet</label>
                 <textarea
                     value={code}
                     onChange={(e) => setCode(e.target.value)}
-                    placeholder="Paste code, repository link, or architecture diagram link here..."
+                    placeholder="Paste code or repository link here..."
                     rows="5"
                     style={{
                         width: '100%',
@@ -69,21 +111,41 @@ const SolutionProposer = ({ task, onCancel, onSubmit }) => {
                 ></textarea>
             </div>
 
+            <div style={{ marginBottom: '1.5rem', background: 'rgba(255,255,255,0.02)', padding: '1rem', borderRadius: '8px', border: '1px dashed var(--neon-purple)' }}>
+                <label style={{ display: 'block', fontSize: '0.8rem', color: 'white', marginBottom: '8px', fontWeight: 'bold' }}>
+                    <i className="fas fa-paperclip" style={{ marginRight: '6px' }}></i> Attach Architecture Diagram or Zipped Code (.zip, .png, .pdf)
+                </label>
+                <input
+                    type="file"
+                    onChange={handleFileChange}
+                    style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}
+                />
+                {file && <div style={{ marginTop: '8px', fontSize: '0.8rem', color: 'var(--neon-blue)' }}>Selected: {file.name}</div>}
+            </div>
+
+            {errorMsg && (
+                <div style={{ color: 'var(--neon-orange)', fontSize: '0.85rem', marginBottom: '1rem' }}>
+                    {errorMsg}
+                </div>
+            )}
+
             <div style={{ display: 'flex', gap: '1rem' }}>
                 <button
                     onClick={handleSubmit}
+                    disabled={uploading}
                     style={{
                         flex: 2,
-                        background: 'var(--neon-blue)',
+                        background: uploading ? 'var(--text-muted)' : 'var(--neon-blue)',
                         border: 'none',
                         color: '#000',
                         padding: '12px',
                         borderRadius: '8px',
                         fontWeight: 800,
-                        cursor: 'pointer'
+                        cursor: uploading ? 'not-allowed' : 'pointer',
+                        transition: '0.2s'
                     }}
                 >
-                    Submit Fix / Pitch
+                    {uploading ? 'Uploading & Submitting...' : 'Submit Fix / Pitch'}
                 </button>
                 <button
                     onClick={onCancel}

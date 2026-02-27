@@ -6,6 +6,10 @@ import { OPPORTUNITY_TYPES } from '../services/discovery_service';
 const ProblemSubmission = ({ onClose, onPublish }) => {
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
+    const [abstract, setAbstract] = useState('');
+    const [codeSnippet, setCodeSnippet] = useState('');
+    const [isAnonymous, setIsAnonymous] = useState(false);
+
     const [isAnalyzing, setIsAnalyzing] = useState(false);
     const [analysis, setAnalysis] = useState(null);
 
@@ -25,7 +29,6 @@ const ProblemSubmission = ({ onClose, onPublish }) => {
 
     const handlePublish = () => {
         onPublish({
-            id: Date.now().toString(),
             type: OPPORTUNITY_TYPES.DIRECT,
             source: 'Direct Signal',
             channel: 'Local Node',
@@ -35,7 +38,10 @@ const ProblemSubmission = ({ onClose, onPublish }) => {
             difficulty: 'High',
             jobProbability: 'Internal Escalation',
             hiringUrgency: 'High',
-            logicGap: analysis.logicGap
+            logicGap: analysis.logicGap,
+            abstract: abstract,
+            codeSnippet: codeSnippet,
+            isAnonymous: isAnonymous
         });
         onClose();
     };
@@ -62,8 +68,10 @@ const ProblemSubmission = ({ onClose, onPublish }) => {
                     border: '1px solid var(--glass-border)',
                     borderRadius: '32px',
                     padding: '3rem',
-                    maxWidth: '650px',
+                    maxWidth: '800px',
                     width: '100%',
+                    maxHeight: '90vh',
+                    overflowY: 'auto',
                     position: 'relative'
                 }}
             >
@@ -108,11 +116,11 @@ const ProblemSubmission = ({ onClose, onPublish }) => {
                     />
                 </div>
 
-                <div style={{ marginBottom: '2.5rem' }}>
+                <div style={{ marginBottom: '1.5rem' }}>
                     <label style={{ display: 'block', fontSize: '0.65rem', color: 'var(--neon-purple)', marginBottom: '8px', textTransform: 'uppercase', fontWeight: 800 }}>Technical Pain / Evidence</label>
                     <textarea
                         placeholder="Paste raw traces or logic frustrations here..."
-                        rows="6"
+                        rows="4"
                         value={description}
                         onChange={(e) => setDescription(e.target.value)}
                         style={{
@@ -123,11 +131,69 @@ const ProblemSubmission = ({ onClose, onPublish }) => {
                             padding: '14px',
                             color: 'var(--text-main)',
                             outline: 'none',
-                            resize: 'none',
+                            resize: 'vertical',
                             fontSize: '0.9rem',
                             lineHeight: '1.5'
                         }}
                     ></textarea>
+                </div>
+
+                <div style={{ marginBottom: '1.5rem' }}>
+                    <label style={{ display: 'block', fontSize: '0.65rem', color: 'var(--neon-blue)', marginBottom: '8px', textTransform: 'uppercase', fontWeight: 800 }}>Abstract (Optional)</label>
+                    <textarea
+                        placeholder="Provide a high-level summary of the bug or architectural goal..."
+                        rows="2"
+                        value={abstract}
+                        onChange={(e) => setAbstract(e.target.value)}
+                        style={{
+                            width: '100%',
+                            background: 'rgba(255,255,255,0.03)',
+                            border: '1px solid var(--glass-border)',
+                            borderRadius: '12px',
+                            padding: '14px',
+                            color: 'var(--text-main)',
+                            outline: 'none',
+                            resize: 'vertical',
+                            fontSize: '0.9rem',
+                            lineHeight: '1.5'
+                        }}
+                    ></textarea>
+                </div>
+
+                <div style={{ marginBottom: '1.5rem' }}>
+                    <label style={{ display: 'block', fontSize: '0.65rem', color: 'var(--neon-blue)', marginBottom: '8px', textTransform: 'uppercase', fontWeight: 800 }}>Code Snippet (Optional)</label>
+                    <textarea
+                        placeholder="Paste relevant problematic code..."
+                        rows="4"
+                        value={codeSnippet}
+                        onChange={(e) => setCodeSnippet(e.target.value)}
+                        style={{
+                            width: '100%',
+                            background: 'rgba(0,0,0,0.4)',
+                            border: '1px solid var(--glass-border)',
+                            borderRadius: '12px',
+                            padding: '14px',
+                            color: 'var(--text-main)',
+                            fontFamily: "'Fira Code', monospace",
+                            outline: 'none',
+                            resize: 'vertical',
+                            fontSize: '0.85rem',
+                            lineHeight: '1.5'
+                        }}
+                    ></textarea>
+                </div>
+
+                <div style={{ marginBottom: '2.5rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <input
+                        type="checkbox"
+                        id="anonPost"
+                        checked={isAnonymous}
+                        onChange={(e) => setIsAnonymous(e.target.checked)}
+                        style={{ cursor: 'pointer', width: '16px', height: '16px' }}
+                    />
+                    <label htmlFor="anonPost" style={{ fontSize: '0.9rem', color: 'var(--text-main)', cursor: 'pointer' }}>
+                        Post Anonymously <span style={{ color: 'var(--text-muted)', fontSize: '0.8rem' }}>(Hide my username and email)</span>
+                    </label>
                 </div>
 
                 {!analysis && (

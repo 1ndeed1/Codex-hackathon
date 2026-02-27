@@ -45,6 +45,11 @@ const Header = ({ role, setRole, identity, activeTab, setActiveTab, onProfileCli
                     style={{ background: 'transparent', border: 'none', color: activeTab === 'projects' ? 'var(--neon-purple)' : 'var(--text-muted)', fontSize: '1rem', fontWeight: 'bold', cursor: 'pointer', borderBottom: activeTab === 'projects' ? '2px solid var(--neon-purple)' : 'none', paddingBottom: '4px' }}>
                     Open Projects
                 </button>
+                <button
+                    onClick={() => setActiveTab('community')}
+                    style={{ background: 'transparent', border: 'none', color: activeTab === 'community' ? 'var(--neon-orange)' : 'var(--text-muted)', fontSize: '1rem', fontWeight: 'bold', cursor: 'pointer', borderBottom: activeTab === 'community' ? '2px solid var(--neon-orange)' : 'none', paddingBottom: '4px' }}>
+                    Community
+                </button>
             </div>
 
             <div style={{
@@ -83,6 +88,21 @@ const Header = ({ role, setRole, identity, activeTab, setActiveTab, onProfileCli
                     }}
                 >
                     Sponsor
+                </button>
+                <button
+                    onClick={() => setRole('producer')}
+                    style={{
+                        padding: '8px 16px',
+                        border: 'none',
+                        background: role === 'producer' ? 'var(--glass-border)' : 'transparent',
+                        color: role === 'producer' ? 'var(--text-main)' : 'var(--text-muted)',
+                        cursor: 'pointer',
+                        borderRadius: '8px',
+                        fontWeight: 600,
+                        transition: 'all 0.3s ease'
+                    }}
+                >
+                    Producer
                 </button>
             </div>
 

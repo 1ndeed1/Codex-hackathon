@@ -54,11 +54,21 @@ const OpportunityCard = ({ opp, onClick }) => {
                 }}>{opp.difficulty}</span>
             </div>
 
-            <div style={{ marginBottom: '1rem' }}>
+            <div style={{ marginBottom: '1rem', display: 'flex', justifyContent: 'space-between' }}>
                 <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '1px' }}>
                     <i className={isScanned ? "fas fa-search-location" : (isMined ? "fas fa-radar" : "fas fa-bolt")} style={{ color: accentColor, marginRight: '6px' }}></i>
                     {opp.source} / {opp.channel}
                 </span>
+
+                {opp.type === 'direct' && (
+                    <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>
+                        By: <span style={{ color: 'white' }}>
+                            {opp.isAnonymous
+                                ? 'Anonymous'
+                                : (opp.authorProfile?.username || opp.authorProfile?.email?.split('@')[0] || 'Unknown User')}
+                        </span>
+                    </span>
+                )}
             </div>
 
             <h3 style={{ fontSize: '1.2rem', marginBottom: '1rem', lineHeight: '1.4' }}>{opp.title}</h3>
@@ -86,7 +96,14 @@ const OpportunityCard = ({ opp, onClick }) => {
                         <p style={{ fontSize: '0.85rem', marginBottom: '1rem' }}>{opp.inference}</p>
                     </>
                 ) : (
-                    <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)', marginBottom: '1.5rem' }}>{opp.content}</p>
+                    <div>
+                        {opp.abstract && (
+                            <p style={{ fontSize: '0.9rem', color: 'var(--neon-purple)', marginBottom: '0.5rem', fontWeight: 'bold' }}>Abstract: {opp.abstract}</p>
+                        )}
+                        <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)', marginBottom: '1.5rem' }}>
+                            {opp.content.length > 150 ? opp.content.substring(0, 150) + '...' : opp.content}
+                        </p>
+                    </div>
                 )}
             </div>
 

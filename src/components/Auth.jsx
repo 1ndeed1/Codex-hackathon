@@ -5,12 +5,16 @@ const Auth = ({ onLogin }) => {
     const [isLogin, setIsLogin] = useState(true);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [errorMsg, setErrorMsg] = useState('');
+    const [username, setUsername] = useState('');
+    const [role, setRole] = useState('engineer');
     const [loading, setLoading] = useState(false);
+    const [errorMsg, setErrorMsg] = useState('');
+    const [successMsg, setSuccessMsg] = useState('');
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setErrorMsg('');
+        setSuccessMsg('');
         setLoading(true);
 
         try {
@@ -30,9 +34,25 @@ const Auth = ({ onLogin }) => {
                 });
                 if (error) throw error;
                 if (data.user) {
-                    onLogin(data.user.email);
-                    if (data.session === null) {
-                        setErrorMsg("Check your email for the confirmation link!");
+                    if (data.session) {
+                        // If a session is returned immediately, email confirmations are disabled/bypassed.
+                        // It is safe to create the profile right now.
+                        const { error: profileError } = await supabase
+                            .from('profiles')
+                            .insert([
+                                { id: data.user.id, email: data.user.email, username, role, tier: 'Unranked', vouches: 0 }
+                            ]);
+
+                        if (profileError) {
+                            console.error("Profile creation error:", profileError);
+                            // If profile creation fails but auth succeeded, still log in the user
+                            onLogin(email);
+                        } else {
+                            onLogin(email);
+                        }
+                    } else {
+                        // Supabase has Email Confirmations enabled by default!
+                        setSuccessMsg("Signup successful! Please check your email for the confirmation link to login. (Or disable Email Confirmations in Supabase Settings -> Auth -> Email)");
                     }
                 }
             }
@@ -83,6 +103,11 @@ const Auth = ({ onLogin }) => {
                         {errorMsg}
                     </div>
                 )}
+                {successMsg && (
+                    <div style={{ background: 'rgba(0,255,0,0.1)', border: '1px solid var(--neon-green)', color: 'var(--neon-green)', padding: '10px', borderRadius: '8px', marginBottom: '1rem', fontSize: '0.85rem' }}>
+                        {successMsg}
+                    </div>
+                )}
 
                 <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                     <div style={{ textAlign: 'left' }}>
@@ -122,6 +147,40 @@ const Auth = ({ onLogin }) => {
                             }}
                         />
                     </div>
+                    {!isLogin && (
+                        <>
+                            <div style={{ marginBottom: '1.5rem' }}>
+                                <label style={{ display: 'block', fontSize: '0.7rem', color: 'var(--neon-purple)', marginBottom: '8px', textTransform: 'uppercase', fontWeight: 800 }}>Alias / Username</label>
+                                <input
+                                    type="text"
+                                    required
+                                    placeholder="NeuralNinja"
+                                    value={username}
+                                    onChange={(e) => setUsername(e.target.value)}
+                                    style={{
+                                        width: '100%', padding: '14px', background: 'rgba(255,255,255,0.03)', border: '1px solid var(--glass-border)',
+                                        borderRadius: '12px', color: 'var(--text-main)', outline: 'none', fontSize: '1rem'
+                                    }}
+                                />
+                            </div>
+
+                            <div style={{ marginBottom: '1.5rem' }}>
+                                <label style={{ display: 'block', fontSize: '0.7rem', color: 'var(--neon-orange)', marginBottom: '8px', textTransform: 'uppercase', fontWeight: 800 }}>Account Role</label>
+                                <select
+                                    value={role}
+                                    onChange={(e) => setRole(e.target.value)}
+                                    style={{
+                                        width: '100%', padding: '14px', background: 'rgba(0,0,0,0.4)', border: '1px solid var(--glass-border)',
+                                        borderRadius: '12px', color: 'var(--text-main)', outline: 'none', fontSize: '1rem', cursor: 'pointer'
+                                    }}
+                                >
+                                    <option value="engineer">Engineer (Problem Solver / Finder)</option>
+                                    <option value="producer">Producer (Agreements & Sourcing)</option>
+                                    <option value="sponsor">Sponsor (Funding / Investments)</option>
+                                </select>
+                            </div>
+                        </>
+                    )}
 
                     <button type="submit" disabled={loading} style={{
                         background: 'var(--accent-gradient)',

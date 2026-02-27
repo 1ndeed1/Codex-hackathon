@@ -16,7 +16,10 @@ export const fetchOpportunities = async () => {
     try {
         const { data, error } = await supabase
             .from('opportunities')
-            .select('*')
+            .select(`
+                *,
+                profiles ( username, email )
+            `)
             .order('created_at', { ascending: false });
 
         if (error) {
@@ -38,7 +41,12 @@ export const fetchOpportunities = async () => {
             hiringUrgency: item.hiring_urgency,
             tags: item.tags || [],
             difficulty: item.difficulty,
-            sourceUrl: item.source_url
+            sourceUrl: item.source_url,
+            ownerId: item.owner_id,
+            abstract: item.abstract,
+            codeSnippet: item.code_snippet,
+            isAnonymous: item.is_anonymous,
+            authorProfile: item.profiles
         }));
     } catch (err) {
         console.error("Unexpected error fetching opportunities:", err);

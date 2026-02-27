@@ -1,11 +1,20 @@
 /* src/components/IngenuityDetail.jsx */
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { supabase } from '../services/supabase';
 import SolutionProposer from './SolutionProposer';
 import ProposalGenerator from './ProposalGenerator';
 
-const IngenuityDetail = ({ task, role, onClose, onReward }) => {
+const IngenuityDetail = ({ task, role, identity, onClose, onReward, onDelete, onEdit }) => {
     const [showProposer, setShowProposer] = useState(false);
     const [showProposalGenerator, setShowProposalGenerator] = useState(false);
+    const [isEditing, setIsEditing] = useState(false);
+
+    // Edit States
+    const [editTitle, setEditTitle] = useState(task.title);
+    const [editAbstract, setEditAbstract] = useState(task.abstract || '');
+    const [editCodeSnippet, setEditCodeSnippet] = useState(task.codeSnippet || '');
+    const [editIsAnonymous, setEditIsAnonymous] = useState(task.isAnonymous || false);
+
     const isMined = task.type === 'mined';
     const isScanned = task.type === 'scanned';
 
@@ -13,24 +22,63 @@ const IngenuityDetail = ({ task, role, onClose, onReward }) => {
     if (isMined) accentColor = 'var(--neon-blue)';
     if (isScanned) accentColor = 'var(--neon-orange)';
 
-    const [solutions, setSolutions] = useState([
-        {
-            id: 1,
-            engineer: "LogicMaster_42",
-            logic: "Identified a memory alignment issue in the 64-bit address space mapping.",
-            vouchers: 8,
-            isAccepted: true
-        }
-    ]);
+    const [solutions, setSolutions] = useState([]);
+    const [loadingSolutions, setLoadingSolutions] = useState(true);
 
-    const handleSolutionSubmit = (proposal) => {
-        setSolutions([{
-            id: Date.now(),
-            engineer: "TechnicalMercenary",
-            logic: proposal.logic,
-            vouchers: 0,
-            isAccepted: false
-        }, ...solutions]);
+    useEffect(() => {
+        const fetchSolutions = async () => {
+            setLoadingSolutions(true);
+            const { data, error } = await supabase
+                .from('solutions')
+                .select(`
+                    id, content, status, vouchers, created_at, type, file_url,
+                    profiles ( username )
+                `)
+                .eq('opportunity_id', task.id)
+                .order('created_at', { ascending: false });
+
+            if (!error && data) {
+                setSolutions(data.map(d => ({
+                    id: d.id,
+                    engineer: d.profiles?.username || "Unknown",
+                    logic: d.content,
+                    vouchers: d.vouchers || 0,
+                    isAccepted: d.status === 'accepted',
+                    type: d.type,
+                    fileUrl: d.file_url
+                })));
+            }
+            setLoadingSolutions(false);
+        };
+        fetchSolutions();
+    }, [task.id]);
+
+    const handleSolutionSubmit = async (proposal) => {
+        if (!identity || !identity.id) return alert("Must be logged in!");
+
+        const contentToSave = `APPROACH:\n${proposal.logic}\n\nIMPLEMENTATION/ARCHITECTURE:\n${proposal.code}`;
+
+        const { data, error } = await supabase.from('solutions').insert([{
+            opportunity_id: task.id,
+            user_id: identity.id,
+            content: contentToSave,
+            type: 'Architecture/Code',
+            status: 'pending',
+            file_url: proposal.fileUrl
+        }]).select(`*, profiles(username)`);
+
+        if (!error && data && data.length > 0) {
+            const newSol = data[0];
+            setSolutions([{
+                id: newSol.id,
+                engineer: newSol.profiles?.username || identity.name,
+                logic: newSol.content,
+                vouchers: 0,
+                isAccepted: false,
+                type: 'Architecture/Code',
+                fileUrl: newSol.file_url
+            }, ...solutions]);
+        }
         setShowProposer(false);
     };
 
@@ -40,7 +88,6 @@ const IngenuityDetail = ({ task, role, onClose, onReward }) => {
             isAccepted: s.id === sol.id
         })));
 
-        // Reward flow (now focusing on proof/reputation only)
         if (onReward) {
             onReward({
                 tokens: 0, // Bounties removed
@@ -52,6 +99,20 @@ const IngenuityDetail = ({ task, role, onClose, onReward }) => {
             });
         }
     };
+
+    const handleSaveEdit = async () => {
+        if (onEdit) {
+            await onEdit(task.id, {
+                title: editTitle,
+                abstract: editAbstract,
+                codeSnippet: editCodeSnippet,
+                isAnonymous: editIsAnonymous
+            });
+            setIsEditing(false);
+        }
+    };
+
+    const isOwner = identity && identity.id && task.ownerId === identity.id;
 
     return (
         <div style={{
@@ -100,7 +161,7 @@ const IngenuityDetail = ({ task, role, onClose, onReward }) => {
                     &times;
                 </button>
 
-                <div style={{ display: 'flex', gap: '10px', alignItems: 'center', marginBottom: '1.5rem' }}>
+                <div style={{ display: 'flex', gap: '10px', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap' }}>
                     <span style={{
                         fontSize: '0.75rem',
                         textTransform: 'uppercase',
@@ -117,19 +178,107 @@ const IngenuityDetail = ({ task, role, onClose, onReward }) => {
                     {isScanned && (
                         <span style={{ fontSize: '0.6rem', color: '#000', background: 'var(--neon-orange)', padding: '2px 8px', borderRadius: '4px', fontWeight: 900 }}>SCANNED ISSUE</span>
                     )}
+                    {task.type === 'direct' && (
+                        <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>
+                            By: <span style={{ color: 'white' }}>
+                                {task.isAnonymous
+                                    ? 'Anonymous'
+                                    : (task.authorProfile?.username || task.authorProfile?.email?.split('@')[0] || 'Unknown User')}
+                            </span>
+                        </span>
+                    )}
+
+                    {/* EDIT & DELETE ACTIONS FOR OWNER */}
+                    {isOwner && (
+                        <div style={{ marginLeft: 'auto', display: 'flex', gap: '10px' }}>
+                            <button
+                                onClick={() => setIsEditing(!isEditing)}
+                                style={{
+                                    background: 'transparent',
+                                    border: '1px solid var(--neon-blue)',
+                                    color: 'var(--neon-blue)',
+                                    padding: '4px 12px',
+                                    borderRadius: '6px',
+                                    fontSize: '0.7rem',
+                                    fontWeight: 'bold',
+                                    cursor: 'pointer'
+                                }}
+                            >
+                                <i className="fas fa-edit"></i> {isEditing ? 'Cancel Edit' : 'Edit Post'}
+                            </button>
+                            <button
+                                onClick={() => {
+                                    if (window.confirm("Are you sure you want to delete this signal?")) {
+                                        onDelete && onDelete(task.id);
+                                    }
+                                }}
+                                style={{
+                                    background: 'rgba(255, 0, 0, 0.1)',
+                                    border: '1px solid red',
+                                    color: 'red',
+                                    padding: '4px 12px',
+                                    borderRadius: '6px',
+                                    fontSize: '0.7rem',
+                                    fontWeight: 'bold',
+                                    cursor: 'pointer'
+                                }}
+                            >
+                                <i className="fas fa-trash"></i> Delete
+                            </button>
+                        </div>
+                    )}
                 </div>
 
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1.5rem' }}>
-                    <h2 style={{ fontSize: '2.2rem', letterSpacing: '-1px', maxWidth: '70%' }}>{task.title}</h2>
-                    <div style={{ textAlign: 'right' }}>
-                        {isScanned ? (
-                            <div style={{ color: 'var(--neon-orange)', fontWeight: 800, fontSize: '0.85rem' }}>Opportunity to Solve</div>
-                        ) : (
-                            <div style={{ color: 'var(--neon-orange)', fontWeight: 800, fontSize: '0.85rem' }}>Opening Likelihood: {task.jobProbability}</div>
-                        )}
-                        <div style={{ color: 'var(--text-muted)', fontSize: '0.7rem', textTransform: 'uppercase' }}>Urgency: {task.hiringUrgency}</div>
+                {isEditing ? (
+                    <div style={{ marginBottom: '2rem', padding: '1.5rem', background: 'rgba(255,255,255,0.03)', borderRadius: '12px', border: '1px solid var(--neon-blue)' }}>
+                        <h4 style={{ color: 'var(--neon-blue)', marginBottom: '1rem' }}>Editing Signal</h4>
+                        <input
+                            value={editTitle}
+                            onChange={(e) => setEditTitle(e.target.value)}
+                            style={{ width: '100%', padding: '10px', marginBottom: '10px', background: 'rgba(0,0,0,0.4)', color: 'white', border: '1px solid var(--glass-border)', borderRadius: '8px' }}
+                            placeholder="Title"
+                        />
+                        <textarea
+                            value={editAbstract}
+                            onChange={(e) => setEditAbstract(e.target.value)}
+                            style={{ width: '100%', padding: '10px', marginBottom: '10px', background: 'rgba(0,0,0,0.4)', color: 'white', border: '1px solid var(--glass-border)', borderRadius: '8px', resize: 'vertical' }}
+                            placeholder="Abstract"
+                            rows="2"
+                        />
+                        <textarea
+                            value={editCodeSnippet}
+                            onChange={(e) => setEditCodeSnippet(e.target.value)}
+                            style={{ width: '100%', padding: '10px', marginBottom: '10px', background: 'rgba(0,0,0,0.4)', color: 'white', border: '1px solid var(--glass-border)', borderRadius: '8px', resize: 'vertical', fontFamily: 'monospace' }}
+                            placeholder="Code Snippet"
+                            rows="4"
+                        />
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '1rem' }}>
+                            <input
+                                type="checkbox"
+                                checked={editIsAnonymous}
+                                onChange={(e) => setEditIsAnonymous(e.target.checked)}
+                            />
+                            <label style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Post Anonymously</label>
+                        </div>
+                        <button onClick={handleSaveEdit} style={{ background: 'var(--neon-blue)', color: 'black', padding: '8px 16px', borderRadius: '8px', fontWeight: 'bold', border: 'none', cursor: 'pointer' }}>
+                            Save Changes
+                        </button>
                     </div>
-                </div>
+                ) : (
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1.5rem' }}>
+                        <h2 style={{ fontSize: '2.2rem', letterSpacing: '-1px', maxWidth: '70%' }}>{task.title}</h2>
+                        <div style={{ textAlign: 'right' }}>
+                            {isScanned ? (
+                                <div style={{ color: 'var(--neon-orange)', fontWeight: 800, fontSize: '0.85rem' }}>Opportunity to Solve</div>
+                            ) : task.type === 'direct' ? null : (
+                                <div style={{ color: 'var(--neon-orange)', fontWeight: 800, fontSize: '0.85rem' }}>Opening Likelihood: {task.jobProbability}</div>
+                            )}
+                            {task.type !== 'direct' && (
+                                <div style={{ color: 'var(--text-muted)', fontSize: '0.7rem', textTransform: 'uppercase' }}>Urgency: {task.hiringUrgency}</div>
+                            )}
+                        </div>
+                    </div>
+                )}
 
                 {(isMined || isScanned) ? (
                     <div style={{ background: 'rgba(255,255,255,0.02)', padding: '2rem', borderRadius: '16px', marginBottom: '2rem', border: '1px solid var(--glass-border)' }}>
@@ -150,7 +299,24 @@ const IngenuityDetail = ({ task, role, onClose, onReward }) => {
                         </div>
                     </div>
                 ) : (
-                    <p style={{ color: 'var(--text-muted)', lineHeight: '1.7', marginBottom: '2rem', fontSize: '1.1rem' }}>{task.content}</p>
+                    <>
+                        {task.abstract && (
+                            <div style={{ marginBottom: '1.5rem' }}>
+                                <label style={{ color: 'var(--neon-purple)', fontSize: '0.7rem', fontWeight: 800, textTransform: 'uppercase' }}>Abstract</label>
+                                <p style={{ fontSize: '1rem', color: 'var(--text-main)', marginTop: '4px', lineHeight: '1.5' }}>{task.abstract}</p>
+                            </div>
+                        )}
+                        <p style={{ color: 'var(--text-muted)', lineHeight: '1.7', marginBottom: '2rem', fontSize: '1.1rem' }}>{task.content}</p>
+
+                        {task.codeSnippet && (
+                            <div style={{ marginBottom: '2rem', background: 'rgba(0,0,0,0.4)', padding: '1rem', borderRadius: '12px', border: '1px solid var(--glass-border)' }}>
+                                <label style={{ color: 'var(--neon-blue)', fontSize: '0.7rem', fontWeight: 800, textTransform: 'uppercase', display: 'block', marginBottom: '8px' }}>Code Snippet</label>
+                                <pre style={{ fontFamily: 'monospace', color: 'var(--text-main)', fontSize: '0.9rem', whiteSpace: 'pre-wrap' }}>
+                                    {task.codeSnippet}
+                                </pre>
+                            </div>
+                        )}
+                    </>
                 )}
 
                 <div style={{
@@ -246,9 +412,46 @@ const IngenuityDetail = ({ task, role, onClose, onReward }) => {
                                     )}
                                     <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.8rem' }}>
                                         <span style={{ color: 'var(--neon-blue)', fontWeight: 700, fontSize: '0.9rem' }}>@{sol.engineer}</span>
-                                        <span style={{ color: 'var(--text-muted)', fontSize: '0.75rem' }}>{sol.vouchers} Community Vouches</span>
+                                        <span style={{ color: 'var(--text-muted)', fontSize: '0.75rem', background: 'rgba(255,255,255,0.1)', padding: '2px 8px', borderRadius: '4px', marginLeft: '8px' }}>
+                                            {sol.type}
+                                        </span>
                                     </div>
-                                    <p style={{ fontSize: '0.95rem', color: 'var(--text-main)', lineHeight: '1.5' }}>{sol.logic}</p>
+                                    <pre style={{
+                                        fontSize: '0.9rem',
+                                        color: 'var(--text-main)',
+                                        lineHeight: '1.5',
+                                        whiteSpace: 'pre-wrap',
+                                        fontFamily: 'inherit',
+                                        background: 'rgba(0,0,0,0.2)',
+                                        padding: '12px',
+                                        borderRadius: '8px'
+                                    }}>{sol.logic}</pre>
+
+                                    {sol.fileUrl && (
+                                        <div style={{ marginTop: '1rem' }}>
+                                            <a
+                                                href={sol.fileUrl}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                style={{
+                                                    display: 'inline-flex',
+                                                    alignItems: 'center',
+                                                    gap: '8px',
+                                                    background: 'rgba(188, 19, 254, 0.1)',
+                                                    border: '1px solid var(--neon-purple)',
+                                                    color: 'white',
+                                                    padding: '8px 16px',
+                                                    borderRadius: '8px',
+                                                    textDecoration: 'none',
+                                                    fontSize: '0.85rem',
+                                                    fontWeight: 'bold',
+                                                    transition: 'all 0.3s'
+                                                }}
+                                            >
+                                                <i className="fas fa-download"></i> View Attached Architecture / File
+                                            </a>
+                                        </div>
+                                    )}
 
                                     <div style={{ marginTop: '1.2rem', display: 'flex', gap: '15px', alignItems: 'center' }}>
                                         <button style={{ background: 'transparent', border: 'none', color: 'var(--text-muted)', fontSize: '0.8rem', cursor: 'pointer' }}>

@@ -1,42 +1,64 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { supabase } from '../services/supabase';
 
-const ProjectsBoard = ({ onProjectSelect }) => {
-    const [projects, setProjects] = useState([
-        {
-            id: 1,
-            name: "OpenRouter-UI",
-            owner: "NeuralNinja",
-            description: "An open-source custom dashboard for routing LLM APIs with lowest latency.",
-            isPublic: true,
-            stars: 128,
-            contributors: 4
-        },
-        {
-            id: 2,
-            name: "React-Native-Background-Sync-Fix",
-            owner: "TechnicalMercenary",
-            description: "Solving the battery drain issue for background syncing. Forked from FinanSync problem.",
-            isPublic: true,
-            stars: 45,
-            contributors: 2
-        }
-    ]);
-
+const ProjectsBoard = ({ onProjectSelect, identity }) => {
+    const [projects, setProjects] = useState([]);
+    const [loading, setLoading] = useState(true);
     const [showNewProject, setShowNewProject] = useState(false);
     const [newProject, setNewProject] = useState({ name: '', description: '', isPublic: true });
 
-    const handleCreateProject = (e) => {
+    const fetchProjects = async () => {
+        setLoading(true);
+        const { data, error } = await supabase
+            .from('projects')
+            .select(`
+                *,
+                profiles ( username )
+            `)
+            .order('created_at', { ascending: false });
+
+        if (!error && data) {
+            setProjects(data.map(p => ({
+                id: p.id,
+                name: p.name,
+                owner: p.profiles?.username || "Unknown",
+                description: p.description,
+                isPublic: p.is_public,
+                stars: p.stars || 0,
+                contributors: p.contributors || 1
+            })));
+        }
+        setLoading(false);
+    };
+
+    useEffect(() => {
+        fetchProjects();
+    }, []);
+
+    const handleCreateProject = async (e) => {
         e.preventDefault();
-        const project = {
-            id: Date.now(),
+
+        if (!identity || !identity.id) {
+            alert("You must be logged in to create a project.");
+            return;
+        }
+
+        const { data, error } = await supabase.from('projects').insert([{
             name: newProject.name,
-            owner: "CurrentUser", // Mocked
             description: newProject.description,
-            isPublic: newProject.isPublic,
-            stars: 0,
-            contributors: 1
-        };
-        setProjects([project, ...projects]);
+            is_public: newProject.isPublic,
+            owner_id: identity.id
+        }]).select();
+
+        if (error) {
+            console.error("Error creating project:", error);
+            alert("Failed to create project: " + error.message);
+            return;
+        }
+
+        // Refresh the list to get the formatted join data
+        fetchProjects();
+
         setShowNewProject(false);
         setNewProject({ name: '', description: '', isPublic: true });
     };
@@ -103,41 +125,51 @@ const ProjectsBoard = ({ onProjectSelect }) => {
                 </div>
             )}
 
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(350px, 1fr))', gap: '2rem' }}>
-                {projects.map(proj => (
-                    <div key={proj.id} className="glass-panel animate-fade" style={{ padding: '2rem', display: 'flex', flexDirection: 'column', height: '100%' }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1rem' }}>
-                            <div>
-                                <h3 style={{ fontSize: '1.2rem', color: 'var(--neon-blue)', marginBottom: '4px', cursor: 'pointer' }} onClick={() => onProjectSelect(proj)}>{proj.name}</h3>
-                                <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Maintained by <span style={{ color: 'white' }}>@{proj.owner}</span></div>
-                            </div>
-                            <span style={{ fontSize: '0.7rem', padding: '4px 8px', background: 'rgba(255,255,255,0.05)', border: '1px solid var(--glass-border)', borderRadius: '12px', color: 'var(--text-muted)' }}>
-                                {proj.isPublic ? 'Public' : 'Private'}
-                            </span>
-                        </div>
-
-                        <p style={{ color: 'var(--text-main)', fontSize: '0.95rem', flex: 1, marginBottom: '2rem', lineHeight: '1.5' }}>
-                            {proj.description}
-                        </p>
-
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '1rem', borderTop: '1px solid var(--glass-border)' }}>
-                            <div style={{ display: 'flex', gap: '1rem' }}>
-                                <span style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '0.85rem', color: 'var(--text-muted)' }}>
-                                    <i className="fas fa-star" style={{ color: 'var(--neon-orange)' }}></i> {proj.stars}
-                                </span>
-                                <span style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '0.85rem', color: 'var(--text-muted)' }}>
-                                    <i className="fas fa-code-branch" style={{ color: 'var(--neon-blue)' }}></i> {proj.contributors}
+            {loading ? (
+                <div style={{ textAlign: 'center', padding: '4rem', color: 'var(--neon-purple)' }}>
+                    <i className="fas fa-spinner fa-spin" style={{ fontSize: '3rem' }}></i>
+                </div>
+            ) : projects.length === 0 ? (
+                <div style={{ textAlign: 'center', padding: '4rem', color: 'var(--text-muted)', border: '1px dashed var(--glass-border)', borderRadius: '16px' }}>
+                    <p>No open projects found. Be the first to start an initiative!</p>
+                </div>
+            ) : (
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(350px, 1fr))', gap: '2rem' }}>
+                    {projects.map(proj => (
+                        <div key={proj.id} className="glass-panel animate-fade" style={{ padding: '2rem', display: 'flex', flexDirection: 'column', height: '100%' }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1rem' }}>
+                                <div>
+                                    <h3 style={{ fontSize: '1.2rem', color: 'var(--neon-blue)', marginBottom: '4px', cursor: 'pointer' }} onClick={() => onProjectSelect(proj)}>{proj.name}</h3>
+                                    <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Maintained by <span style={{ color: 'white' }}>@{proj.owner}</span></div>
+                                </div>
+                                <span style={{ fontSize: '0.7rem', padding: '4px 8px', background: 'rgba(255,255,255,0.05)', border: '1px solid var(--glass-border)', borderRadius: '12px', color: 'var(--text-muted)' }}>
+                                    {proj.isPublic ? 'Public' : 'Private'}
                                 </span>
                             </div>
-                            <button
-                                onClick={() => onProjectSelect(proj)}
-                                style={{ background: 'transparent', border: '1px solid var(--neon-blue)', color: 'var(--neon-blue)', padding: '6px 12px', borderRadius: '6px', fontSize: '0.8rem', cursor: 'pointer', fontWeight: 'bold' }}>
-                                View Repository
-                            </button>
+
+                            <p style={{ color: 'var(--text-main)', fontSize: '0.95rem', flex: 1, marginBottom: '2rem', lineHeight: '1.5' }}>
+                                {proj.description}
+                            </p>
+
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '1rem', borderTop: '1px solid var(--glass-border)' }}>
+                                <div style={{ display: 'flex', gap: '1rem' }}>
+                                    <span style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '0.85rem', color: 'var(--text-muted)' }}>
+                                        <i className="fas fa-star" style={{ color: 'var(--neon-orange)' }}></i> {proj.stars}
+                                    </span>
+                                    <span style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '0.85rem', color: 'var(--text-muted)' }}>
+                                        <i className="fas fa-code-branch" style={{ color: 'var(--neon-blue)' }}></i> {proj.contributors}
+                                    </span>
+                                </div>
+                                <button
+                                    onClick={() => onProjectSelect(proj)}
+                                    style={{ background: 'transparent', border: '1px solid var(--neon-blue)', color: 'var(--neon-blue)', padding: '6px 12px', borderRadius: '6px', fontSize: '0.8rem', cursor: 'pointer', fontWeight: 'bold' }}>
+                                    View Repository
+                                </button>
+                            </div>
                         </div>
-                    </div>
-                ))}
-            </div>
+                    ))}
+                </div>
+            )}
         </div>
     );
 };
