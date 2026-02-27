@@ -7,6 +7,11 @@ const IngenuityDetail = ({ task, role, onClose, onReward }) => {
     const [showProposer, setShowProposer] = useState(false);
     const [showProposalGenerator, setShowProposalGenerator] = useState(false);
     const isMined = task.type === 'mined';
+    const isScanned = task.type === 'scanned';
+
+    let accentColor = 'var(--neon-purple)';
+    if (isMined) accentColor = 'var(--neon-blue)';
+    if (isScanned) accentColor = 'var(--neon-orange)';
 
     const [solutions, setSolutions] = useState([
         {
@@ -75,7 +80,7 @@ const IngenuityDetail = ({ task, role, onClose, onReward }) => {
                     width: '100%',
                     position: 'relative',
                     margin: 'auto',
-                    boxShadow: `0 0 40px ${isMined ? 'rgba(0, 242, 255, 0.1)' : 'rgba(188, 19, 254, 0.1)'}`
+                    boxShadow: `0 0 40px ${(isMined || isScanned) ? (isScanned ? 'rgba(255, 140, 0, 0.1)' : 'rgba(0, 242, 255, 0.1)') : 'rgba(188, 19, 254, 0.1)'}`
                 }}
                 onClick={e => e.stopPropagation()}
             >
@@ -100,30 +105,44 @@ const IngenuityDetail = ({ task, role, onClose, onReward }) => {
                         fontSize: '0.75rem',
                         textTransform: 'uppercase',
                         fontWeight: 800,
-                        color: isMined ? 'var(--neon-blue)' : 'var(--neon-purple)',
+                        color: accentColor,
                         letterSpacing: '1px'
                     }}>
-                        <i className={`fas ${isMined ? 'fa-radar' : 'fa-briefcase'}`} style={{ marginRight: '6px' }}></i>
+                        <i className={`fas ${isScanned ? 'fa-search-location' : (isMined ? 'fa-radar' : 'fa-briefcase')}`} style={{ marginRight: '6px' }}></i>
                         {task.source} / {task.channel}
                     </span>
                     {isMined && (
-                        <span style={{ fontSize: '0.6rem', color: '#000', background: 'var(--neon-blue)', padding: '2px 8px', borderRadius: '4px', fontWeight: 900 }}>JOB PREDICTION ACTIVE</span>
+                        <span style={{ fontSize: '0.6rem', color: '#000', background: 'var(--neon-blue)', padding: '2px 8px', borderRadius: '4px', fontWeight: 900 }}>JOB PREDICTION OVERRIDE</span>
+                    )}
+                    {isScanned && (
+                        <span style={{ fontSize: '0.6rem', color: '#000', background: 'var(--neon-orange)', padding: '2px 8px', borderRadius: '4px', fontWeight: 900 }}>SCANNED ISSUE</span>
                     )}
                 </div>
 
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1.5rem' }}>
                     <h2 style={{ fontSize: '2.2rem', letterSpacing: '-1px', maxWidth: '70%' }}>{task.title}</h2>
                     <div style={{ textAlign: 'right' }}>
-                        <div style={{ color: 'var(--neon-orange)', fontWeight: 800, fontSize: '0.85rem' }}>Opening Likelihood: {task.jobProbability}</div>
+                        {isScanned ? (
+                            <div style={{ color: 'var(--neon-orange)', fontWeight: 800, fontSize: '0.85rem' }}>Opportunity to Solve</div>
+                        ) : (
+                            <div style={{ color: 'var(--neon-orange)', fontWeight: 800, fontSize: '0.85rem' }}>Opening Likelihood: {task.jobProbability}</div>
+                        )}
                         <div style={{ color: 'var(--text-muted)', fontSize: '0.7rem', textTransform: 'uppercase' }}>Urgency: {task.hiringUrgency}</div>
                     </div>
                 </div>
 
-                {isMined ? (
+                {(isMined || isScanned) ? (
                     <div style={{ background: 'rgba(255,255,255,0.02)', padding: '2rem', borderRadius: '16px', marginBottom: '2rem', border: '1px solid var(--glass-border)' }}>
                         <div style={{ marginBottom: '1.5rem' }}>
-                            <label style={{ color: 'var(--neon-blue)', fontSize: '0.65rem', fontWeight: 800, textTransform: 'uppercase' }}>Public Signal Detected</label>
+                            <label style={{ color: accentColor, fontSize: '0.65rem', fontWeight: 800, textTransform: 'uppercase' }}>
+                                {isScanned ? 'Public Complaint/Review Signal' : 'Public Signal Detected'}
+                            </label>
                             <p style={{ color: '#fff', fontStyle: 'italic', marginTop: '4px', fontSize: '0.95rem' }}>"{task.signal}"</p>
+                            {task.sourceUrl && (
+                                <a href={task.sourceUrl} target="_blank" rel="noopener noreferrer" style={{ display: 'inline-block', marginTop: '12px', fontSize: '0.8rem', color: accentColor, textDecoration: 'none', fontWeight: 'bold' }}>
+                                    <i className="fas fa-external-link-alt"></i> View Original Source
+                                </a>
+                            )}
                         </div>
                         <div>
                             <label style={{ color: 'var(--neon-purple)', fontSize: '0.65rem', fontWeight: 800, textTransform: 'uppercase' }}>Market Inference</label>
@@ -170,17 +189,19 @@ const IngenuityDetail = ({ task, role, onClose, onReward }) => {
                     )}
                 </div>
 
-                {!isMined && (
+                {(!isMined || isScanned) && (
                     <div style={{ marginTop: '3rem' }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-                            <h4 style={{ color: 'var(--text-main)', fontSize: '1.3rem', fontWeight: 700 }}>Logic Validation</h4>
+                            <h4 style={{ color: 'var(--text-main)', fontSize: '1.3rem', fontWeight: 700 }}>
+                                {isScanned ? 'Solutions & Architecture' : 'Logic Validation'}
+                            </h4>
                             {role === 'engineer' && (
                                 <button
                                     onClick={() => setShowProposer(true)}
                                     style={{
                                         background: 'transparent',
-                                        border: '1px solid var(--neon-blue)',
-                                        color: 'var(--neon-blue)',
+                                        border: `1px solid ${accentColor}`,
+                                        color: accentColor,
                                         padding: '8px 20px',
                                         borderRadius: '10px',
                                         fontSize: '0.85rem',
@@ -188,7 +209,7 @@ const IngenuityDetail = ({ task, role, onClose, onReward }) => {
                                         cursor: 'pointer'
                                     }}
                                 >
-                                    Propose Verification logic
+                                    {isScanned ? 'Submit Fix / Architecture' : 'Propose Verification logic'}
                                 </button>
                             )}
                         </div>

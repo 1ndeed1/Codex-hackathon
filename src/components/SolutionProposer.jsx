@@ -29,11 +29,11 @@ const SolutionProposer = ({ task, onCancel, onSubmit }) => {
             </h4>
 
             <div style={{ marginBottom: '1rem' }}>
-                <label style={{ display: 'block', fontSize: '0.7rem', color: 'var(--text-muted)', marginBottom: '8px', textTransform: 'uppercase' }}>Human Logic (Thinking Process)</label>
+                <label style={{ display: 'block', fontSize: '0.7rem', color: 'var(--text-muted)', marginBottom: '8px', textTransform: 'uppercase' }}>Approach / Logic Outline</label>
                 <textarea
                     value={logic}
                     onChange={(e) => setLogic(e.target.value)}
-                    placeholder="Explain your unique out-of-the-box approach..."
+                    placeholder="Explain your unique out-of-the-box approach or reference architecture..."
                     rows="3"
                     style={{
                         width: '100%',
@@ -49,11 +49,11 @@ const SolutionProposer = ({ task, onCancel, onSubmit }) => {
             </div>
 
             <div style={{ marginBottom: '1.5rem' }}>
-                <label style={{ display: 'block', fontSize: '0.7rem', color: 'var(--text-muted)', marginBottom: '8px', textTransform: 'uppercase' }}>Optimized Code (Diff)</label>
+                <label style={{ display: 'block', fontSize: '0.7rem', color: 'var(--text-muted)', marginBottom: '8px', textTransform: 'uppercase' }}>Optimized Code, Architecture Diagram Link, or Files snippet</label>
                 <textarea
                     value={code}
                     onChange={(e) => setCode(e.target.value)}
-                    placeholder="Paste your optimized code here..."
+                    placeholder="Paste code, repository link, or architecture diagram link here..."
                     rows="5"
                     style={{
                         width: '100%',
@@ -83,7 +83,7 @@ const SolutionProposer = ({ task, onCancel, onSubmit }) => {
                         cursor: 'pointer'
                     }}
                 >
-                    Submit Logic Pitch
+                    Submit Fix / Pitch
                 </button>
                 <button
                     onClick={onCancel}

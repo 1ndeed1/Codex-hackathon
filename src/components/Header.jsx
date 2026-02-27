@@ -2,7 +2,7 @@
 import React from 'react';
 import ReputationDashboard from './ReputationDashboard';
 
-const Header = ({ role, setRole, identity, onProfileClick }) => {
+const Header = ({ role, setRole, identity, activeTab, setActiveTab, onProfileClick, onLogout }) => {
     return (
         <header style={{
             padding: '1.5rem 5%',
@@ -32,6 +32,19 @@ const Header = ({ role, setRole, identity, onProfileClick }) => {
                 <div onClick={onProfileClick} style={{ cursor: 'pointer' }}>
                     <ReputationDashboard tier={identity.tier} proofsCount={identity.proofs.length} />
                 </div>
+            </div>
+
+            <div style={{ display: 'flex', gap: '2rem', alignItems: 'center', flex: 1, justifyContent: 'center' }}>
+                <button
+                    onClick={() => setActiveTab('radar')}
+                    style={{ background: 'transparent', border: 'none', color: activeTab === 'radar' ? 'var(--neon-blue)' : 'var(--text-muted)', fontSize: '1rem', fontWeight: 'bold', cursor: 'pointer', borderBottom: activeTab === 'radar' ? '2px solid var(--neon-blue)' : 'none', paddingBottom: '4px' }}>
+                    Discovery Radar
+                </button>
+                <button
+                    onClick={() => setActiveTab('projects')}
+                    style={{ background: 'transparent', border: 'none', color: activeTab === 'projects' ? 'var(--neon-purple)' : 'var(--text-muted)', fontSize: '1rem', fontWeight: 'bold', cursor: 'pointer', borderBottom: activeTab === 'projects' ? '2px solid var(--neon-purple)' : 'none', paddingBottom: '4px' }}>
+                    Open Projects
+                </button>
             </div>
 
             <div style={{
@@ -73,9 +86,17 @@ const Header = ({ role, setRole, identity, onProfileClick }) => {
                 </button>
             </div>
 
-            <div style={{ color: 'var(--text-main)', fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <i className="fas fa-award" style={{ color: 'var(--neon-purple)' }}></i>
-                {identity.vouches} Logic Vouches
+            <div style={{ color: 'var(--text-main)', fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: '15px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <i className="fas fa-award" style={{ color: 'var(--neon-purple)' }}></i>
+                    {identity.vouches} Logic Vouches
+                </div>
+                <button
+                    onClick={onLogout}
+                    style={{ background: 'rgba(255,255,255,0.1)', border: 'none', color: 'white', padding: '6px 12px', borderRadius: '6px', cursor: 'pointer', fontSize: '0.8rem' }}
+                >
+                    Logout
+                </button>
             </div>
         </header>
     );
