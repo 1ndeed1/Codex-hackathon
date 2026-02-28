@@ -1,5 +1,6 @@
 /* src/App.jsx */
 import React, { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { supabase } from './services/supabase';
 import Header from './components/Header';
 import OpportunityCard from './components/OpportunityCard';
@@ -31,7 +32,6 @@ function App() {
   // New States for Auth & Projects
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [currentUser, setCurrentUser] = useState('');
-  const [activeTab, setActiveTab] = useState('radar'); // 'radar', 'projects', 'community', 'activity', 'gapstart'
   const [selectedProject, setSelectedProject] = useState(null);
 
   const [identity, setIdentity] = useState({
@@ -277,154 +277,142 @@ function App() {
   }
 
   return (
-    <div className="App">
-      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-      <div className="bg-glow"></div>
-      <div className="bg-glow-2"></div>
+    <Router>
+      <div className="App">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+        <div className="bg-glow"></div>
+        <div className="bg-glow-2"></div>
 
-      <Header
-        role={identity.role} // Sync Header with identity role
-        setRole={(r) => setIdentity(prev => ({ ...prev, role: r }))}
-        identity={identity}
-        activeTab={activeTab}
-        setActiveTab={setActiveTab}
-        onProfileClick={() => setShowProfile(identity.id)}
-        onLogout={handleLogout}
-      />
+        <Header
+          role={identity.role} // Sync Header with identity role
+          setRole={(r) => setIdentity(prev => ({ ...prev, role: r }))}
+          identity={identity}
+          onProfileClick={() => setShowProfile(identity.id)}
+          onLogout={handleLogout}
+        />
 
-      <main style={{ padding: '0', maxWidth: '100%', margin: '0 auto' }}>
-        {activeTab === 'radar' && (
-          <div style={{ padding: '2rem 5%', maxWidth: '1400px', margin: '0 auto' }}>
-            <section style={{ marginBottom: '3rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <div>
-                <h1 style={{ fontSize: '2.5rem', marginBottom: '0.5rem', letterSpacing: '-1.5px' }}>Job Prediction Engine</h1>
-                <p style={{ color: 'var(--text-muted)' }}>Discovery Radar: Predicting technical role openings before they hit the market.</p>
-              </div>
-              <DiscoveryRadar />
-            </section>
+        <main style={{ padding: '0', maxWidth: '100%', margin: '0 auto' }}>
+          <Routes>
+            <Route path="/" element={
+              <div style={{ padding: '2rem 5%', maxWidth: '1400px', margin: '0 auto' }}>
+                <section style={{ marginBottom: '3rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <div>
+                    <h1 style={{ fontSize: '2.5rem', marginBottom: '0.5rem', letterSpacing: '-1.5px' }}>Job Prediction Engine</h1>
+                    <p style={{ color: 'var(--text-muted)' }}>Discovery Radar: Predicting technical role openings before they hit the market.</p>
+                  </div>
+                  <DiscoveryRadar />
+                </section>
 
-            {loading ? (
-              <div style={{ textAlign: 'center', padding: '4rem', color: 'var(--text-muted)' }}>
-                <i className="fas fa-radar fa-spin" style={{ fontSize: '3rem', color: 'var(--neon-blue)', marginBottom: '1rem' }}></i>
-                <h3>Scanning Global Market Signals...</h3>
-                <p>Connecting to Supabase and analyzing live network data.</p>
-              </div>
-            ) : identity.role === 'engineer' ? (
-              <div style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fill, minmax(420px, 1fr))',
-                gap: '2.5rem'
-              }}>
-                {opportunities.map(opp => (
-                  <OpportunityCard
-                    key={opp.id}
-                    opp={opp}
-                    onClick={() => setSelectedOpp(opp)}
-                  />
-                ))}
-              </div>
-            ) : identity.role === 'sponsor' ? (
-              <SponsorDashboard identity={identity} />
-            ) : identity.role === 'producer' ? (
-              <ProducerDashboard identity={identity} />
-            ) : (
-              <div style={{
-                background: 'var(--glass-bg)',
-                border: '1px solid var(--glass-border)',
-                borderStyle: 'dashed',
-                borderRadius: '20px',
-                padding: '4rem',
-                textAlign: 'center'
-              }}>
-                <i className="fas fa-satellite-dish" style={{ fontSize: '3rem', color: 'var(--neon-purple)', marginBottom: '1.5rem' }}></i>
-                <h3 style={{ fontSize: '1.5rem', marginBottom: '1rem' }}>Deploy a Signal Pulse</h3>
-                <p style={{ color: 'var(--text-muted)', maxWidth: '500px', margin: '0 auto 2rem' }}>
-                  Broadcast technical pain to predict hiring needs. AI will benchmark your urgency against the broader market.
-                </p>
-                <button
-                  onClick={() => setShowSubmission(true)}
-                  style={{
-                    background: 'var(--accent-gradient)',
-                    border: 'none',
-                    color: 'white',
-                    padding: '12px 32px',
-                    borderRadius: '12px',
-                    fontWeight: 700,
-                    fontSize: '1rem',
-                    cursor: 'pointer',
-                    boxShadow: '0 10px 20px rgba(188, 19, 254, 0.2)'
+                {loading ? (
+                  <div style={{ textAlign: 'center', padding: '4rem', color: 'var(--text-muted)' }}>
+                    <i className="fas fa-radar fa-spin" style={{ fontSize: '3rem', color: 'var(--neon-blue)', marginBottom: '1rem' }}></i>
+                    <h3>Scanning Global Market Signals...</h3>
+                    <p>Connecting to Supabase and analyzing live network data.</p>
+                  </div>
+                ) : identity.role === 'engineer' ? (
+                  <div style={{
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(auto-fill, minmax(420px, 1fr))',
+                    gap: '2.5rem'
                   }}>
-                  Broadcast Signal
-                </button>
+                    {opportunities.map(opp => (
+                      <OpportunityCard
+                        key={opp.id}
+                        opp={opp}
+                        onClick={() => setSelectedOpp(opp)}
+                      />
+                    ))}
+                  </div>
+                ) : identity.role === 'sponsor' ? (
+                  <SponsorDashboard identity={identity} />
+                ) : identity.role === 'producer' ? (
+                  <ProducerDashboard identity={identity} />
+                ) : (
+                  <div style={{
+                    background: 'var(--glass-bg)',
+                    border: '1px solid var(--glass-border)',
+                    borderStyle: 'dashed',
+                    borderRadius: '20px',
+                    padding: '4rem',
+                    textAlign: 'center'
+                  }}>
+                    <i className="fas fa-satellite-dish" style={{ fontSize: '3rem', color: 'var(--neon-purple)', marginBottom: '1.5rem' }}></i>
+                    <h3 style={{ fontSize: '1.5rem', marginBottom: '1rem' }}>Deploy a Signal Pulse</h3>
+                    <p style={{ color: 'var(--text-muted)', maxWidth: '500px', margin: '0 auto 2rem' }}>
+                      Broadcast technical pain to predict hiring needs. AI will benchmark your urgency against the broader market.
+                    </p>
+                    <button
+                      onClick={() => setShowSubmission(true)}
+                      style={{
+                        background: 'var(--accent-gradient)',
+                        border: 'none',
+                        color: 'white',
+                        padding: '12px 32px',
+                        borderRadius: '12px',
+                        fontWeight: 700,
+                        fontSize: '1rem',
+                        cursor: 'pointer',
+                        boxShadow: '0 10px 20px rgba(188, 19, 254, 0.2)'
+                      }}>
+                      Broadcast Signal
+                    </button>
+                  </div>
+                )}
               </div>
-            )}
+            } />
+
+            <Route path="/projects" element={<ProjectsBoard onProjectSelect={(proj) => setSelectedProject(proj)} identity={identity} />} />
+            <Route path="/community" element={<ProfilesDirectory onProfileSelect={(id) => setShowProfile(id)} />} />
+            <Route path="/activity" element={<ActivityDashboard identity={identity} />} />
+            <Route path="/pathfinder" element={<Pathfinder />} />
+            <Route path="/gapstart" element={<GapStartDashboard identity={identity} />} />
+          </Routes>
+        </main>
+
+        {selectedProject && (
+          <div style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', background: 'var(--bg-dark)', zIndex: 1000, overflowY: 'auto' }}>
+            <ProjectDetail project={selectedProject} currentUser={currentUser} onClose={() => setSelectedProject(null)} identity={identity} />
           </div>
         )}
 
-        {activeTab === 'projects' && (
-          <ProjectsBoard onProjectSelect={(proj) => setSelectedProject(proj)} identity={identity} />
+        {showSubmission && (
+          <ProblemSubmission
+            onClose={() => setShowSubmission(false)}
+            onPublish={handlePublishProblem}
+          />
         )}
 
-        {activeTab === 'community' && (
-          <ProfilesDirectory onProfileSelect={(id) => setShowProfile(id)} />
+        {selectedOpp && (
+          <IngenuityDetail
+            task={selectedOpp}
+            role={role}
+            identity={identity}
+            onClose={() => setSelectedOpp(null)}
+            onReward={handleReward}
+            onDelete={handleDeleteOpportunity}
+            onEdit={handleEditOpportunity}
+            onAccept={handleAcceptOpportunity}
+          />
         )}
 
-        {activeTab === 'activity' && (
-          <ActivityDashboard identity={identity} />
+        {activeProof && (
+          <IngenuityProofCard
+            proof={activeProof}
+            onClose={() => setActiveProof(null)}
+          />
         )}
 
-        {activeTab === 'pathfinder' && (
-          <Pathfinder />
+        {showProfile && (
+          <EngineerProfile
+            userId={showProfile}
+            currentUser={identity}
+            identity={identity}
+            onClose={() => setShowProfile(null)}
+            onProfileUpdate={(updated) => setIdentity(updated)}
+          />
         )}
-
-        {activeTab === 'gapstart' && (
-          <GapStartDashboard identity={identity} />
-        )}
-      </main>
-
-      {selectedProject && (
-        <div style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', background: 'var(--bg-dark)', zIndex: 1000, overflowY: 'auto' }}>
-          <ProjectDetail project={selectedProject} currentUser={currentUser} onClose={() => setSelectedProject(null)} identity={identity} />
-        </div>
-      )}
-
-      {showSubmission && (
-        <ProblemSubmission
-          onClose={() => setShowSubmission(false)}
-          onPublish={handlePublishProblem}
-        />
-      )}
-
-      {selectedOpp && (
-        <IngenuityDetail
-          task={selectedOpp}
-          role={role}
-          identity={identity}
-          onClose={() => setSelectedOpp(null)}
-          onReward={handleReward}
-          onDelete={handleDeleteOpportunity}
-          onEdit={handleEditOpportunity}
-          onAccept={handleAcceptOpportunity}
-        />
-      )}
-
-      {activeProof && (
-        <IngenuityProofCard
-          proof={activeProof}
-          onClose={() => setActiveProof(null)}
-        />
-      )}
-
-      {showProfile && (
-        <EngineerProfile
-          userId={showProfile}
-          currentUser={identity}
-          identity={identity}
-          onClose={() => setShowProfile(null)}
-          onProfileUpdate={(updated) => setIdentity(updated)}
-        />
-      )}
-    </div>
+      </div>
+    </Router>
   );
 }
 
