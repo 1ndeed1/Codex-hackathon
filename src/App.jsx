@@ -16,6 +16,7 @@ import SponsorDashboard from './components/SponsorDashboard';
 import ProducerDashboard from './components/ProducerDashboard';
 import ActivityDashboard from './components/ActivityDashboard';
 import GapStartDashboard from './components/GapStartDashboard';
+import Pathfinder from './components/Pathfinder';
 import { fetchOpportunities, simulateBackgroundScan } from './services/discovery_service';
 
 function App() {
@@ -370,6 +371,10 @@ function App() {
 
         {activeTab === 'activity' && (
           <ActivityDashboard identity={identity} />
+        )}
+
+        {activeTab === 'pathfinder' && (
+          <Pathfinder />
         )}
 
         {activeTab === 'gapstart' && (

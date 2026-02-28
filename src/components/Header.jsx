@@ -50,6 +50,11 @@ const Header = ({ role, setRole, identity, activeTab, setActiveTab, onProfileCli
                     GapStart
                 </button>
                 <button
+                    onClick={() => setActiveTab('pathfinder')}
+                    style={{ background: 'transparent', border: 'none', color: activeTab === 'pathfinder' ? 'var(--neon-purple)' : 'var(--text-muted)', fontSize: '1rem', fontWeight: 'bold', cursor: 'pointer', borderBottom: activeTab === 'pathfinder' ? '2px solid var(--neon-purple)' : 'none', paddingBottom: '4px' }}>
+                    Pathfinder
+                </button>
+                <button
                     onClick={() => setActiveTab('projects')}
                     style={{ background: 'transparent', border: 'none', color: activeTab === 'projects' ? 'var(--neon-purple)' : 'var(--text-muted)', fontSize: '1rem', fontWeight: 'bold', cursor: 'pointer', borderBottom: activeTab === 'projects' ? '2px solid var(--neon-purple)' : 'none', paddingBottom: '4px' }}>
                     Open Projects
