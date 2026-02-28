@@ -73,7 +73,7 @@ const ActivityDashboard = ({ identity }) => {
             <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '1rem' }}>
                 {type === 'sent' ? `Sent to: @${ag.founder?.username}` : `Received from: @${ag.producer?.username}`}
             </p>
-            <div style={{ fontSize: '0.8rem', background: 'rgba(0,0,0,0.5)', padding: '10px', borderRadius: '8px', color: 'var(--text-main)', marginBottom: '0.5rem' }}>
+            <div style={{ fontSize: '0.8rem', background: 'rgba(255, 255, 255, 0.8)', border: '1px solid var(--glass-border)', padding: '10px', borderRadius: '8px', color: 'var(--text-main)', marginBottom: '0.5rem' }}>
                 {ag.terms.substring(0, 150)}...
             </div>
             <div style={{ fontSize: '0.7rem', color: 'gray' }}>Timestamp: {new Date(ag.created_at).toLocaleString()}</div>
@@ -141,7 +141,7 @@ const ActivityDashboard = ({ identity }) => {
                                         <div key={sol.id} className="glass-panel" style={{ padding: '1.5rem', borderTop: '2px solid var(--neon-purple)' }}>
                                             <h4 style={{ color: 'white', marginBottom: '0.5rem' }}>{sol.opportunities?.title}</h4>
                                             <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '1rem' }}>Status: {sol.status.toUpperCase()}</div>
-                                            <div style={{ fontSize: '0.8rem', background: 'rgba(0,0,0,0.5)', padding: '12px', borderRadius: '8px', color: 'var(--text-main)', fontStyle: 'italic' }}>
+                                            <div style={{ fontSize: '0.8rem', background: 'rgba(255, 255, 255, 0.8)', border: '1px solid var(--glass-border)', padding: '12px', borderRadius: '8px', color: 'var(--text-main)', fontStyle: 'italic' }}>
                                                 {sol.content.substring(0, 200)}...
                                             </div>
                                         </div>

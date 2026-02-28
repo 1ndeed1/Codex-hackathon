@@ -145,14 +145,14 @@ const ProjectDetail = ({ project, onClose, currentUser, identity }) => {
                 <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1rem' }}>
                     <i className="fas fa-book-open" style={{ fontSize: '2rem', color: 'var(--neon-blue)' }}></i>
                     <h2 style={{ fontSize: '2.5rem', letterSpacing: '-1px' }}>{project.owner} / <span style={{ color: 'var(--neon-blue)' }}>{project.name}</span></h2>
-                    <span style={{ fontSize: '0.8rem', padding: '4px 12px', background: 'rgba(255,255,255,0.05)', border: '1px solid var(--glass-border)', borderRadius: '20px', color: 'var(--text-muted)' }}>
+                    <span style={{ fontSize: '0.8rem', padding: '4px 12px', background: 'rgba(0,0,0,0.05)', border: '1px solid var(--glass-border)', borderRadius: '20px', color: 'var(--text-muted)' }}>
                         {project.isPublic ? 'Public' : 'Private'}
                     </span>
                 </div>
                 <p style={{ color: 'var(--text-main)', fontSize: '1.1rem', maxWidth: '800px', lineHeight: '1.6' }}>{project.description}</p>
 
                 <div style={{ marginTop: '2rem', display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-                    <button style={{ background: 'var(--glass-bg)', color: 'white', border: '1px solid var(--glass-border)', padding: '8px 16px', borderRadius: '8px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <button style={{ background: 'var(--glass-bg)', color: 'var(--text-main)', border: '1px solid var(--glass-border)', padding: '8px 16px', borderRadius: '8px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}>
                         <i className="far fa-star"></i> Star {project.stars}
                     </button>
                     {!isOwner && !hasRequested && project.is_public && identity?.role !== 'sponsor' && identity?.role !== 'producer' && (
@@ -198,7 +198,7 @@ const ProjectDetail = ({ project, onClose, currentUser, identity }) => {
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                                 {changes.map(change => (
                                     <div key={change.id} style={{
-                                        background: 'rgba(0,0,0,0.3)',
+                                        background: 'rgba(255,255,255,0.8)',
                                         border: change.status === 'accepted' ? '1px solid var(--neon-blue)' : '1px solid var(--glass-border)',
                                         borderRadius: '12px',
                                         padding: '1.5rem',
@@ -209,13 +209,13 @@ const ProjectDetail = ({ project, onClose, currentUser, identity }) => {
                                                 <i className="fas fa-check-circle"></i> Merged Permanently
                                             </div>
                                         )}
-                                        <h4 style={{ color: 'white', marginBottom: '0.5rem', fontSize: '1.1rem' }}>{change.description}</h4>
+                                        <h4 style={{ color: 'var(--text-main)', marginBottom: '0.5rem', fontSize: '1.1rem' }}>{change.description}</h4>
                                         <div style={{ color: 'var(--text-muted)', fontSize: '0.85rem', marginBottom: '1rem' }}>
                                             Proposed by <span style={{ color: 'var(--neon-purple)', fontWeight: 'bold' }}>@{change.contributor}</span> • {change.filesChanged} files changed
                                         </div>
 
                                         <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-                                            <button style={{ background: 'transparent', border: '1px solid var(--glass-border)', color: 'white', padding: '6px 16px', borderRadius: '6px', fontSize: '0.8rem', cursor: 'pointer' }}>
+                                            <button style={{ background: 'transparent', border: '1px solid var(--glass-border)', color: 'var(--text-main)', padding: '6px 16px', borderRadius: '6px', fontSize: '0.8rem', cursor: 'pointer' }}>
                                                 View Diff / Architecture
                                             </button>
 
@@ -248,9 +248,9 @@ const ProjectDetail = ({ project, onClose, currentUser, identity }) => {
                         ) : (
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                                 {transactions.map(tx => (
-                                    <div key={tx.id} style={{ background: 'rgba(0,0,0,0.5)', padding: '1rem', borderRadius: '12px', borderLeft: '2px solid var(--neon-green)' }}>
+                                    <div key={tx.id} style={{ background: 'rgba(255,255,255,0.8)', padding: '1rem', borderRadius: '12px', borderLeft: '2px solid var(--neon-green)' }}>
                                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
-                                            <span style={{ fontWeight: 'bold', color: 'white' }}>@{tx.profiles?.username || 'Anonymous'}</span>
+                                            <span style={{ fontWeight: 'bold', color: 'var(--text-main)' }}>@{tx.profiles?.username || 'Anonymous'}</span>
                                             <span style={{ color: 'var(--neon-green)', fontWeight: 800, fontSize: '1.1rem' }}>${tx.amount.toLocaleString()}</span>
                                         </div>
                                         <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>"{tx.message || 'No message provided.'}"</p>
@@ -274,24 +274,24 @@ const ProjectDetail = ({ project, onClose, currentUser, identity }) => {
                                 <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                                     {agreements.map(ag => (
                                         <div key={ag.id} style={{
-                                            background: 'rgba(0,0,0,0.5)',
+                                            background: 'rgba(255,255,255,0.8)',
                                             padding: '1.2rem',
                                             borderRadius: '12px',
                                             border: `1px solid ${ag.status === 'accepted' ? 'var(--neon-green)' : ag.status === 'rejected' ? 'red' : 'var(--neon-purple)'}`
                                         }}>
                                             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem' }}>
-                                                <span style={{ color: 'white', fontWeight: 'bold', fontSize: '0.9rem' }}>Proposal from @{ag.producer?.username}</span>
+                                                <span style={{ color: 'var(--text-main)', fontWeight: 'bold', fontSize: '0.9rem' }}>Proposal from @{ag.producer?.username}</span>
                                                 <span style={{
                                                     fontSize: '0.7rem',
                                                     fontWeight: 800,
                                                     textTransform: 'uppercase',
                                                     color: ag.status === 'accepted' ? 'var(--neon-green)' : ag.status === 'rejected' ? 'red' : 'var(--neon-blue)',
-                                                    background: 'rgba(255,255,255,0.05)',
+                                                    background: 'rgba(0,0,0,0.05)',
                                                     padding: '4px 8px',
                                                     borderRadius: '4px'
                                                 }}>{ag.status}</span>
                                             </div>
-                                            <div style={{ color: 'var(--text-muted)', fontSize: '0.85rem', marginBottom: '1rem', whiteSpace: 'pre-wrap', background: 'rgba(0,0,0,0.3)', padding: '10px', borderRadius: '8px' }}>
+                                            <div style={{ color: 'var(--text-main)', fontSize: '0.85rem', marginBottom: '1rem', whiteSpace: 'pre-wrap', background: 'rgba(0,0,0,0.05)', padding: '10px', borderRadius: '8px' }}>
                                                 {ag.terms}
                                             </div>
                                             <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>
@@ -317,25 +317,25 @@ const ProjectDetail = ({ project, onClose, currentUser, identity }) => {
             {/* Sponsor Modal */}
             {
                 showSponsorModal && (
-                    <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', background: 'rgba(0,0,0,0.8)', zIndex: 2000, overflowY: 'auto', display: 'block', padding: '2rem 1rem' }}>
-                        <div style={{ background: 'var(--bg-dark)', padding: '2rem', borderRadius: '16px', border: '1px solid var(--neon-green)', width: '90%', maxWidth: '400px', margin: '0 auto' }}>
-                            <h3 style={{ color: 'white', marginBottom: '1rem' }}>Sponsor "{project.name}"</h3>
+                    <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', background: 'rgba(255,255,255,0.8)', zIndex: 2000, overflowY: 'auto', display: 'block', padding: '2rem 1rem' }}>
+                        <div style={{ background: 'var(--bg-dark)', padding: '2rem', borderRadius: '16px', border: '1px solid var(--neon-green)', width: '90%', maxWidth: '400px', margin: '0 auto', boxShadow: '0 10px 30px rgba(0,0,0,0.1)' }}>
+                            <h3 style={{ color: 'var(--text-main)', marginBottom: '1rem' }}>Sponsor "{project.name}"</h3>
                             <input
                                 type="number"
                                 placeholder="Amount (USD)"
                                 value={sponsorAmount}
                                 onChange={e => setSponsorAmount(e.target.value)}
-                                style={{ width: '100%', padding: '10px', marginBottom: '1rem', background: 'rgba(0,0,0,0.5)', border: '1px solid var(--glass-border)', color: 'white', borderRadius: '8px' }}
+                                style={{ width: '100%', padding: '10px', marginBottom: '1rem', background: 'rgba(255,255,255,0.8)', border: '1px solid var(--glass-border)', color: 'var(--text-main)', borderRadius: '8px' }}
                             />
                             <textarea
                                 placeholder="Message of Support (Optional)"
                                 value={sponsorMessage}
                                 onChange={e => setSponsorMessage(e.target.value)}
                                 rows="3"
-                                style={{ width: '100%', padding: '10px', marginBottom: '1.5rem', background: 'rgba(0,0,0,0.5)', border: '1px solid var(--glass-border)', color: 'white', borderRadius: '8px', resize: 'vertical' }}
+                                style={{ width: '100%', padding: '10px', marginBottom: '1.5rem', background: 'rgba(255,255,255,0.8)', border: '1px solid var(--glass-border)', color: 'var(--text-main)', borderRadius: '8px', resize: 'vertical' }}
                             ></textarea>
                             <div style={{ display: 'flex', gap: '10px', justifyContent: 'flex-end' }}>
-                                <button onClick={() => setShowSponsorModal(false)} style={{ background: 'transparent', color: 'white', border: 'none', cursor: 'pointer' }}>Cancel</button>
+                                <button onClick={() => setShowSponsorModal(false)} style={{ background: 'transparent', color: 'var(--text-main)', border: 'none', cursor: 'pointer' }}>Cancel</button>
                                 <button onClick={handleSponsorSubmit} style={{ background: 'var(--neon-green)', color: 'black', border: 'none', padding: '8px 16px', borderRadius: '8px', cursor: 'pointer', fontWeight: 'bold' }}>Simulate Transfer</button>
                             </div>
                         </div>
@@ -346,9 +346,9 @@ const ProjectDetail = ({ project, onClose, currentUser, identity }) => {
             {/* Agreement Modal */}
             {
                 showAgreementModal && (
-                    <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', background: 'rgba(0,0,0,0.8)', zIndex: 2000, overflowY: 'auto', display: 'block', padding: '2rem 1rem' }}>
-                        <div style={{ background: 'var(--bg-dark)', padding: '2rem', borderRadius: '16px', border: '1px solid var(--neon-purple)', width: '90%', maxWidth: '500px', margin: '0 auto' }}>
-                            <h3 style={{ color: 'white', marginBottom: '1rem' }}>Propose Agreement to Founder</h3>
+                    <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', background: 'rgba(255,255,255,0.8)', zIndex: 2000, overflowY: 'auto', display: 'block', padding: '2rem 1rem' }}>
+                        <div style={{ background: 'var(--bg-dark)', padding: '2rem', borderRadius: '16px', border: '1px solid var(--neon-purple)', width: '90%', maxWidth: '500px', margin: '0 auto', boxShadow: '0 10px 30px rgba(0,0,0,0.1)' }}>
+                            <h3 style={{ color: 'var(--text-main)', marginBottom: '1rem' }}>Propose Agreement to Founder</h3>
                             <div style={{ color: 'var(--text-muted)', fontSize: '0.8rem', marginBottom: '1rem' }}>Propose funding, equity share, or a specific milestone contract.</div>
 
                             <textarea
@@ -356,7 +356,7 @@ const ProjectDetail = ({ project, onClose, currentUser, identity }) => {
                                 value={agreementTerms}
                                 onChange={e => setAgreementTerms(e.target.value)}
                                 rows="6"
-                                style={{ width: '100%', padding: '10px', marginBottom: '1rem', background: 'rgba(0,0,0,0.5)', border: '1px solid var(--glass-border)', color: 'white', borderRadius: '8px', resize: 'vertical', fontSize: '0.9rem', lineHeight: '1.5' }}
+                                style={{ width: '100%', padding: '10px', marginBottom: '1rem', background: 'rgba(255,255,255,0.8)', border: '1px solid var(--glass-border)', color: 'var(--text-main)', borderRadius: '8px', resize: 'vertical', fontSize: '0.9rem', lineHeight: '1.5' }}
                             ></textarea>
 
                             <label style={{ color: 'var(--text-main)', fontSize: '0.8rem', display: 'block', marginBottom: '5px' }}>Proposal Expiration Date</label>
@@ -364,11 +364,11 @@ const ProjectDetail = ({ project, onClose, currentUser, identity }) => {
                                 type="date"
                                 value={agreementExpires}
                                 onChange={e => setAgreementExpires(e.target.value)}
-                                style={{ width: '100%', padding: '10px', marginBottom: '1.5rem', background: 'rgba(0,0,0,0.5)', border: '1px solid var(--glass-border)', color: 'white', borderRadius: '8px' }}
+                                style={{ width: '100%', padding: '10px', marginBottom: '1.5rem', background: 'rgba(255,255,255,0.8)', border: '1px solid var(--glass-border)', color: 'var(--text-main)', borderRadius: '8px' }}
                             />
 
                             <div style={{ display: 'flex', gap: '10px', justifyContent: 'flex-end' }}>
-                                <button onClick={() => setShowAgreementModal(false)} style={{ background: 'transparent', color: 'white', border: 'none', cursor: 'pointer' }}>Cancel</button>
+                                <button onClick={() => setShowAgreementModal(false)} style={{ background: 'transparent', color: 'var(--text-main)', border: 'none', cursor: 'pointer' }}>Cancel</button>
                                 <button onClick={handleAgreementSubmit} style={{ background: 'var(--neon-purple)', color: 'white', border: 'none', padding: '8px 16px', borderRadius: '8px', cursor: 'pointer', fontWeight: 'bold' }}>Send Proposal via Contract</button>
                             </div>
                         </div>

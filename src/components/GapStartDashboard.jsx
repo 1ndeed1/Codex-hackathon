@@ -94,19 +94,19 @@ const GapStartDashboard = ({ identity }) => {
                 <i className="fas fa-map-signs"></i> Intelligent Requirement Map
             </h3>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
-                <div style={{ background: 'rgba(0,0,0,0.3)', padding: '1rem', borderRadius: '12px' }}>
+                <div style={{ background: 'rgba(255,255,255,0.8)', border: '1px solid var(--glass-border)', padding: '1rem', borderRadius: '12px' }}>
                     <h4 style={{ fontSize: '0.8rem', color: 'var(--neon-purple)', textTransform: 'uppercase' }}>Finance</h4>
                     <p style={{ fontSize: '0.9rem' }}>{map.finance}</p>
                 </div>
-                <div style={{ background: 'rgba(0,0,0,0.3)', padding: '1rem', borderRadius: '12px' }}>
+                <div style={{ background: 'rgba(255,255,255,0.8)', border: '1px solid var(--glass-border)', padding: '1rem', borderRadius: '12px' }}>
                     <h4 style={{ fontSize: '0.8rem', color: 'var(--neon-blue)', textTransform: 'uppercase' }}>Operations</h4>
                     <p style={{ fontSize: '0.9rem' }}>{map.operations}</p>
                 </div>
-                <div style={{ background: 'rgba(0,0,0,0.3)', padding: '1rem', borderRadius: '12px' }}>
+                <div style={{ background: 'rgba(255,255,255,0.8)', border: '1px solid var(--glass-border)', padding: '1rem', borderRadius: '12px' }}>
                     <h4 style={{ fontSize: '0.8rem', color: 'var(--neon-green)', textTransform: 'uppercase' }}>HR & Staffing</h4>
                     <p style={{ fontSize: '0.9rem' }}>{map.hr}</p>
                 </div>
-                <div style={{ background: 'rgba(0,0,0,0.3)', padding: '1rem', borderRadius: '12px' }}>
+                <div style={{ background: 'rgba(255,255,255,0.8)', border: '1px solid var(--glass-border)', padding: '1rem', borderRadius: '12px' }}>
                     <h4 style={{ fontSize: '0.8rem', color: 'var(--neon-orange)', textTransform: 'uppercase' }}>Analytics & ROI</h4>
                     <p style={{ fontSize: '0.9rem' }}>{map.analytics}</p>
                 </div>
@@ -118,7 +118,7 @@ const GapStartDashboard = ({ identity }) => {
             <div style={{ marginTop: '2rem', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
                 <div style={{ border: '1px solid var(--neon-purple)', padding: '1rem', borderRadius: '12px', background: 'rgba(191, 0, 255, 0.05)' }}>
                     <h4 style={{ color: 'var(--neon-purple)', fontSize: '0.8rem', textTransform: 'uppercase', marginBottom: '8px' }}>Technical Solve</h4>
-                    <p style={{ fontSize: '0.9rem', color: 'white' }}>{map.technical_solve}</p>
+                    <p style={{ fontSize: '0.9rem', color: 'var(--text-main)' }}>{map.technical_solve}</p>
                 </div>
                 <div style={{ border: '1px solid var(--neon-green)', padding: '1rem', borderRadius: '12px', background: 'rgba(57, 255, 20, 0.05)' }}>
                     <h4 style={{ color: 'var(--neon-green)', fontSize: '0.8rem', textTransform: 'uppercase', marginBottom: '8px' }}>Architecture Plan</h4>
@@ -135,7 +135,7 @@ const GapStartDashboard = ({ identity }) => {
             </h3>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>
                 <div>
-                    <h4 style={{ color: 'white' }}>Startup Pathway</h4>
+                    <h4 style={{ color: 'var(--text-main)' }}>Startup Pathway</h4>
                     <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Build this as a standalone SaaS product.</p>
                     <div style={{ margin: '1rem 0', padding: '10px', background: 'rgba(255,255,255,0.05)', borderRadius: '8px' }}>
                         <div style={{ fontSize: '0.8rem' }}>Market Potential: <strong>{gap.startup_score}%</strong></div>
@@ -144,7 +144,7 @@ const GapStartDashboard = ({ identity }) => {
                     <button className="neon-btn-purple" style={{ width: '100%', padding: '10px' }} onClick={() => generatePitchDeck(gap)}>Generate Pitch Deck</button>
                 </div>
                 <div>
-                    <h4 style={{ color: 'white' }}>Freelance Pathway</h4>
+                    <h4 style={{ color: 'var(--text-main)' }}>Freelance Pathway</h4>
                     <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Directly solve this for the target company.</p>
                     <div style={{ margin: '1rem 0', padding: '10px', background: 'rgba(255,255,255,0.05)', borderRadius: '8px' }}>
                         <div style={{ fontSize: '0.8rem' }}>Conversion Prob: <strong>{gap.freelance_score}%</strong></div>
@@ -197,10 +197,10 @@ const GapStartDashboard = ({ identity }) => {
                     <h3 style={{ color: 'var(--neon-orange)', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '10px' }}>
                         <i className="fas fa-hammer fa-bounce"></i> CRITICAL SETUP REQUIRED: Database Tables Missing
                     </h3>
-                    <p style={{ fontSize: '1rem', color: 'white', fontWeight: 600, marginBottom: '1rem' }}>
+                    <p style={{ fontSize: '1rem', color: 'var(--text-main)', fontWeight: 600, marginBottom: '1rem' }}>
                         The Coding Engine cannot start because the Supabase tables don't exist yet.
                     </p>
-                    <pre style={{ background: 'rgba(0,0,0,0.5)', padding: '1rem', borderRadius: '8px', fontSize: '0.7rem', color: 'var(--neon-blue)', overflowX: 'auto', border: '1px solid var(--glass-border)' }}>
+                    <pre style={{ background: 'rgba(240, 240, 240, 0.8)', padding: '1rem', borderRadius: '8px', fontSize: '0.7rem', color: 'var(--neon-blue)', overflowX: 'auto', border: '1px solid var(--glass-border)' }}>
                         {`-- Create GapStart Tables
 CREATE TABLE IF NOT EXISTS external_gaps (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -230,13 +230,13 @@ CREATE TABLE IF NOT EXISTS requirement_maps (
             )}
 
             {showExpertForm && (
-                <div style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', background: 'rgba(0,0,0,0.8)', zIndex: 1000, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                    <div className="glass-panel" style={{ width: '500px', padding: '2rem' }}>
-                        <h3 style={{ marginBottom: '1.5rem' }}>Submit Industry Inefficiency</h3>
+                <div style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', background: 'rgba(255,255,255,0.8)', zIndex: 1000, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                    <div className="glass-panel" style={{ width: '500px', padding: '2rem', boxShadow: '0 10px 30px rgba(0,0,0,0.1)' }}>
+                        <h3 style={{ marginBottom: '1.5rem', color: 'var(--text-main)' }}>Submit Industry Inefficiency</h3>
                         <label style={{ fontSize: '0.7rem', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Industry</label>
-                        <input type="text" value={expertInput.industry} onChange={e => setExpertInput({ ...expertInput, industry: e.target.value })} style={{ width: '100%', background: 'rgba(0,0,0,0.5)', border: '1px solid var(--glass-border)', padding: '10px', borderRadius: '8px', color: 'white', marginBottom: '1rem', outline: 'none' }} placeholder="e.g. Healthcare, Logistics" />
+                        <input type="text" value={expertInput.industry} onChange={e => setExpertInput({ ...expertInput, industry: e.target.value })} style={{ width: '100%', background: 'rgba(255,255,255,0.8)', border: '1px solid var(--glass-border)', padding: '10px', borderRadius: '8px', color: 'var(--text-main)', marginBottom: '1rem', outline: 'none' }} placeholder="e.g. Healthcare, Logistics" />
                         <label style={{ fontSize: '0.7rem', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Inefficiency Description</label>
-                        <textarea rows="4" value={expertInput.inefficiency} onChange={e => setExpertInput({ ...expertInput, inefficiency: e.target.value })} style={{ width: '100%', background: 'rgba(0,0,0,0.5)', border: '1px solid var(--glass-border)', padding: '10px', borderRadius: '8px', color: 'white', marginBottom: '1.5rem', outline: 'none' }} placeholder="Describe the repetitive workflow issue or software missing in the market..." />
+                        <textarea rows="4" value={expertInput.inefficiency} onChange={e => setExpertInput({ ...expertInput, inefficiency: e.target.value })} style={{ width: '100%', background: 'rgba(255,255,255,0.8)', border: '1px solid var(--glass-border)', padding: '10px', borderRadius: '8px', color: 'var(--text-main)', marginBottom: '1.5rem', outline: 'none' }} placeholder="Describe the repetitive workflow issue or software missing in the market..." />
                         <div style={{ display: 'flex', gap: '1rem' }}>
                             <button onClick={handleExpertSubmit} className="neon-btn-blue" style={{ flex: 1, padding: '12px' }}>Submit for Review</button>
                             <button onClick={() => setShowExpertForm(false)} style={{ flex: 1, background: 'transparent', border: '1px solid gray', color: 'white', borderRadius: '8px', cursor: 'pointer' }}>Cancel</button>
@@ -258,7 +258,7 @@ CREATE TABLE IF NOT EXISTS requirement_maps (
                             {((activeView === 'discovered' ? opportunities : (activeView === 'external' ? externalGaps : b2bGaps))).map(item => (
                                 <div key={item.id} className="glass-panel" style={{ padding: '1.5rem', cursor: 'pointer', transition: '0.3s', border: selectedGap?.id === item.id ? '1px solid var(--neon-blue)' : '1px solid var(--glass-border)' }} onClick={() => handleAnalyze(item)}>
                                     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                                        <h4 style={{ color: 'white', margin: 0 }}>{item.title || item.missing_service || (item.inefficiency ? item.inefficiency.substring(0, 50) + '...' : 'Untitled Inefficiency')}</h4>
+                                        <h4 style={{ color: 'var(--text-main)', margin: 0 }}>{item.title || item.missing_service || (item.inefficiency ? item.inefficiency.substring(0, 50) + '...' : 'Untitled Inefficiency')}</h4>
                                         <span style={{ fontSize: '0.7rem', color: activeView === 'b2b' ? 'var(--neon-green)' : 'var(--neon-blue)', background: 'rgba(0, 242, 255, 0.1)', padding: '2px 8px', borderRadius: '4px' }}>{item.industry || item.industry_a || item.source || 'Tech'}</span>
                                     </div>
                                     <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginTop: '8px', marginBottom: 0 }}>{((item.signal || item.inefficiency || item.description || "")).substring(0, 120)}...</p>
@@ -272,14 +272,14 @@ CREATE TABLE IF NOT EXISTS requirement_maps (
                     {selectedGap ? (
                         <div>
                             <div className="glass-panel" style={{ padding: '2.5rem' }}>
-                                <h2 style={{ marginBottom: '1rem', color: 'white', fontSize: '1.8rem' }}>{selectedGap.title || "External Gap Analysis"}</h2>
+                                <h2 style={{ marginBottom: '1rem', color: 'var(--text-main)', fontSize: '1.8rem' }}>{selectedGap.title || "External Gap Analysis"}</h2>
                                 <p style={{ color: 'var(--text-main)', fontSize: '1rem', lineHeight: '1.6' }}>{selectedGap.signal || selectedGap.inefficiency}</p>
 
                                 <div style={{ marginTop: '2.5rem' }}>
                                     <h4 style={{ color: 'var(--neon-orange)', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
                                         <i className="fas fa-microscope"></i> Root Cause Identified
                                     </h4>
-                                    <div style={{ background: 'rgba(0,0,0,0.5)', padding: '1.2rem', borderRadius: '12px', borderLeft: '4px solid var(--neon-orange)', color: 'var(--text-main)' }}>
+                                    <div style={{ background: 'rgba(0,0,0,0.05)', padding: '1.2rem', borderRadius: '12px', borderLeft: '4px solid var(--neon-orange)', color: 'var(--text-main)' }}>
                                         {selectedGap.root_cause}
                                     </div>
                                 </div>
@@ -290,7 +290,7 @@ CREATE TABLE IF NOT EXISTS requirement_maps (
                                     </h4>
                                     <ul style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', listStyle: 'none', padding: 0 }}>
                                         {selectedGap.mvp_features?.map(f => (
-                                            <li key={f} style={{ fontSize: '0.9rem', color: 'white', background: 'rgba(255,255,255,0.03)', padding: '8px 12px', borderRadius: '6px' }}>
+                                            <li key={f} style={{ fontSize: '0.9rem', color: 'var(--text-main)', background: 'rgba(255,255,255,0.8)', border: '1px solid var(--glass-border)', padding: '8px 12px', borderRadius: '6px' }}>
                                                 <i className="fas fa-check-circle" style={{ color: 'var(--neon-green)', marginRight: '8px' }}></i> {f}
                                             </li>
                                         ))}

@@ -57,7 +57,7 @@ const Pathfinder = () => {
 
             {!selectedDomain ? (
                 <div>
-                    <h2 style={{ marginBottom: '1.5rem', color: 'white' }}>1. Select Your Target Sector</h2>
+                    <h2 style={{ marginBottom: '1.5rem', color: 'var(--text-main)' }}>1. Select Your Target Sector</h2>
                     <div style={{
                         display: 'grid',
                         gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
@@ -68,7 +68,7 @@ const Pathfinder = () => {
                                 key={domain.id}
                                 onClick={() => handleSelectDomain(domain.id)}
                                 style={{
-                                    background: 'var(--glass-bg)',
+                                    background: 'rgba(255, 255, 255, 0.8)',
                                     border: `1px solid ${domain.color}`,
                                     borderRadius: '16px',
                                     padding: '2rem',
@@ -88,10 +88,10 @@ const Pathfinder = () => {
                                     }}>
                                         <i className={`fas ${domain.icon}`}></i>
                                     </div>
-                                    <h3 style={{ margin: 0, fontSize: '1.3rem', color: 'white' }}>{domain.title}</h3>
+                                    <h3 style={{ margin: 0, fontSize: '1.3rem', color: 'var(--text-main)' }}>{domain.title}</h3>
                                 </div>
 
-                                <div style={{ marginTop: '1.5rem', background: 'rgba(0,0,0,0.3)', padding: '1rem', borderRadius: '8px' }}>
+                                <div style={{ marginTop: '1.5rem', background: 'rgba(255,255,255,0.8)', padding: '1rem', borderRadius: '8px', border: '1px solid var(--glass-border)' }}>
                                     <p style={{ margin: '0 0 8px 0', fontSize: '0.9rem', color: 'var(--text-muted)' }}>Live Market Size:</p>
                                     <p style={{ margin: 0, fontWeight: 'bold', color: domain.color }}>{domain.liveStats.marketSize}</p>
                                 </div>
@@ -110,8 +110,8 @@ const Pathfinder = () => {
                         <button
                             onClick={() => { setSelectedDomain(null); setDomainDetails(null); }}
                             style={{
-                                background: 'transparent', border: '1px solid var(--glass-border)',
-                                color: 'white', padding: '8px 16px', borderRadius: '8px',
+                                background: 'rgba(255,255,255,0.8)', border: '1px solid var(--glass-border)',
+                                color: 'var(--text-main)', padding: '8px 16px', borderRadius: '8px',
                                 cursor: 'pointer', marginBottom: '2rem', display: 'flex', alignItems: 'center', gap: '8px'
                             }}
                         >
@@ -119,7 +119,7 @@ const Pathfinder = () => {
                         </button>
 
                         <div style={{
-                            background: 'var(--glass-bg)',
+                            background: 'rgba(255, 255, 255, 0.8)',
                             border: `1px solid ${domainDetails.color}`,
                             borderRadius: '20px',
                             padding: '3rem',
@@ -138,19 +138,19 @@ const Pathfinder = () => {
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '20px', marginBottom: '2rem' }}>
                                     <i className={`fas ${domainDetails.icon}`} style={{ fontSize: '3rem', color: domainDetails.color }}></i>
                                     <div>
-                                        <h2 style={{ fontSize: '2rem', margin: '0 0 5px 0', color: 'white' }}>{domainDetails.title} Roadmap</h2>
+                                        <h2 style={{ fontSize: '2rem', margin: '0 0 5px 0', color: 'var(--text-main)' }}>{domainDetails.title} Roadmap</h2>
                                         <p style={{ margin: 0, color: 'var(--text-muted)' }}>Evidence-backed 6-month acceleration plan.</p>
                                     </div>
                                 </div>
 
                                 {/* Live Stats Bar */}
                                 <div style={{
-                                    display: 'flex', gap: '2rem', background: 'rgba(0,0,0,0.4)',
+                                    display: 'flex', gap: '2rem', background: 'rgba(240,240,240,0.8)', border: '1px solid var(--glass-border)',
                                     padding: '1.5rem', borderRadius: '12px', marginBottom: '3rem', flexWrap: 'wrap'
                                 }}>
                                     <div>
                                         <p style={{ margin: '0 0 5px 0', fontSize: '0.8rem', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Market Target</p>
-                                        <p style={{ margin: 0, fontWeight: 'bold', fontSize: '1.2rem', color: 'white' }}>{domainDetails.liveStats.marketSize}</p>
+                                        <p style={{ margin: 0, fontWeight: 'bold', fontSize: '1.2rem', color: 'var(--text-main)' }}>{domainDetails.liveStats.marketSize}</p>
                                     </div>
                                     <div style={{ width: '1px', background: 'var(--glass-border)' }}></div>
                                     <div>
@@ -171,7 +171,7 @@ const Pathfinder = () => {
 
                                     {/* Left Column: Timeline */}
                                     <div>
-                                        <h3 style={{ color: 'white', marginBottom: '1.5rem', borderBottom: '1px solid var(--glass-border)', paddingBottom: '10px' }}>
+                                        <h3 style={{ color: 'var(--text-main)', marginBottom: '1.5rem', borderBottom: '1px solid var(--glass-border)', paddingBottom: '10px' }}>
                                             <i className="fas fa-calendar-alt" style={{ marginRight: '10px', color: 'var(--accent)' }}></i>
                                             Strict Execution Timeline
                                         </h3>
@@ -187,7 +187,7 @@ const Pathfinder = () => {
                                                     width: '10px', height: '10px', borderRadius: '50%',
                                                     background: domainDetails.color
                                                 }}></div>
-                                                <h4 style={{ margin: '0 0 5px 0', color: 'white' }}>{phase.label}: {phase.data.focus}</h4>
+                                                <h4 style={{ margin: '0 0 5px 0', color: 'var(--text-main)' }}>{phase.label}: {phase.data.focus}</h4>
                                                 <ul style={{ margin: 0, paddingLeft: '20px', color: 'var(--text-muted)' }}>
                                                     {phase.data.skills.map((skill, j) => (
                                                         <li key={j} style={{ marginBottom: '5px' }}>{skill}</li>
@@ -199,21 +199,21 @@ const Pathfinder = () => {
 
                                     {/* Right Column: Projects & Certs */}
                                     <div>
-                                        <h3 style={{ color: 'white', marginBottom: '1.5rem', borderBottom: '1px solid var(--glass-border)', paddingBottom: '10px' }}>
+                                        <h3 style={{ color: 'var(--text-main)', marginBottom: '1.5rem', borderBottom: '1px solid var(--glass-border)', paddingBottom: '10px' }}>
                                             <i className="fas fa-hammer" style={{ marginRight: '10px', color: 'var(--neon-orange)' }}></i>
                                             Mandatory Proof of Work
                                         </h3>
 
                                         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', marginBottom: '3rem' }}>
                                             {domainDetails.projects.map((proj, i) => (
-                                                <div key={i} style={{ background: 'rgba(255,255,255,0.03)', padding: '1rem', borderRadius: '12px', border: '1px solid var(--glass-border)' }}>
-                                                    <h4 style={{ margin: '0 0 8px 0', color: 'white' }}>🏗️ {proj.name}</h4>
+                                                <div key={i} style={{ background: 'rgba(255,255,255,0.8)', padding: '1rem', borderRadius: '12px', border: '1px solid var(--glass-border)' }}>
+                                                    <h4 style={{ margin: '0 0 8px 0', color: 'var(--text-main)' }}>🏗️ {proj.name}</h4>
                                                     <p style={{ margin: 0, fontSize: '0.9rem', color: 'var(--text-muted)' }}>{proj.desc}</p>
                                                 </div>
                                             ))}
                                         </div>
 
-                                        <h3 style={{ color: 'white', marginBottom: '1.5rem', borderBottom: '1px solid var(--glass-border)', paddingBottom: '10px' }}>
+                                        <h3 style={{ color: 'var(--text-main)', marginBottom: '1.5rem', borderBottom: '1px solid var(--glass-border)', paddingBottom: '10px' }}>
                                             <i className="fas fa-certificate" style={{ marginRight: '10px', color: 'var(--neon-green)' }}></i>
                                             Target Certifications
                                         </h3>

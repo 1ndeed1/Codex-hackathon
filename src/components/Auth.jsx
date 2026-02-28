@@ -141,10 +141,10 @@ const Auth = ({ onLogin }) => {
                             style={{
                                 width: '100%',
                                 padding: '12px',
-                                background: 'rgba(0,0,0,0.5)',
+                                background: 'rgba(255,255,255,0.8)',
                                 border: '1px solid var(--glass-border)',
                                 borderRadius: '8px',
-                                color: 'white',
+                                color: 'var(--text-main)',
                                 boxSizing: 'border-box'
                             }}
                         />
@@ -160,10 +160,10 @@ const Auth = ({ onLogin }) => {
                             style={{
                                 width: '100%',
                                 padding: '12px',
-                                background: 'rgba(0,0,0,0.5)',
+                                background: 'rgba(255,255,255,0.8)',
                                 border: '1px solid var(--glass-border)',
                                 borderRadius: '8px',
-                                color: 'white',
+                                color: 'var(--text-main)',
                                 boxSizing: 'border-box'
                             }}
                         />
@@ -191,7 +191,7 @@ const Auth = ({ onLogin }) => {
                                     value={role}
                                     onChange={(e) => setRole(e.target.value)}
                                     style={{
-                                        width: '100%', padding: '14px', background: 'rgba(0,0,0,0.4)', border: '1px solid var(--glass-border)',
+                                        width: '100%', padding: '14px', background: 'rgba(255,255,255,0.8)', border: '1px solid var(--glass-border)',
                                         borderRadius: '12px', color: 'var(--text-main)', outline: 'none', fontSize: '1rem', cursor: 'pointer'
                                     }}
                                 >

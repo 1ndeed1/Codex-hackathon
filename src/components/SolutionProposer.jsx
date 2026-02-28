@@ -61,7 +61,7 @@ const SolutionProposer = ({ task, onCancel, onSubmit }) => {
         <div style={{
             marginTop: '2rem',
             padding: '2rem',
-            background: 'rgba(0, 242, 255, 0.03)',
+            background: 'rgba(0, 142, 204, 0.05)', // Light blue tint
             border: '1px solid var(--neon-blue)',
             borderRadius: '16px',
             position: 'relative'
@@ -79,7 +79,7 @@ const SolutionProposer = ({ task, onCancel, onSubmit }) => {
                     rows="3"
                     style={{
                         width: '100%',
-                        background: 'rgba(0,0,0,0.3)',
+                        background: 'rgba(255, 255, 255, 0.8)', // Lighter for light mode
                         border: '1px solid var(--glass-border)',
                         borderRadius: '8px',
                         padding: '12px',
@@ -99,7 +99,7 @@ const SolutionProposer = ({ task, onCancel, onSubmit }) => {
                     rows="5"
                     style={{
                         width: '100%',
-                        background: 'rgba(0,0,0,0.3)',
+                        background: 'rgba(255, 255, 255, 0.8)', // Lighter for light mode
                         border: '1px solid var(--glass-border)',
                         borderRadius: '8px',
                         padding: '12px',
@@ -111,8 +111,8 @@ const SolutionProposer = ({ task, onCancel, onSubmit }) => {
                 ></textarea>
             </div>
 
-            <div style={{ marginBottom: '1.5rem', background: 'rgba(255,255,255,0.02)', padding: '1rem', borderRadius: '8px', border: '1px dashed var(--neon-purple)' }}>
-                <label style={{ display: 'block', fontSize: '0.8rem', color: 'white', marginBottom: '8px', fontWeight: 'bold' }}>
+            <div style={{ marginBottom: '1.5rem', background: 'rgba(155, 12, 252, 0.05)', padding: '1rem', borderRadius: '8px', border: '1px dashed var(--neon-purple)' }}>
+                <label style={{ display: 'block', fontSize: '0.8rem', color: 'var(--text-main)', marginBottom: '8px', fontWeight: 'bold' }}>
                     <i className="fas fa-paperclip" style={{ marginRight: '6px' }}></i> Attach Architecture Diagram or Zipped Code (.zip, .png, .pdf)
                 </label>
                 <input

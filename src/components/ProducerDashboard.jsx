@@ -45,7 +45,7 @@ const ProducerDashboard = ({ identity }) => {
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
                             {agreements.map(ag => (
                                 <div key={ag.id} style={{
-                                    background: 'rgba(0,0,0,0.3)',
+                                    background: 'rgba(255,255,255,0.8)',
                                     padding: '1.5rem',
                                     borderRadius: '12px',
                                     borderLeft: `4px solid ${ag.status === 'accepted' ? 'var(--neon-green)' : 'var(--neon-blue)'}`
@@ -56,12 +56,12 @@ const ProducerDashboard = ({ identity }) => {
                                             fontSize: '0.7rem',
                                             padding: '2px 8px',
                                             borderRadius: '4px',
-                                            background: 'rgba(255,255,255,0.05)',
+                                            background: 'rgba(0,0,0,0.05)',
                                             color: ag.status === 'accepted' ? 'var(--neon-green)' : 'var(--neon-blue)'
                                         }}>{ag.status.toUpperCase()}</span>
                                     </div>
                                     <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '1rem' }}>Founder: @{ag.founder?.username || "Unknown"}</p>
-                                    <div style={{ fontSize: '0.8rem', background: 'rgba(0,0,0,0.5)', padding: '10px', borderRadius: '8px', color: 'var(--text-main)', marginBottom: '1rem' }}>
+                                    <div style={{ fontSize: '0.8rem', background: 'rgba(0,0,0,0.05)', padding: '10px', borderRadius: '8px', color: 'var(--text-main)', marginBottom: '1rem' }}>
                                         {ag.terms.substring(0, 100)}...
                                     </div>
                                     <div style={{ fontSize: '0.7rem', color: 'gray' }}>Expires: {new Date(ag.expires_at).toLocaleDateString()}</div>

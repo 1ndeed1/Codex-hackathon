@@ -37,7 +37,7 @@ const Header = ({ role, setRole, identity, onProfileClick, onLogout }) => {
             position: 'sticky',
             top: 0,
             zIndex: 100,
-            backgroundColor: 'rgba(10, 10, 12, 0.8)'
+            backgroundColor: 'rgba(255, 255, 255, 0.8)'
         }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '30px' }}>
                 <Link to="/" style={{ textDecoration: 'none' }}>
@@ -67,9 +67,9 @@ const Header = ({ role, setRole, identity, onProfileClick, onLogout }) => {
                 <button
                     onClick={() => setIsMenuOpen(!isMenuOpen)}
                     style={{
-                        background: 'var(--glass-bg)',
+                        background: 'rgba(255, 255, 255, 0.8)',
                         border: '1px solid var(--glass-border)',
-                        color: 'white',
+                        color: 'var(--text-main)',
                         padding: '10px 20px',
                         borderRadius: '12px',
                         cursor: 'pointer',
@@ -94,7 +94,7 @@ const Header = ({ role, setRole, identity, onProfileClick, onLogout }) => {
                     transform: `translateX(-50%) ${isMenuOpen ? 'translateY(0)' : 'translateY(-10px)'}`,
                     opacity: isMenuOpen ? 1 : 0,
                     visibility: isMenuOpen ? 'visible' : 'hidden',
-                    background: 'rgba(15, 15, 20, 0.95)',
+                    background: 'rgba(255, 255, 255, 0.95)',
                     backdropFilter: 'blur(20px)',
                     border: '1px solid var(--glass-border)',
                     borderRadius: '16px',
@@ -121,7 +121,7 @@ const Header = ({ role, setRole, identity, onProfileClick, onLogout }) => {
                             onClick={() => setIsMenuOpen(false)}
                             style={({ isActive }) => ({
                                 textDecoration: 'none',
-                                color: isActive ? 'white' : 'var(--text-muted)',
+                                color: isActive ? 'var(--text-main)' : 'var(--text-muted)',
                                 padding: '12px 16px',
                                 borderRadius: '8px',
                                 display: 'flex',
@@ -134,7 +134,7 @@ const Header = ({ role, setRole, identity, onProfileClick, onLogout }) => {
                             })}
                             onMouseEnter={(e) => {
                                 if (!e.currentTarget.style.borderLeft.includes('var(--neon-purple)')) {
-                                    e.currentTarget.style.background = 'rgba(255,255,255,0.05)';
+                                    e.currentTarget.style.background = 'rgba(0,0,0,0.05)';
                                 }
                             }}
                             onMouseLeave={(e) => {
@@ -157,7 +157,7 @@ const Header = ({ role, setRole, identity, onProfileClick, onLogout }) => {
 
             <div style={{
                 display: 'flex',
-                background: 'var(--glass-bg)',
+                background: 'rgba(255,255,255,0.8)',
                 border: '1px solid var(--glass-border)',
                 padding: '4px',
                 borderRadius: '12px'
@@ -216,7 +216,7 @@ const Header = ({ role, setRole, identity, onProfileClick, onLogout }) => {
                 </div>
                 <button
                     onClick={onLogout}
-                    style={{ background: 'rgba(255,255,255,0.1)', border: 'none', color: 'white', padding: '6px 12px', borderRadius: '6px', cursor: 'pointer', fontSize: '0.8rem' }}
+                    style={{ background: 'rgba(0,0,0,0.05)', border: 'none', color: 'var(--text-main)', padding: '6px 12px', borderRadius: '6px', cursor: 'pointer', fontSize: '0.8rem' }}
                 >
                     Logout
                 </button>

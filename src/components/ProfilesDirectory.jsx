@@ -47,16 +47,16 @@ const ProfilesDirectory = ({ onProfileSelect }) => {
                                 color: 'white',
                                 fontWeight: 'bold',
                                 marginBottom: '1rem',
-                                boxShadow: '0 0 20px rgba(0, 242, 255, 0.4)'
+                                boxShadow: '0 0 20px rgba(0, 142, 204, 0.4)'
                             }}>
                                 {profile.username.charAt(0).toUpperCase()}
                             </div>
-                            <h3 style={{ fontSize: '1.4rem', color: 'white', marginBottom: '0.5rem' }}>@{profile.username}</h3>
+                            <h3 style={{ fontSize: '1.4rem', color: 'var(--text-main)', marginBottom: '0.5rem' }}>@{profile.username}</h3>
                             <div style={{ color: 'var(--neon-blue)', fontWeight: 800, textTransform: 'uppercase', fontSize: '0.8rem', marginBottom: '1rem', letterSpacing: '1px' }}>
                                 {profile.tier} TIER
                             </div>
 
-                            <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', marginTop: 'auto', paddingTop: '1rem', borderTop: '1px solid rgba(255,255,255,0.1)', width: '100%', justifyContent: 'center' }}>
+                            <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', marginTop: 'auto', paddingTop: '1rem', borderTop: '1px solid var(--glass-border)', width: '100%', justifyContent: 'center' }}>
                                 <span style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>
                                     <i className="fas fa-certificate" style={{ color: 'var(--neon-purple)' }}></i> {profile.vouches} Vouches
                                 </span>

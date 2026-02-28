@@ -62,7 +62,7 @@ const OpportunityCard = ({ opp, onClick }) => {
 
                 {opp.type === 'direct' && (
                     <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>
-                        By: <span style={{ color: 'white' }}>
+                        By: <span style={{ color: 'var(--text-main)' }}>
                             {opp.isAnonymous
                                 ? 'Anonymous'
                                 : (opp.authorProfile?.username || opp.authorProfile?.email?.split('@')[0] || 'Unknown User')}
@@ -77,11 +77,11 @@ const OpportunityCard = ({ opp, onClick }) => {
                 {(isMined || isScanned) ? (
                     <>
                         <div style={{
-                            background: 'rgba(0,0,0,0.3)',
+                            background: 'rgba(255, 255, 255, 0.8)',
                             padding: '1rem',
                             borderRadius: '8px',
                             marginBottom: '1rem',
-                            border: '1px dashed var(--glass-border)'
+                            border: `1px dashed ${accentColor}`
                         }}>
                             <label style={{ fontSize: '0.6rem', color: accentColor, textTransform: 'uppercase', display: 'block', marginBottom: '4px' }}>
                                 {isScanned ? 'Public Complaint/Review' : 'Technical Signal'}
@@ -111,11 +111,11 @@ const OpportunityCard = ({ opp, onClick }) => {
                 <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '1.5rem' }}>
                     {opp.tags.map(tag => (
                         <span key={tag} style={{
-                            background: 'rgba(255, 255, 255, 0.05)',
+                            background: 'rgba(0,0,0,0.05)',
                             padding: '4px 10px',
                             borderRadius: '6px',
                             fontSize: '0.7rem',
-                            color: 'var(--text-muted)',
+                            color: 'var(--text-main)',
                             border: '1px solid var(--glass-border)'
                         }}>{tag}</span>
                     ))}

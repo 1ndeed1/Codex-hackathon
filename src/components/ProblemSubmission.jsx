@@ -53,7 +53,7 @@ const ProblemSubmission = ({ onClose, onPublish }) => {
             left: 0,
             width: '100%',
             height: '100%',
-            background: 'rgba(0, 0, 0, 0.9)',
+            background: 'rgba(255, 255, 255, 0.8)',
             backdropFilter: 'blur(15px)',
             display: 'flex',
             justifyContent: 'center',
@@ -65,14 +65,15 @@ const ProblemSubmission = ({ onClose, onPublish }) => {
                 className="animate-fade"
                 style={{
                     background: 'var(--bg-dark)',
-                    border: '1px solid var(--glass-border)',
+                    border: '1px solid var(--neon-blue)',
                     borderRadius: '32px',
                     padding: '3rem',
                     maxWidth: '800px',
                     width: '100%',
                     maxHeight: '90vh',
                     overflowY: 'auto',
-                    position: 'relative'
+                    position: 'relative',
+                    boxShadow: '0 10px 40px rgba(0,0,0,0.1)'
                 }}
             >
                 <button
@@ -91,7 +92,7 @@ const ProblemSubmission = ({ onClose, onPublish }) => {
                     &times;
                 </button>
 
-                <h2 style={{ marginBottom: '0.5rem', letterSpacing: '-1px' }}>Broadcast Signal Pulse</h2>
+                <h2 style={{ marginBottom: '0.5rem', letterSpacing: '-1px', color: 'var(--text-main)' }}>Broadcast Signal Pulse</h2>
                 <p style={{ color: 'var(--text-muted)', marginBottom: '2.5rem', fontSize: '0.9rem' }}>
                     AI will benchmark your technical pain against global hiring signals to predict urgency.
                 </p>
@@ -105,7 +106,7 @@ const ProblemSubmission = ({ onClose, onPublish }) => {
                         onChange={(e) => setTitle(e.target.value)}
                         style={{
                             width: '100%',
-                            background: 'rgba(255,255,255,0.03)',
+                            background: 'rgba(255,255,255,0.8)',
                             border: '1px solid var(--glass-border)',
                             borderRadius: '12px',
                             padding: '14px',
@@ -125,7 +126,7 @@ const ProblemSubmission = ({ onClose, onPublish }) => {
                         onChange={(e) => setDescription(e.target.value)}
                         style={{
                             width: '100%',
-                            background: 'rgba(255,255,255,0.03)',
+                            background: 'rgba(255,255,255,0.8)',
                             border: '1px solid var(--glass-border)',
                             borderRadius: '12px',
                             padding: '14px',
@@ -147,7 +148,7 @@ const ProblemSubmission = ({ onClose, onPublish }) => {
                         onChange={(e) => setAbstract(e.target.value)}
                         style={{
                             width: '100%',
-                            background: 'rgba(255,255,255,0.03)',
+                            background: 'rgba(255,255,255,0.8)',
                             border: '1px solid var(--glass-border)',
                             borderRadius: '12px',
                             padding: '14px',
@@ -169,7 +170,7 @@ const ProblemSubmission = ({ onClose, onPublish }) => {
                         onChange={(e) => setCodeSnippet(e.target.value)}
                         style={{
                             width: '100%',
-                            background: 'rgba(0,0,0,0.4)',
+                            background: 'rgba(240, 240, 240, 0.8)', // Slightly darker code background
                             border: '1px solid var(--glass-border)',
                             borderRadius: '12px',
                             padding: '14px',

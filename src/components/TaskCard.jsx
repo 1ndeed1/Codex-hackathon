@@ -27,7 +27,7 @@ const TaskCard = ({ task, onClick }) => {
             onMouseEnter={e => {
                 e.currentTarget.style.transform = 'translateY(-10px) scale(1.02)';
                 e.currentTarget.style.borderColor = 'var(--neon-blue)';
-                e.currentTarget.style.boxShadow = '0 20px 40px rgba(0, 242, 255, 0.1)';
+                e.currentTarget.style.boxShadow = '0 20px 40px rgba(0, 142, 204, 0.15)'; // Blue shadow
             }}
             onMouseLeave={e => {
                 e.currentTarget.style.transform = 'translateY(0) scale(1)';
@@ -50,7 +50,7 @@ const TaskCard = ({ task, onClick }) => {
                     fontSize: '0.65rem',
                     padding: '4px 10px',
                     borderRadius: '20px',
-                    background: 'rgba(255, 255, 255, 0.05)',
+                    background: 'rgba(0, 0, 0, 0.05)', // Light theme friendly
                     color: getDifficultyColor(),
                     border: `1px solid ${getDifficultyColor()}`,
                     fontWeight: 800,
@@ -79,7 +79,7 @@ const TaskCard = ({ task, onClick }) => {
                 <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '1.5rem' }}>
                     {task.tags.map(tag => (
                         <span key={tag} style={{
-                            background: 'rgba(255, 255, 255, 0.05)',
+                            background: 'rgba(0, 0, 0, 0.05)', // Light theme friendly
                             padding: '4px 10px',
                             borderRadius: '6px',
                             fontSize: '0.7rem',
@@ -90,7 +90,7 @@ const TaskCard = ({ task, onClick }) => {
 
                     <div style={{
                         marginLeft: 'auto',
-                        background: 'rgba(255, 140, 0, 0.1)',
+                        background: 'rgba(211, 84, 0, 0.1)', // Match orange
                         border: '1px solid var(--neon-orange)',
                         padding: '4px 12px',
                         borderRadius: '20px',

@@ -108,7 +108,7 @@ const ProjectsBoard = ({ onProjectSelect, identity }) => {
                         display: 'flex',
                         alignItems: 'center',
                         gap: '8px',
-                        boxShadow: '0 4px 15px rgba(188, 19, 254, 0.3)'
+                        boxShadow: '0 4px 15px rgba(155, 12, 252, 0.3)' // Purple shadow
                     }}>
                     <i className="fas fa-plus"></i> Start Initiative
                 </button>
@@ -123,14 +123,14 @@ const ProjectsBoard = ({ onProjectSelect, identity }) => {
                             placeholder="Project Repository Name"
                             value={newProject.name}
                             onChange={(e) => setNewProject({ ...newProject, name: e.target.value })}
-                            style={{ padding: '12px', background: 'rgba(0,0,0,0.4)', color: 'white', border: '1px solid var(--glass-border)', borderRadius: '8px' }}
+                            style={{ padding: '12px', background: 'rgba(255, 255, 255, 0.8)', color: 'var(--text-main)', border: '1px solid var(--glass-border)', borderRadius: '8px' }}
                         />
                         <textarea
                             required
                             placeholder="Description of the project or the problem it solves..."
                             value={newProject.description}
                             onChange={(e) => setNewProject({ ...newProject, description: e.target.value })}
-                            style={{ padding: '12px', background: 'rgba(0,0,0,0.4)', color: 'white', border: '1px solid var(--glass-border)', borderRadius: '8px', minHeight: '100px', fontFamily: 'inherit' }}
+                            style={{ padding: '12px', background: 'rgba(255, 255, 255, 0.8)', color: 'var(--text-main)', border: '1px solid var(--glass-border)', borderRadius: '8px', minHeight: '100px', fontFamily: 'inherit' }}
                         />
                         <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
                             <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
@@ -143,7 +143,7 @@ const ProjectsBoard = ({ onProjectSelect, identity }) => {
                             </label>
                         </div>
                         <div style={{ display: 'flex', gap: '1rem', justifyContent: 'flex-end' }}>
-                            <button type="button" onClick={() => setShowNewProject(false)} style={{ padding: '10px 20px', background: 'transparent', color: 'white', border: '1px solid var(--glass-border)', borderRadius: '8px', cursor: 'pointer' }}>Cancel</button>
+                            <button type="button" onClick={() => setShowNewProject(false)} style={{ padding: '10px 20px', background: 'transparent', color: 'var(--text-main)', border: '1px solid var(--glass-border)', borderRadius: '8px', cursor: 'pointer' }}>Cancel</button>
                             <button type="submit" style={{ padding: '10px 20px', background: 'var(--accent-gradient)', color: 'white', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: 'bold' }}>Create Project</button>
                         </div>
                     </form>
@@ -165,9 +165,9 @@ const ProjectsBoard = ({ onProjectSelect, identity }) => {
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1rem' }}>
                                 <div>
                                     <h3 style={{ fontSize: '1.2rem', color: 'var(--neon-blue)', marginBottom: '4px', cursor: 'pointer' }} onClick={() => onProjectSelect(proj)}>{proj.name}</h3>
-                                    <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Maintained by <span style={{ color: 'white' }}>@{proj.owner}</span></div>
+                                    <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Maintained by <span style={{ color: 'var(--text-main)' }}>@{proj.owner}</span></div>
                                 </div>
-                                <span style={{ fontSize: '0.7rem', padding: '4px 8px', background: 'rgba(255,255,255,0.05)', border: '1px solid var(--glass-border)', borderRadius: '12px', color: 'var(--text-muted)' }}>
+                                <span style={{ fontSize: '0.7rem', padding: '4px 8px', background: 'rgba(0, 0, 0, 0.05)', border: '1px solid var(--glass-border)', borderRadius: '12px', color: 'var(--text-muted)' }}>
                                     {proj.isPublic ? 'Public' : 'Private'}
                                 </span>
                             </div>

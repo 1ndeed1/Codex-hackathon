@@ -63,11 +63,11 @@ const ProfileSettings = ({ identity, onClose, onUpdate }) => {
     };
 
     return (
-        <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', background: 'rgba(0,0,0,0.8)', zIndex: 3000, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-            <div style={{ background: 'var(--bg-dark)', border: '1px solid var(--neon-blue)', borderRadius: '24px', padding: '3rem', width: '90%', maxWidth: '500px', position: 'relative' }}>
-                <button onClick={onClose} style={{ position: 'absolute', top: '20px', right: '20px', background: 'transparent', border: 'none', color: 'gray', fontSize: '1.5rem', cursor: 'pointer' }}>&times;</button>
+        <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', background: 'rgba(255,255,255,0.8)', zIndex: 3000, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+            <div style={{ background: 'var(--bg-dark)', border: '1px solid var(--neon-blue)', borderRadius: '24px', padding: '3rem', width: '90%', maxWidth: '500px', position: 'relative', boxShadow: '0 10px 30px rgba(0,0,0,0.1)' }}>
+                <button onClick={onClose} style={{ position: 'absolute', top: '20px', right: '20px', background: 'transparent', border: 'none', color: 'var(--text-muted)', fontSize: '1.5rem', cursor: 'pointer' }}>&times;</button>
 
-                <h2 style={{ fontSize: '1.8rem', marginBottom: '2rem', color: 'white' }}>Profile Settings</h2>
+                <h2 style={{ fontSize: '1.8rem', marginBottom: '2rem', color: 'var(--text-main)' }}>Profile Settings</h2>
 
                 {message && (
                     <div style={{ padding: '10px', background: message.includes('Error') ? 'rgba(255,0,0,0.1)' : 'rgba(0,255,0,0.1)', color: message.includes('Error') ? 'red' : 'green', borderRadius: '8px', marginBottom: '1.5rem' }}>
@@ -81,7 +81,7 @@ const ProfileSettings = ({ identity, onClose, onUpdate }) => {
                         type="text"
                         value={username}
                         onChange={e => setUsername(e.target.value)}
-                        style={{ width: '100%', padding: '12px', background: 'rgba(0,0,0,0.4)', border: '1px solid var(--glass-border)', borderRadius: '8px', color: 'white', fontSize: '1rem' }}
+                        style={{ width: '100%', padding: '12px', background: 'rgba(255,255,255,0.8)', border: '1px solid var(--glass-border)', borderRadius: '8px', color: 'var(--text-main)', fontSize: '1rem' }}
                     />
                 </div>
 
@@ -90,7 +90,7 @@ const ProfileSettings = ({ identity, onClose, onUpdate }) => {
                     <select
                         value={role}
                         onChange={e => setRole(e.target.value)}
-                        style={{ width: '100%', padding: '12px', background: 'rgba(0,0,0,0.4)', border: '1px solid var(--glass-border)', borderRadius: '8px', color: 'white', fontSize: '1rem', appearance: 'none', cursor: 'pointer' }}
+                        style={{ width: '100%', padding: '12px', background: 'rgba(255,255,255,0.8)', border: '1px solid var(--glass-border)', borderRadius: '8px', color: 'var(--text-main)', fontSize: '1rem', appearance: 'none', cursor: 'pointer' }}
                     >
                         <option value="engineer">Engineer (Solver)</option>
                         <option value="producer">Producer (Agreements)</option>
@@ -105,7 +105,7 @@ const ProfileSettings = ({ identity, onClose, onUpdate }) => {
                         onChange={e => setBio(e.target.value)}
                         rows="3"
                         placeholder="Tell the community about your goals or investment thesis..."
-                        style={{ width: '100%', padding: '12px', background: 'rgba(0,0,0,0.4)', border: '1px solid var(--glass-border)', borderRadius: '8px', color: 'white', fontSize: '0.9rem', resize: 'vertical' }}
+                        style={{ width: '100%', padding: '12px', background: 'rgba(255,255,255,0.8)', border: '1px solid var(--glass-border)', borderRadius: '8px', color: 'var(--text-main)', fontSize: '0.9rem', resize: 'vertical' }}
                     ></textarea>
                 </div>
 
@@ -116,7 +116,7 @@ const ProfileSettings = ({ identity, onClose, onUpdate }) => {
                             type="url"
                             value={githubUrl}
                             onChange={e => setGithubUrl(e.target.value)}
-                            style={{ width: '100%', padding: '12px', background: 'rgba(0,0,0,0.4)', border: '1px solid var(--glass-border)', borderRadius: '8px', color: 'white', fontSize: '0.9rem' }}
+                            style={{ width: '100%', padding: '12px', background: 'rgba(255,255,255,0.8)', border: '1px solid var(--glass-border)', borderRadius: '8px', color: 'var(--text-main)', fontSize: '0.9rem' }}
                         />
                     </div>
                     <div style={{ flex: 1 }}>
@@ -125,7 +125,7 @@ const ProfileSettings = ({ identity, onClose, onUpdate }) => {
                             type="url"
                             value={portfolioUrl}
                             onChange={e => setPortfolioUrl(e.target.value)}
-                            style={{ width: '100%', padding: '12px', background: 'rgba(0,0,0,0.4)', border: '1px solid var(--glass-border)', borderRadius: '8px', color: 'white', fontSize: '0.9rem' }}
+                            style={{ width: '100%', padding: '12px', background: 'rgba(255,255,255,0.8)', border: '1px solid var(--glass-border)', borderRadius: '8px', color: 'var(--text-main)', fontSize: '0.9rem' }}
                         />
                     </div>
                 </div>
@@ -134,7 +134,7 @@ const ProfileSettings = ({ identity, onClose, onUpdate }) => {
                     <button onClick={handleDeleteAccount} style={{ background: 'transparent', border: '1px solid red', color: 'red', padding: '8px 16px', borderRadius: '8px', cursor: 'pointer', fontWeight: 'bold', fontSize: '0.8rem' }}>
                         Delete Profile
                     </button>
-                    <button onClick={handleSave} disabled={loading} style={{ background: 'var(--neon-blue)', border: 'none', color: 'black', padding: '10px 24px', borderRadius: '8px', cursor: 'pointer', fontWeight: 'bold', fontSize: '1rem' }}>
+                    <button onClick={handleSave} disabled={loading} style={{ background: 'var(--neon-blue)', border: 'none', color: 'white', padding: '10px 24px', borderRadius: '8px', cursor: 'pointer', fontWeight: 'bold', fontSize: '1rem' }}>
                         {loading ? 'Saving...' : 'Save Settings'}
                     </button>
                 </div>

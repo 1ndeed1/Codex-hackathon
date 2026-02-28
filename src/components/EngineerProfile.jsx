@@ -74,7 +74,7 @@ It's amazing what we can achieve when we solve problems proactively. Code is pub
             left: 0,
             width: '100%',
             height: '100%',
-            background: 'rgba(0, 0, 0, 0.9)',
+            background: 'rgba(255, 255, 255, 0.8)',
             backdropFilter: 'blur(20px)',
             display: 'flex',
             justifyContent: 'center',
@@ -86,14 +86,15 @@ It's amazing what we can achieve when we solve problems proactively. Code is pub
                 className="animate-fade"
                 style={{
                     background: 'var(--bg-dark)',
-                    border: '1px solid var(--glass-border)',
+                    border: '1px solid var(--neon-blue)',
                     borderRadius: '32px',
                     padding: '3rem',
                     maxWidth: '800px',
                     width: '100%',
                     position: 'relative',
                     maxHeight: '85vh',
-                    overflowY: 'auto'
+                    overflowY: 'auto',
+                    boxShadow: '0 10px 40px rgba(0,0,0,0.1)'
                 }}
                 onClick={e => e.stopPropagation()}
             >
@@ -135,9 +136,9 @@ It's amazing what we can achieve when we solve problems proactively. Code is pub
                                 {profileData.name.substring(0, 2).toUpperCase()}
                             </div>
                             <div style={{ flex: 1 }}>
-                                <h2 style={{ fontSize: '2rem', marginBottom: '0.2rem', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                <h2 style={{ fontSize: '2rem', marginBottom: '0.2rem', display: 'flex', alignItems: 'center', gap: '10px', color: 'var(--text-main)' }}>
                                     @{profileData.name}
-                                    <span style={{ fontSize: '0.7rem', padding: '2px 8px', borderRadius: '4px', background: 'rgba(255,255,255,0.1)', color: 'var(--text-muted)', textTransform: 'uppercase', verticalAlign: 'middle' }}>
+                                    <span style={{ fontSize: '0.7rem', padding: '2px 8px', borderRadius: '4px', background: 'rgba(0,0,0,0.05)', color: 'var(--text-muted)', textTransform: 'uppercase', verticalAlign: 'middle' }}>
                                         {profileData.role}
                                     </span>
                                 </h2>
@@ -191,7 +192,7 @@ It's amazing what we can achieve when we solve problems proactively. Code is pub
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '1.5rem' }}>
                             {profileData.proofs.length > 0 ? profileData.proofs.map((proof, i) => (
                                 <div key={i} style={{
-                                    background: 'rgba(255, 255, 255, 0.03)',
+                                    background: 'rgba(255, 255, 255, 0.8)',
                                     border: '1px solid var(--neon-blue)',
                                     borderRadius: '20px',
                                     padding: '1.5rem',
@@ -225,9 +226,9 @@ It's amazing what we can achieve when we solve problems proactively. Code is pub
                     <div style={{
                         position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%, -50%)',
                         background: 'var(--bg-dark)', border: '1px solid #0077b5', borderRadius: '16px', padding: '2rem',
-                        width: '90%', maxWidth: '600px', zIndex: 1200, boxShadow: '0 0 40px rgba(0, 119, 181, 0.2)'
+                        width: '90%', maxWidth: '600px', zIndex: 1200, boxShadow: '0 10px 40px rgba(0, 119, 181, 0.2)'
                     }}>
-                        <h3 style={{ color: 'white', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '8px' }}><i className="fab fa-linkedin" style={{ color: '#0077b5' }}></i> AI Generated Professional Post</h3>
+                        <h3 style={{ color: 'var(--text-main)', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '8px' }}><i className="fab fa-linkedin" style={{ color: '#0077b5' }}></i> AI Generated Professional Post</h3>
                         {generating ? (
                             <div style={{ color: 'var(--text-muted)', fontStyle: 'italic', padding: '2rem', textAlign: 'center' }}>
                                 <i className="fas fa-spinner fa-spin" style={{ marginRight: '8px' }}></i> AI is analyzing your portfolio to draft the perfect non-boring, company-friendly post...
@@ -238,10 +239,10 @@ It's amazing what we can achieve when we solve problems proactively. Code is pub
                                     readOnly
                                     value={generatedPrompt}
                                     rows={8}
-                                    style={{ width: '100%', padding: '1rem', background: 'rgba(0,0,0,0.5)', border: '1px solid var(--glass-border)', borderRadius: '8px', color: 'white', fontSize: '0.9rem', lineHeight: '1.5', marginBottom: '1rem' }}
+                                    style={{ width: '100%', padding: '1rem', background: 'rgba(255,255,255,0.8)', border: '1px solid var(--glass-border)', borderRadius: '8px', color: 'var(--text-main)', fontSize: '0.9rem', lineHeight: '1.5', marginBottom: '1rem' }}
                                 />
                                 <div style={{ display: 'flex', gap: '1rem', justifyContent: 'flex-end' }}>
-                                    <button onClick={() => setShowLinkedInPrompt(false)} style={{ background: 'transparent', border: '1px solid var(--text-muted)', color: 'white', padding: '8px 16px', borderRadius: '8px', cursor: 'pointer' }}>Cancel</button>
+                                    <button onClick={() => setShowLinkedInPrompt(false)} style={{ background: 'transparent', border: '1px solid var(--text-muted)', color: 'var(--text-main)', padding: '8px 16px', borderRadius: '8px', cursor: 'pointer' }}>Cancel</button>
                                     <button onClick={() => { alert('Post published to LinkedIn mock!'); setShowLinkedInPrompt(false); }} style={{ background: '#0077b5', border: 'none', color: 'white', padding: '8px 16px', borderRadius: '8px', cursor: 'pointer', fontWeight: 'bold' }}>Publish Now</button>
                                 </div>
                             </>
@@ -264,10 +265,10 @@ It's amazing what we can achieve when we solve problems proactively. Code is pub
                     <div style={{
                         position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%, -50%)',
                         background: 'var(--bg-dark)', border: '1px solid var(--neon-blue)', borderRadius: '16px', padding: '2rem',
-                        width: '90%', maxWidth: '700px', zIndex: 1200, maxHeight: '80vh', overflowY: 'auto', boxShadow: '0 0 40px rgba(0, 242, 255, 0.2)'
+                        width: '90%', maxWidth: '700px', zIndex: 1200, maxHeight: '80vh', overflowY: 'auto', boxShadow: '0 10px 40px rgba(0, 242, 255, 0.2)'
                     }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-                            <h3 style={{ color: 'white', margin: 0 }}>Solution for: {viewingSolution.title}</h3>
+                            <h3 style={{ color: 'var(--text-main)', margin: 0 }}>Solution for: {viewingSolution.title}</h3>
                             <button onClick={() => setViewingSolution(null)} style={{ background: 'transparent', border: 'none', color: 'var(--text-muted)', fontSize: '1.5rem', cursor: 'pointer' }}>&times;</button>
                         </div>
                         <div style={{ marginBottom: '1.5rem' }}>
@@ -276,7 +277,7 @@ It's amazing what we can achieve when we solve problems proactively. Code is pub
                         </div>
                         <div style={{ marginBottom: '1.5rem' }}>
                             <h4 style={{ color: 'var(--neon-green)', fontSize: '0.8rem', textTransform: 'uppercase', marginBottom: '0.5rem' }}>Submitted Solution</h4>
-                            <div style={{ background: 'rgba(0,0,0,0.5)', padding: '1rem', borderRadius: '8px', borderLeft: '4px solid var(--neon-green)', whiteSpace: 'pre-wrap', color: 'white', fontSize: '0.9rem', fontFamily: 'monospace' }}>
+                            <div style={{ background: 'rgba(240, 240, 240, 0.8)', padding: '1rem', borderRadius: '8px', borderLeft: '4px solid var(--neon-green)', whiteSpace: 'pre-wrap', color: 'var(--text-main)', fontSize: '0.9rem', fontFamily: 'monospace' }}>
                                 {viewingSolution.content}
                             </div>
                         </div>

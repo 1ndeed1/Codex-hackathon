@@ -15,7 +15,7 @@ const InferredTaskCard = ({ task, onClick }) => {
                 display: 'flex',
                 flexDirection: 'column',
                 height: '100%',
-                background: 'linear-gradient(135deg, rgba(0, 242, 255, 0.05) 0%, transparent 100%)'
+                background: 'linear-gradient(135deg, rgba(0, 242, 255, 0.1) 0%, rgba(255,255,255,0.8) 100%)'
             }}
             onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-5px)'}
             onMouseLeave={e => e.currentTarget.style.transform = 'translateY(0)'}
@@ -41,11 +41,11 @@ const InferredTaskCard = ({ task, onClick }) => {
             <h3 style={{ fontSize: '1.2rem', marginBottom: '1rem' }}>{task.title}</h3>
 
             <div style={{
-                background: 'rgba(0,0,0,0.3)',
+                background: 'rgba(255,255,255,0.8)',
                 padding: '1rem',
                 borderRadius: '8px',
                 marginBottom: '1rem',
-                border: '1px dashed var(--glass-border)'
+                border: '1px dashed var(--neon-blue)'
             }}>
                 <label style={{ fontSize: '0.6rem', color: 'var(--neon-blue)', textTransform: 'uppercase', display: 'block', marginBottom: '4px' }}>Detected Signal</label>
                 <p style={{ fontSize: '0.8rem', fontStyle: 'italic', color: 'var(--text-muted)' }}>"{task.signal}"</p>

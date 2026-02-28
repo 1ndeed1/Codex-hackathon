@@ -131,7 +131,7 @@ const IngenuityDetail = ({ task, role, identity, onClose, onReward, onDelete, on
             left: 0,
             width: '100%',
             height: '100%',
-            background: 'rgba(0, 0, 0, 0.8)',
+            background: 'rgba(255, 255, 255, 0.8)',
             backdropFilter: 'blur(8px)',
             zIndex: 1000,
             padding: '2rem 1rem',
@@ -149,7 +149,7 @@ const IngenuityDetail = ({ task, role, identity, onClose, onReward, onDelete, on
                     width: '100%',
                     position: 'relative',
                     margin: '0 auto',
-                    boxShadow: `0 0 40px ${(isMined || isScanned) ? (isScanned ? 'rgba(255, 140, 0, 0.1)' : 'rgba(0, 242, 255, 0.1)') : 'rgba(188, 19, 254, 0.1)'}`
+                    boxShadow: '0 10px 40px rgba(0,0,0,0.1)'
                 }}
                 onClick={e => e.stopPropagation()}
             >
@@ -188,7 +188,7 @@ const IngenuityDetail = ({ task, role, identity, onClose, onReward, onDelete, on
                     )}
                     {task.type === 'direct' && (
                         <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>
-                            By: <span style={{ color: 'white' }}>
+                            By: <span style={{ color: 'var(--text-main)' }}>
                                 {task.isAnonymous
                                     ? 'Anonymous'
                                     : (task.authorProfile?.username || task.authorProfile?.email?.split('@')[0] || 'Unknown User')}
@@ -238,25 +238,25 @@ const IngenuityDetail = ({ task, role, identity, onClose, onReward, onDelete, on
                 </div>
 
                 {isEditing ? (
-                    <div style={{ marginBottom: '2rem', padding: '1.5rem', background: 'rgba(255,255,255,0.03)', borderRadius: '12px', border: '1px solid var(--neon-blue)' }}>
+                    <div style={{ marginBottom: '2rem', padding: '1.5rem', background: 'rgba(255,255,255,0.8)', borderRadius: '12px', border: '1px solid var(--neon-blue)' }}>
                         <h4 style={{ color: 'var(--neon-blue)', marginBottom: '1rem' }}>Editing Signal</h4>
                         <input
                             value={editTitle}
                             onChange={(e) => setEditTitle(e.target.value)}
-                            style={{ width: '100%', padding: '10px', marginBottom: '10px', background: 'rgba(0,0,0,0.4)', color: 'white', border: '1px solid var(--glass-border)', borderRadius: '8px' }}
+                            style={{ width: '100%', padding: '10px', marginBottom: '10px', background: 'rgba(255,255,255,0.8)', color: 'var(--text-main)', border: '1px solid var(--glass-border)', borderRadius: '8px' }}
                             placeholder="Title"
                         />
                         <textarea
                             value={editAbstract}
                             onChange={(e) => setEditAbstract(e.target.value)}
-                            style={{ width: '100%', padding: '10px', marginBottom: '10px', background: 'rgba(0,0,0,0.4)', color: 'white', border: '1px solid var(--glass-border)', borderRadius: '8px', resize: 'vertical' }}
+                            style={{ width: '100%', padding: '10px', marginBottom: '10px', background: 'rgba(255,255,255,0.8)', color: 'var(--text-main)', border: '1px solid var(--glass-border)', borderRadius: '8px', resize: 'vertical' }}
                             placeholder="Abstract"
                             rows="2"
                         />
                         <textarea
                             value={editCodeSnippet}
                             onChange={(e) => setEditCodeSnippet(e.target.value)}
-                            style={{ width: '100%', padding: '10px', marginBottom: '10px', background: 'rgba(0,0,0,0.4)', color: 'white', border: '1px solid var(--glass-border)', borderRadius: '8px', resize: 'vertical', fontFamily: 'monospace' }}
+                            style={{ width: '100%', padding: '10px', marginBottom: '10px', background: 'rgba(240,240,240,0.8)', color: 'var(--text-main)', border: '1px solid var(--glass-border)', borderRadius: '8px', resize: 'vertical', fontFamily: 'monospace' }}
                             placeholder="Code Snippet"
                             rows="4"
                         />
@@ -274,7 +274,7 @@ const IngenuityDetail = ({ task, role, identity, onClose, onReward, onDelete, on
                     </div>
                 ) : (
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1.5rem' }}>
-                        <h2 style={{ fontSize: '2.2rem', letterSpacing: '-1px', maxWidth: '70%' }}>{task.title}</h2>
+                        <h2 style={{ fontSize: '2.2rem', letterSpacing: '-1px', maxWidth: '70%', color: 'var(--text-main)' }}>{task.title}</h2>
                         <div style={{ textAlign: 'right' }}>
                             {isScanned ? (
                                 <div style={{ color: 'var(--neon-orange)', fontWeight: 800, fontSize: '0.85rem' }}>Opportunity to Solve</div>
@@ -307,12 +307,12 @@ const IngenuityDetail = ({ task, role, identity, onClose, onReward, onDelete, on
                 )}
 
                 {(isMined || isScanned) ? (
-                    <div style={{ background: 'rgba(255,255,255,0.02)', padding: '2rem', borderRadius: '16px', marginBottom: '2rem', border: '1px solid var(--glass-border)' }}>
+                    <div style={{ background: 'rgba(255,255,255,0.8)', padding: '2rem', borderRadius: '16px', marginBottom: '2rem', border: '1px solid var(--glass-border)' }}>
                         <div style={{ marginBottom: '1.5rem' }}>
                             <label style={{ color: accentColor, fontSize: '0.65rem', fontWeight: 800, textTransform: 'uppercase' }}>
                                 {isScanned ? 'Public Complaint/Review Signal' : 'Public Signal Detected'}
                             </label>
-                            <p style={{ color: '#fff', fontStyle: 'italic', marginTop: '4px', fontSize: '0.95rem' }}>"{task.signal}"</p>
+                            <p style={{ color: 'var(--text-main)', fontStyle: 'italic', marginTop: '4px', fontSize: '0.95rem' }}>"{task.signal}"</p>
                             {task.sourceUrl && (
                                 <a href={task.sourceUrl} target="_blank" rel="noopener noreferrer" style={{ display: 'inline-block', marginTop: '12px', fontSize: '0.8rem', color: accentColor, textDecoration: 'none', fontWeight: 'bold' }}>
                                     <i className="fas fa-external-link-alt"></i> View Original Source
@@ -321,7 +321,7 @@ const IngenuityDetail = ({ task, role, identity, onClose, onReward, onDelete, on
                         </div>
                         <div>
                             <label style={{ color: 'var(--neon-purple)', fontSize: '0.65rem', fontWeight: 800, textTransform: 'uppercase' }}>Market Inference</label>
-                            <p style={{ marginTop: '4px', fontSize: '1.05rem', lineHeight: '1.5' }}>{task.inference}</p>
+                            <p style={{ marginTop: '4px', fontSize: '1.05rem', lineHeight: '1.5', color: 'var(--text-main)' }}>{task.inference}</p>
                         </div>
                     </div>
                 ) : (
@@ -335,7 +335,7 @@ const IngenuityDetail = ({ task, role, identity, onClose, onReward, onDelete, on
                         <p style={{ color: 'var(--text-muted)', lineHeight: '1.7', marginBottom: '2rem', fontSize: '1.1rem' }}>{task.content}</p>
 
                         {task.codeSnippet && (
-                            <div style={{ marginBottom: '2rem', background: 'rgba(0,0,0,0.4)', padding: '1rem', borderRadius: '12px', border: '1px solid var(--glass-border)' }}>
+                            <div style={{ marginBottom: '2rem', background: 'rgba(240, 240, 240, 0.8)', padding: '1rem', borderRadius: '12px', border: '1px solid var(--glass-border)' }}>
                                 <label style={{ color: 'var(--neon-blue)', fontSize: '0.7rem', fontWeight: 800, textTransform: 'uppercase', display: 'block', marginBottom: '8px' }}>Code Snippet</label>
                                 <pre style={{ fontFamily: 'monospace', color: 'var(--text-main)', fontSize: '0.9rem', whiteSpace: 'pre-wrap' }}>
                                     {task.codeSnippet}
@@ -346,7 +346,7 @@ const IngenuityDetail = ({ task, role, identity, onClose, onReward, onDelete, on
                 )}
 
                 <div style={{
-                    background: 'linear-gradient(135deg, rgba(188, 19, 254, 0.03) 0%, transparent 100%)',
+                    background: 'rgba(188, 19, 254, 0.05)',
                     borderLeft: '4px solid var(--neon-purple)',
                     padding: '1.5rem',
                     borderRadius: '8px',
@@ -448,7 +448,8 @@ const IngenuityDetail = ({ task, role, identity, onClose, onReward, onDelete, on
                                         lineHeight: '1.5',
                                         whiteSpace: 'pre-wrap',
                                         fontFamily: 'inherit',
-                                        background: 'rgba(0,0,0,0.2)',
+                                        background: 'rgba(240, 240, 240, 0.8)',
+                                        border: '1px solid var(--glass-border)',
                                         padding: '12px',
                                         borderRadius: '8px'
                                     }}>{sol.logic}</pre>
@@ -465,7 +466,7 @@ const IngenuityDetail = ({ task, role, identity, onClose, onReward, onDelete, on
                                                     gap: '8px',
                                                     background: 'rgba(188, 19, 254, 0.1)',
                                                     border: '1px solid var(--neon-purple)',
-                                                    color: 'white',
+                                                    color: 'var(--neon-purple)',
                                                     padding: '8px 16px',
                                                     borderRadius: '8px',
                                                     textDecoration: 'none',
