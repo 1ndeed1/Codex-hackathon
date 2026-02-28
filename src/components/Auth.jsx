@@ -84,14 +84,16 @@ const Auth = ({ onLogin }) => {
         <div style={{
             display: 'flex',
             justifyContent: 'center',
-            alignItems: 'center',
-            height: '100vh',
+            minHeight: '100vh',
             width: '100vw',
-            position: 'absolute',
+            position: 'fixed',
             top: 0,
             left: 0,
             background: 'var(--bg-dark)',
-            zIndex: 9999
+            zIndex: 9999,
+            overflowY: 'auto',
+            padding: '2rem 1rem',
+            alignItems: 'flex-start'
         }}>
             <div className="bg-glow"></div>
             <div className="bg-glow-2"></div>
@@ -105,7 +107,8 @@ const Auth = ({ onLogin }) => {
                 width: '100%',
                 maxWidth: '400px',
                 textAlign: 'center',
-                boxShadow: '0 0 40px rgba(188, 19, 254, 0.1)'
+                boxShadow: '0 0 40px rgba(188, 19, 254, 0.1)',
+                margin: 'auto'
             }}>
                 <i className="fas fa-lock" style={{ fontSize: '3rem', color: 'var(--neon-purple)', marginBottom: '1.5rem' }}></i>
                 <h2 style={{ marginBottom: '0.5rem', fontSize: '2rem', letterSpacing: '-1px' }}>

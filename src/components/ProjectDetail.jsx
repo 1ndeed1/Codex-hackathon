@@ -317,8 +317,8 @@ const ProjectDetail = ({ project, onClose, currentUser, identity }) => {
             {/* Sponsor Modal */}
             {
                 showSponsorModal && (
-                    <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', background: 'rgba(0,0,0,0.8)', zIndex: 2000, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                        <div style={{ background: 'var(--bg-dark)', padding: '2rem', borderRadius: '16px', border: '1px solid var(--neon-green)', width: '90%', maxWidth: '400px' }}>
+                    <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', background: 'rgba(0,0,0,0.8)', zIndex: 2000, overflowY: 'auto', display: 'block', padding: '2rem 1rem' }}>
+                        <div style={{ background: 'var(--bg-dark)', padding: '2rem', borderRadius: '16px', border: '1px solid var(--neon-green)', width: '90%', maxWidth: '400px', margin: '0 auto' }}>
                             <h3 style={{ color: 'white', marginBottom: '1rem' }}>Sponsor "{project.name}"</h3>
                             <input
                                 type="number"
@@ -346,8 +346,8 @@ const ProjectDetail = ({ project, onClose, currentUser, identity }) => {
             {/* Agreement Modal */}
             {
                 showAgreementModal && (
-                    <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', background: 'rgba(0,0,0,0.8)', zIndex: 2000, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                        <div style={{ background: 'var(--bg-dark)', padding: '2rem', borderRadius: '16px', border: '1px solid var(--neon-purple)', width: '90%', maxWidth: '500px' }}>
+                    <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', background: 'rgba(0,0,0,0.8)', zIndex: 2000, overflowY: 'auto', display: 'block', padding: '2rem 1rem' }}>
+                        <div style={{ background: 'var(--bg-dark)', padding: '2rem', borderRadius: '16px', border: '1px solid var(--neon-purple)', width: '90%', maxWidth: '500px', margin: '0 auto' }}>
                             <h3 style={{ color: 'white', marginBottom: '1rem' }}>Propose Agreement to Founder</h3>
                             <div style={{ color: 'var(--text-muted)', fontSize: '0.8rem', marginBottom: '1rem' }}>Propose funding, equity share, or a specific milestone contract.</div>
 

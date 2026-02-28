@@ -133,12 +133,10 @@ const IngenuityDetail = ({ task, role, identity, onClose, onReward, onDelete, on
             height: '100%',
             background: 'rgba(0, 0, 0, 0.8)',
             backdropFilter: 'blur(8px)',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
             zIndex: 1000,
-            padding: '2rem',
-            overflowY: 'auto'
+            padding: '2rem 1rem',
+            overflowY: 'auto',
+            display: 'block'
         }} onClick={onClose}>
             <div
                 className="animate-fade"
@@ -150,7 +148,7 @@ const IngenuityDetail = ({ task, role, identity, onClose, onReward, onDelete, on
                     maxWidth: '900px',
                     width: '100%',
                     position: 'relative',
-                    margin: 'auto',
+                    margin: '0 auto',
                     boxShadow: `0 0 40px ${(isMined || isScanned) ? (isScanned ? 'rgba(255, 140, 0, 0.1)' : 'rgba(0, 242, 255, 0.1)') : 'rgba(188, 19, 254, 0.1)'}`
                 }}
                 onClick={e => e.stopPropagation()}
