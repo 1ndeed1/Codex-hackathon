@@ -4,7 +4,7 @@ import { supabase } from '../services/supabase';
 import SolutionProposer from './SolutionProposer';
 import ProposalGenerator from './ProposalGenerator';
 
-const IngenuityDetail = ({ task, role, identity, onClose, onReward, onDelete, onEdit }) => {
+const IngenuityDetail = ({ task, role, identity, onClose, onReward, onDelete, onEdit, onAccept }) => {
     const [showProposer, setShowProposer] = useState(false);
     const [showProposalGenerator, setShowProposalGenerator] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
@@ -283,8 +283,26 @@ const IngenuityDetail = ({ task, role, identity, onClose, onReward, onDelete, on
                             ) : task.type === 'direct' ? null : (
                                 <div style={{ color: 'var(--neon-orange)', fontWeight: 800, fontSize: '0.85rem' }}>Opening Likelihood: {task.jobProbability}</div>
                             )}
-                            {task.type !== 'direct' && (
-                                <div style={{ color: 'var(--text-muted)', fontSize: '0.7rem', textTransform: 'uppercase' }}>Urgency: {task.hiringUrgency}</div>
+                            <div style={{ color: 'var(--neon-blue)', fontWeight: 800, fontSize: '0.75rem', marginTop: '4px' }}>
+                                <i className="fas fa-users"></i> Solvers: {task.solverCount || 0}/{task.maxSolvers || 3}
+                            </div>
+                            {onAccept && (task.solverCount || 0) < (task.maxSolvers || 3) && (
+                                <button
+                                    onClick={() => onAccept(task.id)}
+                                    style={{
+                                        marginTop: '10px',
+                                        background: 'var(--accent-gradient)',
+                                        border: 'none',
+                                        color: 'white',
+                                        padding: '8px 16px',
+                                        borderRadius: '8px',
+                                        fontSize: '0.8rem',
+                                        fontWeight: 'bold',
+                                        cursor: 'pointer',
+                                        boxShadow: '0 4px 15px rgba(188, 19, 254, 0.3)'
+                                    }}>
+                                    Enlist as Solver
+                                </button>
                             )}
                         </div>
                     </div>

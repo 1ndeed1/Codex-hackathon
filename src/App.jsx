@@ -12,7 +12,9 @@ import Auth from './components/Auth';
 import ProjectsBoard from './components/ProjectsBoard';
 import ProjectDetail from './components/ProjectDetail';
 import ProfilesDirectory from './components/ProfilesDirectory';
-import { fetchOpportunities } from './services/discovery_service';
+import SponsorDashboard from './components/SponsorDashboard';
+import ProducerDashboard from './components/ProducerDashboard';
+import { fetchOpportunities, simulateBackgroundScan } from './services/discovery_service';
 
 function App() {
   const [role, setRole] = useState('engineer');
@@ -40,6 +42,7 @@ function App() {
     portfolio_url: '',
     tier: 'Unranked',
     vouches: 0,
+    is_verified: false,
     proofs: []
   });
 
@@ -53,8 +56,20 @@ function App() {
 
       const profileData = (profileList && profileList.length > 0) ? profileList[0] : null;
 
-      if (profileError) {
-        console.error("Error loading profile:", profileError);
+      if (!profileData) {
+        console.log("Profile missing, creating default...");
+        const { data: newProfile } = await supabase
+          .from('profiles')
+          .insert([{
+            id: user.id,
+            email: user.email,
+            username: user.email.split('@')[0] + '_' + Math.floor(Math.random() * 1000),
+            role: 'engineer',
+            tier: 'Unranked'
+          }])
+          .select()
+          .single();
+        // Use newProfile if created, else fallback to null
       }
 
       // Fetch accepted solutions as proofs
@@ -80,6 +95,7 @@ function App() {
         portfolio_url: profileData?.portfolio_url || '',
         tier: profileData?.tier || 'Unranked',
         vouches: profileData?.vouches || 0,
+        is_verified: profileData?.is_verified || false,
         proofs: proofs
       });
     } catch (err) {
@@ -96,6 +112,46 @@ function App() {
     }
     loadOpp();
 
+    // Background Scanning Simulation
+    const scanInterval = setInterval(async () => {
+      await simulateBackgroundScan();
+      const freshData = await fetchOpportunities();
+      setOpportunities(freshData);
+    }, 30000); // Scan every 30 seconds
+
+    return () => clearInterval(scanInterval);
+  }, []);
+
+  const handleAcceptOpportunity = async (oppId) => {
+    // Check if solver_count column exists by trying a select
+    const { error: checkError } = await supabase.from('opportunities').select('solver_count').eq('id', oppId).single();
+    if (checkError) {
+      alert("Missing Database Columns: Please run the SQL script in implementation_plan.md to enable the saturation feature.");
+      return;
+    }
+
+    const { error } = await supabase.rpc('increment_solver_count', { opp_id: oppId });
+    if (error) {
+      console.error("Failed to increment solver count:", error);
+      // Fallback if RPC isn't available
+      const { data: current } = await supabase.from('opportunities').select('solver_count').eq('id', oppId).single();
+      await supabase.from('opportunities').update({ solver_count: (current?.solver_count || 0) + 1 }).eq('id', oppId);
+    }
+    const freshData = await fetchOpportunities();
+    setOpportunities(freshData);
+    setSelectedOpp(null);
+    alert("You have been enlisted as a solver! The signal will be hidden once saturation is reached.");
+  };
+
+  const handleLogout = async () => {
+    if (supabase) {
+      await supabase.auth.signOut();
+    } else {
+      setIsLoggedIn(false);
+    }
+  };
+
+  useEffect(() => {
     // Supabase Auth Listener
     if (supabase) {
       supabase.auth.getSession().then(({ data: { session } }) => {
@@ -123,13 +179,6 @@ function App() {
     }
   }, []);
 
-  const handleLogout = async () => {
-    if (supabase) {
-      await supabase.auth.signOut();
-    } else {
-      setIsLoggedIn(false);
-    }
-  };
 
   const handlePublishProblem = async (newOpp) => {
     if (!identity || !identity.id) {
@@ -153,7 +202,7 @@ function App() {
       abstract: newOpp.abstract,
       code_snippet: newOpp.codeSnippet,
       is_anonymous: newOpp.isAnonymous
-    }]).select(`*, profiles!owner_id(username, email)`);
+    }]).select(`*, profiles!opportunities_owner_id_fkey(username, email)`);
 
     if (error) {
       console.error("Failed to publish problem:", error);
@@ -271,6 +320,10 @@ function App() {
                   />
                 ))}
               </div>
+            ) : identity.role === 'sponsor' ? (
+              <SponsorDashboard identity={identity} />
+            ) : identity.role === 'producer' ? (
+              <ProducerDashboard identity={identity} />
             ) : (
               <div style={{
                 background: 'var(--glass-bg)',
@@ -336,6 +389,7 @@ function App() {
           onReward={handleReward}
           onDelete={handleDeleteOpportunity}
           onEdit={handleEditOpportunity}
+          onAccept={handleAcceptOpportunity}
         />
       )}
 

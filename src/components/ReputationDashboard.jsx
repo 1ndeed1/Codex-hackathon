@@ -1,7 +1,7 @@
 /* src/components/ReputationDashboard.jsx */
 import React from 'react';
 
-const ReputationDashboard = ({ tier, proofsCount }) => {
+const ReputationDashboard = ({ tier, proofsCount, isVerified }) => {
     return (
         <div style={{
             display: 'flex',
@@ -18,8 +18,14 @@ const ReputationDashboard = ({ tier, proofsCount }) => {
                     color: 'var(--neon-blue)',
                     fontWeight: 800,
                     fontSize: '0.9rem',
-                    textShadow: '0 0 10px rgba(0, 242, 255, 0.3)'
-                }}>{tier} Rank</span>
+                    textShadow: '0 0 10px rgba(0, 242, 255, 0.3)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '6px'
+                }}>
+                    {tier} Rank
+                    {isVerified && <i className="fas fa-check-circle" style={{ color: 'var(--neon-blue)', fontSize: '0.81rem' }} title="Verified Identity"></i>}
+                </span>
             </div>
 
             <div style={{ width: '1px', height: '24px', background: 'var(--glass-border)' }}></div>

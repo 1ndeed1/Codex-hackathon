@@ -30,7 +30,11 @@ const Header = ({ role, setRole, identity, activeTab, setActiveTab, onProfileCli
                 </div>
 
                 <div onClick={onProfileClick} style={{ cursor: 'pointer' }}>
-                    <ReputationDashboard tier={identity.tier} proofsCount={identity.proofs.length} />
+                    <ReputationDashboard
+                        tier={identity.tier}
+                        proofsCount={identity.proofs.length}
+                        isVerified={identity.is_verified}
+                    />
                 </div>
             </div>
 

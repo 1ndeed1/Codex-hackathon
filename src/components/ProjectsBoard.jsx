@@ -9,27 +9,49 @@ const ProjectsBoard = ({ onProjectSelect, identity }) => {
 
     const fetchProjects = async () => {
         setLoading(true);
-        const { data, error } = await supabase
-            .from('projects')
-            .select(`
-                *,
-                profiles!owner_id ( username )
-            `)
-            .order('created_at', { ascending: false });
+        try {
+            const { data, error } = await supabase
+                .from('projects')
+                .select(`
+                    *,
+                    profiles!projects_owner_id_fkey ( username )
+                `)
+                .order('created_at', { ascending: false });
 
-        if (error) {
-            console.error("Error fetching projects:", error);
-            // alert("Failed to fetch projects. Please check the SQL setup.");
-        } else if (data) {
-            setProjects(data.map(p => ({
-                id: p.id,
-                name: p.name,
-                owner: p.profiles?.username || "Unknown",
-                description: p.description,
-                isPublic: p.is_public,
-                stars: p.stars || 0,
-                contributors: p.contributors || 1
-            })));
+            if (error) {
+                console.error("Error fetching projects with profiles:", error);
+                // Fallback: fetch without profiles
+                const { data: simpleData, error: simpleError } = await supabase
+                    .from('projects')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+
+                if (simpleError) {
+                    console.error("Projects fallback error:", simpleError);
+                } else if (simpleData) {
+                    setProjects(simpleData.map(p => ({
+                        id: p.id,
+                        name: p.name,
+                        owner: "Unknown",
+                        description: p.description,
+                        isPublic: p.is_public,
+                        stars: p.stars || 0,
+                        contributors: p.contributors || 1
+                    })));
+                }
+            } else if (data) {
+                setProjects(data.map(p => ({
+                    id: p.id,
+                    name: p.name,
+                    owner: p.profiles?.username || "Unknown",
+                    description: p.description,
+                    isPublic: p.is_public,
+                    stars: p.stars || 0,
+                    contributors: p.contributors || 1
+                })));
+            }
+        } catch (err) {
+            console.error("Unexpected projects error:", err);
         }
         setLoading(false);
     };

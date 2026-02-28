@@ -1,0 +1,21 @@
+
+--- Alias and FK ---
+Error: Could not find a relationship between 'opportunities' and 'profiles' in the schema cache
+Details: Searched for a foreign key relationship between 'opportunities' and 'profiles' using the hint 'owner_id' in the schema 'public', but no matches were found.
+Hint: null
+
+--- FK only ---
+Error: Could not find a relationship between 'opportunities' and 'profiles' in the schema cache
+Details: Searched for a foreign key relationship between 'opportunities' and 'profiles' using the hint 'owner_id' in the schema 'public', but no matches were found.
+Hint: null
+
+--- No FK ---
+Error: Could not find a relationship between 'opportunities' and 'profiles' in the schema cache
+Details: Searched for a foreign key relationship between 'opportunities' and 'profiles' in the schema 'public', but no matches were found.
+Hint: null
+
+--- Simple Select ---
+Success! Data length: 1
+
+--- Simple Profiles ---
+Success! Data length: 0

@@ -1,0 +1,424 @@
+{
+  "opportunities": {
+    "data": [
+      {
+        "id": "0fddfa0f-7ec5-4295-9cfc-d535a6512281",
+        "type": "scanned",
+        "source": "Reddit - r/reactjs",
+        "channel": "Fun-Library9820",
+        "title": "I built a local-first Markdown + Mermaid workspace (Electron + React + TS) – v1.2 just shipped with a custom PDF engine",
+        "signal": "Hey everyone,\n\nI’ve been building **Atlas Workspace**, a local-first markdown workspace designed specifically for developers who don’t want cloud lock-in.\n\nIt’s built with:\n\n* Electron 28\n* React 18 + TypeScript\n* Tiptap\n* Tailwind + shadcn/ui\n* Mermaid.js\n\nThe goal is simple:\n\nOpen a folder. Write notes. Everything stays as plain `.md` files. No accounts. No telemetry. No network calls.\n\n# What makes v1.2 interesting\n\nInstead of relying on print-to-PDF, I built a **custom coordinate-based PDF export engine using jsPDF**.\n\n* Recursive DOM traversal to preserve nested formatting\n* 2x canvas rendering pipeline for high-res Mermaid diagrams\n* Print-optimized A4 layout system\n* Async asset loading to prevent export race conditions\n* Fixed UI bleed issues during export\n\nIt now properly handles headers, code blocks, diagrams, and page breaks.\n\n# Why I built this\n\nMost note tools:\n\n* Require accounts\n* Sync to the cloud\n* Store data in proprietary formats\n\nAtlas:\n\n* Stores everything as raw m...",
+        "inference": "Deep analysis indicates a high priority technical wall.",
+        "logic_gap": "The standard community solutions are failing due to highly custom architectural constraints mentioned in the post.",
+        "job_probability": "Community Bounty / Portfolio",
+        "hiring_urgency": "Medium",
+        "tags": [
+          "React",
+          "Frontend"
+        ],
+        "difficulty": "Medium",
+        "source_url": "https://reddit.com/r/reactjs/comments/1rge0vh/i_built_a_localfirst_markdown_mermaid_workspace/",
+        "created_at": "2026-02-27T18:17:58.828022+00:00",
+        "owner_id": null,
+        "abstract": null,
+        "code_snippet": null,
+        "is_anonymous": false
+      },
+      {
+        "id": "6e9998c0-6884-4e2d-b042-4ab437c27873",
+        "type": "scanned",
+        "source": "Reddit - r/reactjs",
+        "channel": "Due-Watermelonlesson",
+        "title": "Accessible nested menus in MUI are still painful",
+        "signal": "It is just the nested, context menu-like menu structure that's been around since the inception of modern OS.\n\n* Material UI Github Repo has several unresolved issues dating back to 2018\n* There are libraries trying to offer a solution but they lack accessibility support\n* Search StackOverflow, there aren't any topics explaining you how to do this properly\n* Ask your LLM to build it for you, and you will find out how incapable LLM is on the topics the internet doesn't answer (like this one). And the best you can get is what's already available and they won't work as you want.\n\n(Come on, MUI?! What's wrong!)\n\nWe needed a proper nested menu that we can use in our Material UI theme. We needed keyboard accessibility, and proper focus management so people who need assistive technologies don't get annoyed with our product.  \n  \nWe came up with this and it has been working great so far. I want to share this with y'all who are feeling the same pain with this major UI framework library.\n\nThere i...",
+        "inference": "Deep analysis indicates a high priority technical wall.",
+        "logic_gap": "The standard community solutions are failing due to highly custom architectural constraints mentioned in the post.",
+        "job_probability": "Community Bounty / Portfolio",
+        "hiring_urgency": "Medium",
+        "tags": [
+          "Frontend"
+        ],
+        "difficulty": "Medium",
+        "source_url": "https://reddit.com/r/reactjs/comments/1rgauxs/accessible_nested_menus_in_mui_are_still_painful/",
+        "created_at": "2026-02-27T18:17:58.828022+00:00",
+        "owner_id": null,
+        "abstract": null,
+        "code_snippet": null,
+        "is_anonymous": false
+      },
+      {
+        "id": "7784b8da-8910-4acd-91a3-4cdb7358c852",
+        "type": "scanned",
+        "source": "Reddit - r/reactjs",
+        "channel": "BFDev935",
+        "title": "Does anyone else have problems with moving animations?",
+        "signal": "I'm trying to make a simple component that moves from side to side across the page, but I can't make changes to the duration with the duration setting. The only thing that affects duration, is changing the distance the element is set to move. He'res the code:\n\n    'use client'\n    import Link from 'next/link'\n    import { motion } from 'framer-motion';\n    \n    \n    export function Divider1() {\n        return (\n            &lt;div className=\" bg-gradient-to-b from-purple-100 to-white h-[50vh] p-16\"&gt;\n                \n             &lt;div className=\"border p-4 overflow-hidden\"&gt;\n        &lt;motion.div \n            initial={{ x: 0 }}\n            animate={{ x: [0, 1000, 0]}}\n            transition={{ \n                duration: 1, \n                repeat: Infinity, \n                ease: \"linear\"\n            }}\n            className=\"border w-fit\"&gt;\n                &lt;Link href=\"/blog\"&gt;\n                    Link To Blog\n                &lt;/Link&gt;\n        &lt;/motion.div&gt;\n   ...",
+        "inference": "Deep analysis indicates a high priority technical wall.",
+        "logic_gap": "The standard community solutions are failing due to highly custom architectural constraints mentioned in the post.",
+        "job_probability": "Community Bounty / Portfolio",
+        "hiring_urgency": "Medium",
+        "tags": [
+          "General Engineering"
+        ],
+        "difficulty": "Medium",
+        "source_url": "https://reddit.com/r/reactjs/comments/1rg3ias/does_anyone_else_have_problems_with_moving/",
+        "created_at": "2026-02-27T18:17:58.828022+00:00",
+        "owner_id": null,
+        "abstract": null,
+        "code_snippet": null,
+        "is_anonymous": false
+      },
+      {
+        "id": "a42b7869-25c7-4f55-a296-efcbe6885c78",
+        "type": "scanned",
+        "source": "Reddit - r/reactjs",
+        "channel": "TalRofe",
+        "title": "How to manage TanStack Router with React Vite Microfrontends",
+        "signal": "Assuming I have an app, with simply sidebar layout on the left, and on the right I just render the \"Outlet\" component. Then each route is a microfrontend, using the package [https://www.npmjs.com/package/@module-federation/vite](https://www.npmjs.com/package/@module-federation/vite).\n\nThe root host app includes the layout (sidebar). Then each microfrontend renders the corresponding page content.\n\nSo what should I do in TanStack router in this use case? for example in one microfrontend I have a link, to other page. Should I simply import \"useNavigate\" from the tanstack router?  \nI assume I create the router in the host app of course. But any pre-process is needed before just importing \"useNavigate\" for example?\n\nBecause one issue I can think of is loss of type safe that TanStack router brings. I get only type-safe router in the root host app. But when using \"useNavigate\" for example in a microfrontend, it's not familiar with the router...",
+        "inference": "Deep analysis indicates a high priority technical wall.",
+        "logic_gap": "The standard community solutions are failing due to highly custom architectural constraints mentioned in the post.",
+        "job_probability": "Community Bounty / Portfolio",
+        "hiring_urgency": "Medium",
+        "tags": [
+          "React"
+        ],
+        "difficulty": "Medium",
+        "source_url": "https://reddit.com/r/reactjs/comments/1rg0rfu/how_to_manage_tanstack_router_with_react_vite/",
+        "created_at": "2026-02-27T18:17:58.828022+00:00",
+        "owner_id": null,
+        "abstract": null,
+        "code_snippet": null,
+        "is_anonymous": false
+      },
+      {
+        "id": "14d3d02c-e1fe-4d26-961d-5ee006d23bd8",
+        "type": "scanned",
+        "source": "Reddit - r/reactjs",
+        "channel": "FluffyOctopus2002",
+        "title": "I got tired of writing massive JSON files by hand just to test my UI, so I built an AI generator that scaffolds full mock APIs from a prompt.",
+        "signal": "Hey everyone,\n\nLike most frontend devs, I spend way too much time setting up mock data when the backend isn't ready. Writing out huge JSON arrays or spinning up local Express servers just to test my frontend UI states (loading, errors, pagination) was getting incredibly tedious.\n\nA while back I built a free tool called MockBird to help manage mock endpoints in the cloud. It worked well, but I was still manually typing out all the JSON responses.\n\nThis week, I integrated an AI generation pipeline directly into it. Now, instead of writing JSON, you just type something like *\"E-commerce product list with 20 items, including variants and nested reviews\"* and it instantly scaffolds the endpoints and populates them with realistic mock data.\n\nIt's been saving me hours of boilerplate work on my own side projects.\n\nI'd love to get some eyes on it from other frontend devs.\n\n* Are there specific complex data structures or edge cases that current AI generators usually fail at for you?\n* Does the g...",
+        "inference": "Deep analysis indicates a high priority technical wall.",
+        "logic_gap": "The standard community solutions are failing due to highly custom architectural constraints mentioned in the post.",
+        "job_probability": "Community Bounty / Portfolio",
+        "hiring_urgency": "Medium",
+        "tags": [
+          "Frontend"
+        ],
+        "difficulty": "Medium",
+        "source_url": "https://reddit.com/r/reactjs/comments/1rfxfj4/i_got_tired_of_writing_massive_json_files_by_hand/",
+        "created_at": "2026-02-27T18:17:58.828022+00:00",
+        "owner_id": null,
+        "abstract": null,
+        "code_snippet": null,
+        "is_anonymous": false
+      },
+      {
+        "id": "1a7c7ecc-3bc7-472c-a14f-8335b77dbf4c",
+        "type": "scanned",
+        "source": "Reddit - r/reactjs",
+        "channel": "Plastic-North936",
+        "title": "Fetching from an API in react",
+        "signal": "so to fetch from an API in react we can either use the useEffect(), or a combination of useEffect() and useCallback(), but there is a very annoying problem that I see most of the time where we get requests duplication, even though StrictMode was already remvoed from main.tsx, then you start creating refereneces with useRef() to check if the data is stale and decide when to make the request again, especially when we have states that get intiailaized with null then becomes 0\n\nso I learned about the useQuery from TanStack, basically it is used when you want to avoid unneccery fetches like when you switch tabs , but it turned out that it sovles the whole fetches duplication issue with minimal code, so is it considered more professional to use it for API fetches everywhere, like in an AddProduct.tsx component ?...",
+        "inference": "Deep analysis indicates a high priority technical wall.",
+        "logic_gap": "The standard community solutions are failing due to highly custom architectural constraints mentioned in the post.",
+        "job_probability": "Community Bounty / Portfolio",
+        "hiring_urgency": "Medium",
+        "tags": [
+          "React"
+        ],
+        "difficulty": "Medium",
+        "source_url": "https://reddit.com/r/reactjs/comments/1rfl4wh/fetching_from_an_api_in_react/",
+        "created_at": "2026-02-27T18:17:58.828022+00:00",
+        "owner_id": null,
+        "abstract": null,
+        "code_snippet": null,
+        "is_anonymous": false
+      },
+      {
+        "id": "d5de5e27-cb3c-4d8e-8ac4-12ced79fec57",
+        "type": "scanned",
+        "source": "Reddit - r/FlutterDev",
+        "channel": "howthorn",
+        "title": "Any reliable way to export Flutter UI to Figma?",
+        "signal": "Hi everyone,\n\nI’m looking for a way to export my existing Flutter app UI into Figma so I can refine the design and share it with my designer.\n\nI’ve tried using Claude Code + Figma MCP server, but the results weren’t accurate enough (layout issues, messy layers, not very usable).\n\nIs there any reliable tool or workflow that supports Flutter → Figma conversion?\n\nEven a semi-automated approach would be helpful.\n\nI’m okay with some manual cleanup, but I’d like to avoid rebuilding everything from scratch if possible.\n\nWould really appreciate any suggestions or real-world experience. Thanks!...",
+        "inference": "Deep analysis indicates a high priority technical wall.",
+        "logic_gap": "The standard community solutions are failing due to highly custom architectural constraints mentioned in the post.",
+        "job_probability": "Community Bounty / Portfolio",
+        "hiring_urgency": "Medium",
+        "tags": [
+          "Flutter",
+          "Frontend"
+        ],
+        "difficulty": "Medium",
+        "source_url": "https://reddit.com/r/FlutterDev/comments/1rg04vc/any_reliable_way_to_export_flutter_ui_to_figma/",
+        "created_at": "2026-02-27T18:17:58.828022+00:00",
+        "owner_id": null,
+        "abstract": null,
+        "code_snippet": null,
+        "is_anonymous": false
+      },
+      {
+        "id": "0c210300-5af0-4ae1-8790-edcbcd77aa95",
+        "type": "scanned",
+        "source": "Reddit - r/FlutterDev",
+        "channel": "Savings_Film_7326",
+        "title": "Struggling to land a Flutter job for 3 months apps live on Play Store + App Store, 1+ YOE. Is the Indian Flutter market just broken for junior devs ?",
+        "signal": "Hey r/flutterdev,\n\nBeen actively job hunting for about 3 months now and genuinely curious if others are experiencing the same thing.\n\nQuick background: I've been working with Flutter seriously for over a year, have contributed to multiple production apps (some live on both Play Store and App Store), and have hands-on experience with things like BLoC, offline-first architecture, CI/CD, performance optimization, and native integrations not just tutorial-level stuff.\n\n**The pattern I keep seeing:**\n\n* Most openings ask for 3+ YOE minimum. Not mid, not senior just \"3+ years or don't bother.\"\n* The few junior/fresher-friendly postings either ghost you completely after applying or drop off after the first screening round with no feedback.\n\n**What's confusing me:** Aggregators show hundreds of Flutter listings but when you actually dig in, a huge chunk are either outdated, duplicates, or agencies fishing for CVs with no real opening behind them.\n\nIs this a supply problem (too many Flutter dev...",
+        "inference": "The project is hitting severe performance bottlenecks likely related to unoptimized rendering or queries.",
+        "logic_gap": "The standard community solutions are failing due to highly custom architectural constraints mentioned in the post.",
+        "job_probability": "Community Bounty / Portfolio",
+        "hiring_urgency": "Critical",
+        "tags": [
+          "React",
+          "Flutter",
+          "Frontend"
+        ],
+        "difficulty": "High",
+        "source_url": "https://reddit.com/r/FlutterDev/comments/1rfwe5y/struggling_to_land_a_flutter_job_for_3_months/",
+        "created_at": "2026-02-27T18:17:58.828022+00:00",
+        "owner_id": null,
+        "abstract": null,
+        "code_snippet": null,
+        "is_anonymous": false
+      },
+      {
+        "id": "3f3e8678-3bcd-4bbf-b05f-e929f1f6c4f8",
+        "type": "scanned",
+        "source": "Reddit - r/FlutterDev",
+        "channel": "Salt-Number-841",
+        "title": "Flutter &amp; Dart’s 2026 roadmap",
+        "signal": "Hey community fam 👋 — have you read the new *Flutter &amp; Dart’s 2026 roadmap* yet?\n\nlink: [https://blog.flutter.dev/flutter-darts-2026-roadmap-89378f17ebbd](https://blog.flutter.dev/flutter-darts-2026-roadmap-89378f17ebbd)\n\n\n\n**My quick takeaways (TL;DR):**\n\n* **Impeller**: finishing the migration on Android (sounds like smoother animations + less jank as the default path).\n* **Web**: **Wasm** is the direction for “native-quality” performance on web.\n* **GenUI / agentic apps**: Flutter GenUI SDK + A2UI protocol ideas for UIs that can adapt in real time.\n* **Dart runtime**: they’re exploring **interpreted bytecode** for “ephemeral” code delivery (load portions of UI/code on demand without a full app update).\n* **Full-stack Dart**: Dart Cloud Functions for Firebase + broader backend/tooling support.\n* **AI dev experience**: better tooling support for AI coding agents + MCP servers for Dart tooling.\n* **Governance / ecosystem**: design systems like **Material/Cupertino decoupling** \\+ ...",
+        "inference": "The project is hitting severe performance bottlenecks likely related to unoptimized rendering or queries.",
+        "logic_gap": "The standard community solutions are failing due to highly custom architectural constraints mentioned in the post.",
+        "job_probability": "Community Bounty / Portfolio",
+        "hiring_urgency": "Critical",
+        "tags": [
+          "Flutter",
+          "Frontend"
+        ],
+        "difficulty": "High",
+        "source_url": "https://reddit.com/r/FlutterDev/comments/1rftfok/flutter_darts_2026_roadmap/",
+        "created_at": "2026-02-27T18:17:58.828022+00:00",
+        "owner_id": null,
+        "abstract": null,
+        "code_snippet": null,
+        "is_anonymous": false
+      },
+      {
+        "id": "fee62f44-332c-4da9-9a07-792a83f51667",
+        "type": "scanned",
+        "source": "Reddit - r/FlutterDev",
+        "channel": "JustOneDevv",
+        "title": "Day 1: Flutter Build &amp; Rebuild Behavior",
+        "signal": "I want to start **learning Flutter topics in public** and thought this would be a good place to do it.\n\nI’ve been working with Flutter for a couple of years, but rebuild behavior is still something I don’t feel 100% confident about. I understand the basics, but in real apps I often wonder how much I should actually care.\n\nSo I wanted to learn from people here:  \n\\- How do you think about build and rebuilds in production apps?  \n\\- Do you optimize early or only when you see performance issues?  \n\\- Any real-world lessons you’ve learned the hard way?  \n  \nI’m here to learn, not to teach, would appreciate different perspectives....",
+        "inference": "The project is hitting severe performance bottlenecks likely related to unoptimized rendering or queries.",
+        "logic_gap": "The standard community solutions are failing due to highly custom architectural constraints mentioned in the post.",
+        "job_probability": "Community Bounty / Portfolio",
+        "hiring_urgency": "Critical",
+        "tags": [
+          "Flutter",
+          "Frontend"
+        ],
+        "difficulty": "High",
+        "source_url": "https://reddit.com/r/FlutterDev/comments/1rfjp5n/day_1_flutter_build_rebuild_behavior/",
+        "created_at": "2026-02-27T18:17:58.828022+00:00",
+        "owner_id": null,
+        "abstract": null,
+        "code_snippet": null,
+        "is_anonymous": false
+      },
+      {
+        "id": "923d237c-92f0-4fdc-8295-8852d09a2b57",
+        "type": "scanned",
+        "source": "Reddit - r/webdev",
+        "channel": "Ordinary_Student6085",
+        "title": "Minikyu - a free image compressor/converter that runs entirely in your browser.",
+        "signal": "Hey everyone,\n\n\n\nBuilt Minikyu today for fun — a free image compressor/converter that runs entirely in your browser.\n\n\n\nWhat it does:\n\n\\- Compress single images or batch compress multiple\n\n\\- Before/after slider to compare quality\n\n\\- Custom quality control\n\n\\- Convert between formats (JPEG, PNG, WebP, AVIF)\n\n\\- Resize images\n\n\\- Zero uploads — everything runs locally in your browser\n\n\\- No tracking, no account needed\n\n\n\nStill has some bugs but wanted to ship it and get feedback.\n\n\n\nWould love to know what features you'd want or what's broken.\n\n\n\nLink: [minikyu.vercel.app](http://minikyu.vercel.app)...",
+        "inference": "Deep analysis indicates a high priority technical wall.",
+        "logic_gap": "The standard community solutions are failing due to highly custom architectural constraints mentioned in the post.",
+        "job_probability": "Community Bounty / Portfolio",
+        "hiring_urgency": "Medium",
+        "tags": [
+          "Frontend"
+        ],
+        "difficulty": "Medium",
+        "source_url": "https://reddit.com/r/webdev/comments/1rge9dp/minikyu_a_free_image_compressorconverter_that/",
+        "created_at": "2026-02-27T18:17:58.828022+00:00",
+        "owner_id": null,
+        "abstract": null,
+        "code_snippet": null,
+        "is_anonymous": false
+      },
+      {
+        "id": "6a25b1eb-4c71-4b90-a222-c651f1b4e9b0",
+        "type": "scanned",
+        "source": "Reddit - r/webdev",
+        "channel": "Key_Yesterday2808",
+        "title": "How would you design a research dashboard (Bloomberg etc)",
+        "signal": "Looking for some help on how to visually design an idea I have\n\nSo the problem I am trying to solve. \"I don't want to start by searching for articles I want to start with an **entity** and work outward\"\n\n1. I type \"Anthropic\"\n2. I see a graph of related entities — OpenAI, Dario Amodei, Google, constitutional AI, etc.\n3. I click any entity or relationship and see the actual sources (articles, papers, filings) that back it up\n\nBasically: understand the landscape first, read the docs second.\n\nClosest things I've found:\n\n- **Diffbot** — knowledge graph + entity extraction, probably the closest\n\n- **Golden.com** — structured entity data but feels limited\n\n- **Exa/Metaphor** — neural search, more entity-aware than Google\n\n- **Perplexity / Elicit** — great at finding sources but not entity-centric\n\nBut if you were to design your version of this, what would you wanna see and how?...",
+        "inference": "Deep analysis indicates a high priority technical wall.",
+        "logic_gap": "The standard community solutions are failing due to highly custom architectural constraints mentioned in the post.",
+        "job_probability": "Community Bounty / Portfolio",
+        "hiring_urgency": "Medium",
+        "tags": [
+          "General Engineering"
+        ],
+        "difficulty": "Medium",
+        "source_url": "https://reddit.com/r/webdev/comments/1rgch2m/how_would_you_design_a_research_dashboard/",
+        "created_at": "2026-02-27T18:17:58.828022+00:00",
+        "owner_id": null,
+        "abstract": null,
+        "code_snippet": null,
+        "is_anonymous": false
+      },
+      {
+        "id": "4b46e38c-d84e-44da-8f4e-b39d4187d503",
+        "type": "scanned",
+        "source": "Reddit - r/webdev",
+        "channel": "Prathyush04",
+        "title": "I struggle with web development.",
+        "signal": "Hi,\n\nI'm a third year student. I've been grinding dsa for a last couple of months and I've become pretty good at it. But when it comes to web dev, i get stuck. I know the theory part. Like if someone asks me a verbal question about React or NodeJS or Spring boot....I don't wanna list all the things🫠 \n\nYeah so i know what they are, what they do and how they work. I'm just not able to put in practical. Like whenever I try to code something, i straight up go to gpt or something and ask how to do it. \n\nI wanna build stuff from scratch! Not just review the over complicated code given by an AI.\n\nPLEASE HELP!...",
+        "inference": "Deep analysis indicates a high priority technical wall.",
+        "logic_gap": "The standard community solutions are failing due to highly custom architectural constraints mentioned in the post.",
+        "job_probability": "Community Bounty / Portfolio",
+        "hiring_urgency": "Medium",
+        "tags": [
+          "React",
+          "Node.js",
+          "Frontend"
+        ],
+        "difficulty": "Medium",
+        "source_url": "https://reddit.com/r/webdev/comments/1rgbzmv/i_struggle_with_web_development/",
+        "created_at": "2026-02-27T18:17:58.828022+00:00",
+        "owner_id": null,
+        "abstract": null,
+        "code_snippet": null,
+        "is_anonymous": false
+      },
+      {
+        "id": "e3e7e89d-c135-40bb-8908-14873b7f1fdf",
+        "type": "scanned",
+        "source": "Reddit - r/webdev",
+        "channel": "Select-Print-9506",
+        "title": "What content creation productivity tools do developers use for building in public",
+        "signal": "I'm building a web app and decided to do the whole build in public thing because everyone says it helps with marketing. The problem is I'm a developer not a content creator and this is kicking my ass.\n\n\n\nI can spend 8 hours coding no problem. I enjoy it, I'm in flow state, time flies. But spending 1 hour creating social media content feels like pulling teeth. I hate it.\n\n\n\nI know what I'm supposed to do: share progress, show behind the scenes, explain technical decisions, build audience. In practice I stare at a blank text box for 20 minutes not knowing what to say or how to say it.\n\n\n\nWhen I do post something it's probably too technical or too boring because I'm writing for other developers but my audience is supposed to be potential users who aren't technical.\n\n\n\nI've posted maybe 10 times in 2 months which is terrible for build in public. My twitter has 47 followers, my project has 3 users who are friends I begged to try it.\n\n\n\nHow do developers who aren't naturally good at content ...",
+        "inference": "Deep analysis indicates a high priority technical wall.",
+        "logic_gap": "The standard community solutions are failing due to highly custom architectural constraints mentioned in the post.",
+        "job_probability": "Community Bounty / Portfolio",
+        "hiring_urgency": "Medium",
+        "tags": [
+          "Frontend"
+        ],
+        "difficulty": "Medium",
+        "source_url": "https://reddit.com/r/webdev/comments/1rgbqo8/what_content_creation_productivity_tools_do/",
+        "created_at": "2026-02-27T18:17:58.828022+00:00",
+        "owner_id": null,
+        "abstract": null,
+        "code_snippet": null,
+        "is_anonymous": false
+      },
+      {
+        "id": "c40ca4c7-ca90-4fde-9cf3-def11f6f0e5d",
+        "type": "scanned",
+        "source": "Reddit - r/webdev",
+        "channel": "xerrs_",
+        "title": "Backend devs at startups: what is the most annoying production issue you deal with weekly?",
+        "signal": "There are a lot of things going into developing a well-made, polished and production ready backend, such as security, routing, configuration and more.\n\nAs a Full-Stack Developer I have had my fair-share of struggles, like hanlding a mono-repo properly, DB migrations, or unexpected exceptions....",
+        "inference": "Deep analysis indicates a high priority technical wall.",
+        "logic_gap": "The standard community solutions are failing due to highly custom architectural constraints mentioned in the post.",
+        "job_probability": "Community Bounty / Portfolio",
+        "hiring_urgency": "Critical",
+        "tags": [
+          "General Engineering"
+        ],
+        "difficulty": "High",
+        "source_url": "https://reddit.com/r/webdev/comments/1rg8wdn/backend_devs_at_startups_what_is_the_most/",
+        "created_at": "2026-02-27T18:17:58.828022+00:00",
+        "owner_id": null,
+        "abstract": null,
+        "code_snippet": null,
+        "is_anonymous": false
+      }
+    ],
+    "error": null
+  },
+  "profiles": {
+    "data": [],
+    "error": null
+  },
+  "projects": {
+    "data": [
+      {
+        "id": "fb44674b-cd0f-4a08-9d0f-f84176456ce7",
+        "name": "ygvyugVKJGJG",
+        "description": "vlkuhkjb",
+        "is_public": true,
+        "stars": 0,
+        "contributors": 1,
+        "owner_id": "87652929-4672-40d6-b4eb-cb809a7a267c",
+        "created_at": "2026-02-27T22:56:17.104736+00:00"
+      },
+      {
+        "id": "01f137b8-7e1c-4a0a-89ec-7bd1dc612768",
+        "name": "hcfq",
+        "description": "hercjkvh",
+        "is_public": true,
+        "stars": 0,
+        "contributors": 1,
+        "owner_id": "87652929-4672-40d6-b4eb-cb809a7a267c",
+        "created_at": "2026-02-27T23:22:04.677105+00:00"
+      },
+      {
+        "id": "802041c2-2920-436c-bfda-d7758efe5cd3",
+        "name": "jfyjgkcjy",
+        "description": "vfkcgvgjh,",
+        "is_public": true,
+        "stars": 0,
+        "contributors": 1,
+        "owner_id": "87652929-4672-40d6-b4eb-cb809a7a267c",
+        "created_at": "2026-02-27T23:26:02.614627+00:00"
+      },
+      {
+        "id": "8a78ae93-677d-43c1-ad35-b701be71114d",
+        "name": "rcitiuot",
+        "description": "ifvy;glkvbj",
+        "is_public": true,
+        "stars": 0,
+        "contributors": 1,
+        "owner_id": "87652929-4672-40d6-b4eb-cb809a7a267c",
+        "created_at": "2026-02-27T23:31:46.110533+00:00"
+      },
+      {
+        "id": "c0361455-3578-4fd1-9915-fe982aa703c8",
+        "name": "hlvkbh",
+        "description": ";blhk",
+        "is_public": true,
+        "stars": 0,
+        "contributors": 1,
+        "owner_id": "87652929-4672-40d6-b4eb-cb809a7a267c",
+        "created_at": "2026-02-28T02:33:10.887674+00:00"
+      },
+      {
+        "id": "f5e0d8ab-0d89-42cf-baee-34094a096cd5",
+        "name": "hlvkbh",
+        "description": ";blhk",
+        "is_public": true,
+        "stars": 0,
+        "contributors": 1,
+        "owner_id": "87652929-4672-40d6-b4eb-cb809a7a267c",
+        "created_at": "2026-02-28T02:33:11.859438+00:00"
+      },
+      {
+        "id": "1b694cc7-a1e7-43c9-b1de-0f729c5e355f",
+        "name": "tkvesydtuyk",
+        "description": "lviuyaoefypvyosgf7qpsfy7qwvpefyowbiefuphodue",
+        "is_public": true,
+        "stars": 0,
+        "contributors": 1,
+        "owner_id": "87652929-4672-40d6-b4eb-cb809a7a267c",
+        "created_at": "2026-02-28T03:43:06.745255+00:00"
+      }
+    ],
+    "error": null
+  }
+}

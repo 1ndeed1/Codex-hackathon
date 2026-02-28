@@ -101,7 +101,7 @@ const OpportunityCard = ({ opp, onClick }) => {
                             <p style={{ fontSize: '0.9rem', color: 'var(--neon-purple)', marginBottom: '0.5rem', fontWeight: 'bold' }}>Abstract: {opp.abstract}</p>
                         )}
                         <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)', marginBottom: '1.5rem' }}>
-                            {opp.content.length > 150 ? opp.content.substring(0, 150) + '...' : opp.content}
+                            {opp.content ? (opp.content.length > 150 ? opp.content.substring(0, 150) + '...' : opp.content) : (opp.signal || "No detailed content provided.")}
                         </p>
                     </div>
                 )}
@@ -143,9 +143,9 @@ const OpportunityCard = ({ opp, onClick }) => {
                     borderTop: '1px solid var(--glass-border)'
                 }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <i className="fas fa-clock" style={{ color: accentColor, fontSize: '0.8rem' }}></i>
+                        <i className="fas fa-users" style={{ color: accentColor, fontSize: '0.8rem' }}></i>
                         <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)', textTransform: 'uppercase' }}>
-                            Urgency: {opp.hiringUrgency}
+                            Solvers: {opp.solverCount || 0}/3
                         </span>
                     </div>
                     <span style={{ color: accentColor, fontSize: '0.8rem', fontWeight: 700 }}>Inspect Opportunity &rarr;</span>
