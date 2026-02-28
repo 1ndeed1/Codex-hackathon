@@ -45,6 +45,11 @@ const Header = ({ role, setRole, identity, activeTab, setActiveTab, onProfileCli
                     Discovery Radar
                 </button>
                 <button
+                    onClick={() => setActiveTab('gapstart')}
+                    style={{ background: 'transparent', border: 'none', color: activeTab === 'gapstart' ? 'var(--neon-blue)' : 'var(--text-muted)', fontSize: '1rem', fontWeight: 'bold', cursor: 'pointer', borderBottom: activeTab === 'gapstart' ? '2px solid var(--neon-blue)' : 'none', paddingBottom: '4px' }}>
+                    GapStart
+                </button>
+                <button
                     onClick={() => setActiveTab('projects')}
                     style={{ background: 'transparent', border: 'none', color: activeTab === 'projects' ? 'var(--neon-purple)' : 'var(--text-muted)', fontSize: '1rem', fontWeight: 'bold', cursor: 'pointer', borderBottom: activeTab === 'projects' ? '2px solid var(--neon-purple)' : 'none', paddingBottom: '4px' }}>
                     Open Projects
@@ -53,6 +58,11 @@ const Header = ({ role, setRole, identity, activeTab, setActiveTab, onProfileCli
                     onClick={() => setActiveTab('community')}
                     style={{ background: 'transparent', border: 'none', color: activeTab === 'community' ? 'var(--neon-orange)' : 'var(--text-muted)', fontSize: '1rem', fontWeight: 'bold', cursor: 'pointer', borderBottom: activeTab === 'community' ? '2px solid var(--neon-orange)' : 'none', paddingBottom: '4px' }}>
                     Community
+                </button>
+                <button
+                    onClick={() => setActiveTab('activity')}
+                    style={{ background: 'transparent', border: 'none', color: activeTab === 'activity' ? 'var(--neon-green)' : 'var(--text-muted)', fontSize: '1rem', fontWeight: 'bold', cursor: 'pointer', borderBottom: activeTab === 'activity' ? '2px solid var(--neon-green)' : 'none', paddingBottom: '4px' }}>
+                    Activity
                 </button>
             </div>
 

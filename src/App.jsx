@@ -14,6 +14,8 @@ import ProjectDetail from './components/ProjectDetail';
 import ProfilesDirectory from './components/ProfilesDirectory';
 import SponsorDashboard from './components/SponsorDashboard';
 import ProducerDashboard from './components/ProducerDashboard';
+import ActivityDashboard from './components/ActivityDashboard';
+import GapStartDashboard from './components/GapStartDashboard';
 import { fetchOpportunities, simulateBackgroundScan } from './services/discovery_service';
 
 function App() {
@@ -28,7 +30,7 @@ function App() {
   // New States for Auth & Projects
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [currentUser, setCurrentUser] = useState('');
-  const [activeTab, setActiveTab] = useState('radar'); // 'radar', 'projects'
+  const [activeTab, setActiveTab] = useState('radar'); // 'radar', 'projects', 'community', 'activity', 'gapstart'
   const [selectedProject, setSelectedProject] = useState(null);
 
   const [identity, setIdentity] = useState({
@@ -364,6 +366,14 @@ function App() {
 
         {activeTab === 'community' && (
           <ProfilesDirectory onProfileSelect={(id) => setShowProfile(id)} />
+        )}
+
+        {activeTab === 'activity' && (
+          <ActivityDashboard identity={identity} />
+        )}
+
+        {activeTab === 'gapstart' && (
+          <GapStartDashboard identity={identity} />
         )}
       </main>
 

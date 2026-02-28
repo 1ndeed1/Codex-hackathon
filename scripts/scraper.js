@@ -14,20 +14,32 @@ if (!SUPABASE_URL || !SUPABASE_KEY || SUPABASE_URL === 'YOUR_SUPABASE_URL') {
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
-const SUBREDDITS = ['reactjs', 'FlutterDev', 'webdev'];
-const POSTS_LIMIT = 20;
+const SUBREDDITS = ['reactjs', 'FlutterDev', 'webdev', 'javascript', 'programming'];
+const POSTS_LIMIT = 30;
 
 /**
- * Super naive heuristic "Analysis" engine.
- * In production, you would run the `selftext` through an LLM (like Gemini or OpenAI)
- * to perfectly extract the logicGap, inference, and calculate difficulty.
+ * Enhanced Heuristic Analysis
  */
 function analyzePost(title, selftext) {
-    const text = (title + " " + selftext).toLowerCase();
+    const text = (title + " " + (selftext || "")).toLowerCase();
 
-    // Check if it's a complaint/bug report
-    if (!text.includes('bug') && !text.includes('error') && !text.includes('help') && !text.includes('issue') && !text.includes('crash')) {
-        return null; // Ignore normal posts, only look for problems
+    // Filter for "Significant" problems - looking for scale and impact
+    const isSignificant = 
+        text.includes('global') || 
+        text.includes('everyone') || 
+        text.includes('widespread') || 
+        text.includes('critical') || 
+        text.includes('production') || 
+        text.includes('outage') || 
+        text.includes('security') || 
+        text.includes('data loss') ||
+        text.includes('broken for all');
+
+    if (!isSignificant) return null;
+
+    // Ignore trivial/common setup problems
+    if (text.includes('how to install') || text.includes('beginner help') || text.includes('tutorial')) {
+        return null;
     }
 
     // Determine Tags
@@ -37,25 +49,19 @@ function analyzePost(title, selftext) {
     if (text.includes('node')) tags.push('Node.js');
     if (text.includes('database') || text.includes('sql')) tags.push('Database');
     if (text.includes('ui') || text.includes('css')) tags.push('Frontend');
+    if (text.includes('ios') || text.includes('android') || text.includes('app store') || text.includes('play store')) tags.push('Mobile');
     if (tags.length === 0) tags.push('General Engineering');
 
-    // Simulate AI inference
-    let inference = "Deep analysis indicates a high priority technical wall.";
-    if (text.includes('performance') || text.includes('slow')) inference = "The project is hitting severe performance bottlenecks likely related to unoptimized rendering or queries.";
-    if (text.includes('memory') || text.includes('leak')) inference = "Massive opportunity to fix memory management issues deeply embedded in their logic.";
-
-    let difficulty = "Medium";
-    let hiringUrgency = "Medium";
-    if (text.includes('production') || text.includes('urgent') || text.includes('crash')) {
-        difficulty = "High";
-        hiringUrgency = "Critical";
-    }
+    // AI Inference simulation
+    let inference = "Deep architectural flaw detected.";
+    if (text.includes('performance') || text.includes('slow')) inference = "Scaling bottleneck affecting global user base.";
+    if (text.includes('security') || text.includes('vulnerability')) inference = "Critical security exposure requiring immediate patch.";
 
     return {
         inference,
-        logic_gap: "The standard community solutions are failing due to highly custom architectural constraints mentioned in the post.",
-        difficulty,
-        hiring_urgency: hiringUrgency,
+        logic_gap: "Existing community patches are insufficient for this scale.",
+        difficulty: text.includes('critical') ? 'Extreme' : 'High',
+        hiring_urgency: 'Critical',
         tags
     };
 }
@@ -70,27 +76,21 @@ async function scrapeReddit() {
             const response = await fetch(`https://www.reddit.com/r/${sub}/new.json?limit=${POSTS_LIMIT}`);
             const data = await response.json();
 
-            if (!data.data || !data.data.children) {
-                console.warn(`⚠️ Failed to parse data from r/${sub}`);
-                continue;
-            }
+            if (!data.data || !data.data.children) continue;
 
             for (const child of data.data.children) {
                 const post = child.data;
-                // Only self posts (text), ignore link posts/images
-                if (!post.is_self || !post.selftext) continue;
-
                 const analysis = analyzePost(post.title, post.selftext);
                 if (analysis) {
                     opportunities.push({
                         type: 'scanned',
                         source: `Reddit - r/${sub}`,
                         channel: post.author,
-                        title: post.title.substring(0, 250), // Postgres limit protection
-                        signal: post.selftext.substring(0, 1000) + '...', // Don't store massive posts raw
+                        title: post.title.substring(0, 250),
+                        signal: (post.selftext || "").substring(0, 1000),
                         inference: analysis.inference,
                         logic_gap: analysis.logic_gap,
-                        job_probability: 'Community Bounty / Portfolio',
+                        job_probability: 'High Visibility Bounty',
                         hiring_urgency: analysis.hiring_urgency,
                         tags: analysis.tags,
                         difficulty: analysis.difficulty,
@@ -99,35 +99,94 @@ async function scrapeReddit() {
                 }
             }
         } catch (err) {
-            console.error(`❌ Error scraping r/${sub}:`, err.message);
+            console.error(`❌ Reddit Error (${sub}):`, err.message);
         }
     }
-
     return opportunities;
 }
 
-async function run() {
-    const opportunities = await scrapeReddit();
+// Simulated search-based discovery for other platforms
+async function searchWebForProblems() {
+    console.log('🔍 Searching Web (X, LinkedIn, App Stores)...');
+    const searchOpportunities = [];
+    
+    // In a real implementation, this would use a Search API or Scraper Service
+    // For this hackathon demo, we simulate the results from high-intent searches
+    const mockSearchResults = [
+        {
+            source: 'X (Twitter)',
+            title: 'Global Outage in FinTech App Sync',
+            signal: 'Every user is seeing a 403 error during ledger sync. Team is silent.',
+            url: 'https://x.com/status/123456789'
+        },
+        {
+            source: 'App Store Reviews',
+            title: 'Native Crash on iOS 18.2',
+            signal: 'The latest update causes a crash at launch for all iPhone 15 users.',
+            url: 'https://apps.apple.com/app/id12345/reviews'
+        }
+    ];
 
-    if (opportunities.length === 0) {
-        console.log('📉 No actionable problems found in this scan.');
+    for (const res of mockSearchResults) {
+        const analysis = analyzePost(res.title, res.signal);
+        if (analysis) {
+            searchOpportunities.push({
+                type: 'scanned',
+                source: res.source,
+                channel: 'Global Monitoring',
+                title: res.title,
+                signal: res.signal,
+                inference: analysis.inference,
+                logic_gap: analysis.logic_gap,
+                job_probability: 'Immediate Crisis Need',
+                hiring_urgency: analysis.hiring_urgency,
+                tags: analysis.tags,
+                difficulty: analysis.difficulty,
+                source_url: res.url
+            });
+        }
+    }
+    return searchOpportunities;
+}
+
+async function run() {
+    const redditOps = await scrapeReddit();
+    const searchOps = await searchWebForProblems();
+    const allOpportunities = [...redditOps, ...searchOps];
+
+    if (allOpportunities.length === 0) {
+        console.log('📉 No critical problems found.');
         process.exit(0);
     }
 
-    console.log(`✅ Scraped and analyzed ${opportunities.length} potential opportunities.`);
-    console.log('💾 Inserting into Supabase...');
+    console.log(`✅ Found ${allOpportunities.length} high-impact problems.`);
 
-    const { data, error } = await supabase
-        .from('opportunities')
-        .insert(opportunities)
-        .select();
+    for (const op of allOpportunities) {
+        // Duplicate check: Check if URL already exists
+        const { data: existing } = await supabase
+            .from('opportunities')
+            .select('id')
+            .eq('source_url', op.source_url)
+            .single();
 
-    if (error) {
-        console.error('❌ Supabase Insert Error:', error);
-    } else {
-        console.log(`🎉 Successfully inserted ${data.length} new records into the database!`);
+        if (existing) {
+            console.log(`⏭️ Skipping duplicate: ${op.source_url}`);
+            continue;
+        }
+
+        const { error } = await supabase.from('opportunities').insert(op);
+        if (error) {
+            if (error.code === '23505') {
+                console.log(`⏭️ Duplicate prevented by DB: ${op.source_url}`);
+            } else {
+                console.error('❌ Insert Error:', error.message);
+            }
+        } else {
+            console.log(`🎉 New Problem Captured: ${op.title}`);
+        }
     }
 
+    console.log('🚀 Scan Complete.');
     process.exit(0);
 }
 

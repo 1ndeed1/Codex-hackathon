@@ -10,6 +10,7 @@ const EngineerProfile = ({ userId, currentUser, onClose, identity, onProfileUpda
     const [profileData, setProfileData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [isEditingProfile, setIsEditingProfile] = useState(false);
+    const [viewingSolution, setViewingSolution] = useState(null);
 
     const isOwnProfile = currentUser && currentUser.id === userId;
 
@@ -21,13 +22,18 @@ const EngineerProfile = ({ userId, currentUser, onClose, identity, onProfileUpda
             const pData = (pList && pList.length > 0) ? pList[0] : null;
 
             const { data: sData } = await supabase.from('solutions')
-                .select('*, opportunities!opportunity_id(title)')
+                .select('*, opportunities!opportunity_id(title, signal)')
                 .eq('user_id', userId)
-                .eq('status', 'accepted');
+                .order('created_at', { ascending: false });
 
             const proofs = (sData || []).map(sol => ({
+                id: sol.id,
                 title: sol.opportunities?.title || "Unknown Mission",
-                optimization: sol.content.substring(0, 50) + '...'
+                taskSignal: sol.opportunities?.signal || "",
+                content: sol.content,
+                status: sol.status,
+                date: new Date(sol.created_at).toLocaleString(),
+                optimization: sol.content.substring(0, 100) + '...'
             }));
 
             setProfileData({
@@ -191,10 +197,18 @@ It's amazing what we can achieve when we solve problems proactively. Code is pub
                                     padding: '1.5rem',
                                     position: 'relative'
                                 }}>
-                                    <i className="fas fa-certificate" style={{ position: 'absolute', top: '15px', right: '15px', color: 'var(--neon-blue)' }}></i>
+                                    <i className="fas fa-certificate" style={{ position: 'absolute', top: '15px', right: '15px', color: proof.status === 'accepted' ? 'var(--neon-blue)' : 'var(--text-muted)' }}></i>
                                     <h4 style={{ fontSize: '1rem', marginBottom: '0.5rem' }}>{proof.title}</h4>
-                                    <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: '1rem', whiteSpace: 'pre-wrap' }}>Impact or Snippet: {proof.optimization}</p>
-                                    <div style={{ fontSize: '0.7rem', color: 'var(--neon-blue)', fontWeight: 800 }}>STATUS: VERIFIED BY SYSTEM</div>
+                                    <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', marginBottom: '0.8rem' }}>Submitted: {proof.date}</div>
+                                    <p style={{ fontSize: '0.85rem', color: 'var(--text-main)', marginBottom: '1rem', whiteSpace: 'pre-wrap' }}>{proof.optimization}</p>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                        <div style={{ fontSize: '0.7rem', color: proof.status === 'accepted' ? 'var(--neon-blue)' : 'var(--neon-orange)', fontWeight: 800 }}>STATUS: {proof.status.toUpperCase()}</div>
+                                        <button
+                                            onClick={() => setViewingSolution(proof)}
+                                            style={{ background: 'transparent', border: '1px solid var(--neon-blue)', color: 'var(--neon-blue)', padding: '4px 12px', borderRadius: '4px', fontSize: '0.7rem', cursor: 'pointer' }}>
+                                            View Full Solution
+                                        </button>
+                                    </div>
                                 </div>
                             )) : (
                                 <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '3rem', border: '1px dashed var(--glass-border)', borderRadius: '20px' }}>
@@ -244,6 +258,33 @@ It's amazing what we can achieve when we solve problems proactively. Code is pub
                             setProfileData(prev => ({ ...prev, name: updatedData.username, bio: updatedData.bio, role: updatedData.role }));
                         }}
                     />
+                )}
+
+                {viewingSolution && (
+                    <div style={{
+                        position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%, -50%)',
+                        background: 'var(--bg-dark)', border: '1px solid var(--neon-blue)', borderRadius: '16px', padding: '2rem',
+                        width: '90%', maxWidth: '700px', zIndex: 1200, maxHeight: '80vh', overflowY: 'auto', boxShadow: '0 0 40px rgba(0, 242, 255, 0.2)'
+                    }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+                            <h3 style={{ color: 'white', margin: 0 }}>Solution for: {viewingSolution.title}</h3>
+                            <button onClick={() => setViewingSolution(null)} style={{ background: 'transparent', border: 'none', color: 'var(--text-muted)', fontSize: '1.5rem', cursor: 'pointer' }}>&times;</button>
+                        </div>
+                        <div style={{ marginBottom: '1.5rem' }}>
+                            <h4 style={{ color: 'var(--neon-blue)', fontSize: '0.8rem', textTransform: 'uppercase', marginBottom: '0.5rem' }}>Mission Context</h4>
+                            <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)' }}>{viewingSolution.taskSignal}</p>
+                        </div>
+                        <div style={{ marginBottom: '1.5rem' }}>
+                            <h4 style={{ color: 'var(--neon-green)', fontSize: '0.8rem', textTransform: 'uppercase', marginBottom: '0.5rem' }}>Submitted Solution</h4>
+                            <div style={{ background: 'rgba(0,0,0,0.5)', padding: '1rem', borderRadius: '8px', borderLeft: '4px solid var(--neon-green)', whiteSpace: 'pre-wrap', color: 'white', fontSize: '0.9rem', fontFamily: 'monospace' }}>
+                                {viewingSolution.content}
+                            </div>
+                        </div>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.8rem' }}>
+                            <span style={{ color: 'var(--text-muted)' }}>Submitted on {viewingSolution.date}</span>
+                            <span style={{ color: viewingSolution.status === 'accepted' ? 'var(--neon-blue)' : 'var(--neon-orange)', fontWeight: 700 }}>STATUS: {viewingSolution.status.toUpperCase()}</span>
+                        </div>
+                    </div>
                 )}
             </div>
         </div>
