@@ -163,7 +163,29 @@ const Pathfinder = () => {
                                         <p style={{ margin: 0, fontWeight: 'bold', fontSize: '1.2rem', color: 'var(--neon-green)' }}>{domainDetails.liveStats.hiringIntent}</p>
                                     </div>
                                     <div style={{ flex: 1, textAlign: 'right', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-                                        <p style={{ margin: 0, fontSize: '0.9rem', color: 'var(--text-muted)' }}>Scraped via: {domainDetails.sources.join(', ')}</p>
+                                        <p style={{ margin: '0 0 5px 0', fontSize: '0.9rem', color: 'var(--text-muted)' }}>Sources & Evidence:</p>
+                                        <div style={{ display: 'flex', gap: '10px', justifyContent: 'flex-end', flexWrap: 'wrap' }}>
+                                            {domainDetails.sources.map((src, idx) => (
+                                                <a
+                                                    key={idx}
+                                                    href={src.url}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    style={{
+                                                        fontSize: '0.8rem',
+                                                        color: domainDetails.color,
+                                                        textDecoration: 'none',
+                                                        background: `${domainDetails.color}15`,
+                                                        padding: '2px 8px',
+                                                        borderRadius: '4px',
+                                                        border: `1px solid ${domainDetails.color}30`
+                                                    }}
+                                                >
+                                                    <i className="fas fa-external-link-alt" style={{ fontSize: '0.7rem', marginRight: '4px' }}></i>
+                                                    {src.name}
+                                                </a>
+                                            ))}
+                                        </div>
                                     </div>
                                 </div>
 

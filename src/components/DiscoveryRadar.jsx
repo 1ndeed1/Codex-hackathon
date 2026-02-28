@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 
 const DiscoveryRadar = () => {
     const [activeSource, setActiveSource] = useState('GitHub');
-    const sources = ['GitHub', 'Career Pages', 'Startup Blogs', 'Twitter (X)', 'Discord', 'Quora'];
+    const sources = ['GitHub', 'Career Pages', 'Medium Blogs', 'Twitter (X)', 'Discord', 'Quora', 'Reddit', 'StackOverflow', 'AWS Community'];
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -31,8 +31,12 @@ const DiscoveryRadar = () => {
                 animation: 'pulse 1.5s infinite'
             }}></div>
             <div style={{ fontSize: '0.8rem', fontWeight: 600 }}>
-                <span style={{ color: 'var(--text-muted)' }}>Discovery Radar Active:</span>
-                <span style={{ color: 'var(--neon-blue)', marginLeft: '8px' }}>Scanning {activeSource}...</span>
+                <span style={{ color: 'var(--text-muted)' }}>Discovery Radar:</span>
+                <span style={{ color: 'var(--neon-blue)', marginLeft: '8px' }}>
+                    {activeSource.includes('GitHub') || activeSource.includes('StackOverflow')
+                        ? `Live Scraping ${activeSource} API...`
+                        : `Mining simulated ${activeSource} context...`}
+                </span>
             </div>
 
             <style>{`
