@@ -373,8 +373,8 @@ const IngenuityDetail = ({ task, role, identity, onClose, onReward, onDelete, on
                                 {isScanned ? 'Public Complaint/Review Signal' : 'Public Signal Detected'}
                             </label>
                             <p style={{ color: 'var(--text-main)', fontStyle: 'italic', marginTop: '4px', fontSize: '0.95rem' }}>"{task.signal}"</p>
-                            {task.sourceUrl && (
-                                <a href={task.sourceUrl} target="_blank" rel="noopener noreferrer" style={{ display: 'inline-block', marginTop: '12px', fontSize: '0.8rem', color: accentColor, textDecoration: 'none', fontWeight: 'bold' }}>
+                            {(task.sourceUrl || task.source_url) && (
+                                <a href={task.sourceUrl || task.source_url} target="_blank" rel="noopener noreferrer" style={{ display: 'inline-block', marginTop: '12px', fontSize: '0.8rem', color: accentColor, textDecoration: 'none', fontWeight: 'bold' }}>
                                     <i className="fas fa-external-link-alt"></i> View Original Source
                                 </a>
                             )}

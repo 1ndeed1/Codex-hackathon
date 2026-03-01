@@ -96,7 +96,7 @@ const OpportunityCard = ({ opp, onClick }) => {
                             <i className={getPlatformIcon(opp.source)} style={{ color: accentColor, marginRight: '8px' }}></i>
                             {opp.source} / {opp.channel}
                         </span>
-                        {(isMined || isScanned || (opp.type === 'direct' && opp.sourceUrl)) && (
+                        {(isMined || isScanned || (opp.type === 'direct' && (opp.sourceUrl || opp.source_url))) && (
                             <div className="verified-tooltip-container" style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
                                 <div style={{
                                     width: '10px',
@@ -160,9 +160,9 @@ const OpportunityCard = ({ opp, onClick }) => {
                         <p style={{ fontSize: '0.9rem', fontStyle: 'italic', color: 'var(--text-main)', margin: 0, lineHeight: '1.6' }}>
                             "{opp.signal || opp.abstract || "No detailed signal metadata available."}"
                         </p>
-                        {opp.sourceUrl && (
+                        {(opp.sourceUrl || opp.source_url) && (
                             <div style={{ marginTop: '12px' }}>
-                                <a href={opp.sourceUrl} target="_blank" rel="noopener noreferrer"
+                                <a href={opp.sourceUrl || opp.source_url} target="_blank" rel="noopener noreferrer"
                                     onClick={(e) => e.stopPropagation()}
                                     style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '0.75rem', color: accentColor, textDecoration: 'none', fontWeight: 700 }}>
                                     <i className="fas fa-external-link-alt"></i> Trace Source Signal
