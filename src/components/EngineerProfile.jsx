@@ -153,150 +153,168 @@ It's amazing what we can achieve when we solve problems proactively. Code is pub
                         <i className="fas fa-spinner fa-spin" style={{ fontSize: '3rem' }}></i>
                     </div>
                 ) : profileData ? (
-                    <>
-                        <div style={{ display: 'flex', gap: '2rem', alignItems: 'center', marginBottom: '3rem' }}>
-                            <div style={{
-                                width: '100px', height: '100px', background: 'var(--accent-gradient)',
-                                borderRadius: '24px', display: 'flex', justifyContent: 'center',
-                                alignItems: 'center', fontSize: '2.5rem', color: 'white', fontWeight: 800
-                            }}>
-                                {profileData.name.substring(0, 2).toUpperCase()}
-                            </div>
-                            <div style={{ flex: 1 }}>
-                                <h2 style={{ fontSize: '2rem', marginBottom: '0.2rem', display: 'flex', alignItems: 'center', gap: '10px', color: 'var(--text-main)' }}>
-                                    @{profileData.name}
-                                    <span style={{ fontSize: '0.7rem', padding: '4px 10px', borderRadius: '6px', background: 'rgba(0,0,0,0.05)', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 600 }}>
-                                        {profileData.role}
-                                    </span>
-                                </h2>
-                                <p style={{ color: 'var(--text-main)', fontSize: '0.9rem', marginBottom: '1rem', fontStyle: 'italic', maxWidth: '500px', opacity: 0.8 }}>"{profileData.bio}"</p>
-                                <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap', marginBottom: '1.2rem' }}>
-                                    <span style={{ color: 'var(--neon-blue)', fontWeight: 700, fontSize: '0.9rem' }}>{profileData.tier} Rank</span>
-                                    <span style={{ color: 'var(--neon-purple)', fontWeight: 700, fontSize: '0.9rem' }}>{profileData.vouches} Logic Vouches</span>
-                                    <span style={{ color: 'var(--neon-orange)', fontWeight: 700, fontSize: '0.9rem' }}>{profileData.experience}Y EXP</span>
-                                    <span style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}><i className="fas fa-location-dot"></i> {profileData.location}</span>
+                    isEditingProfile ? (
+                        <ProfileSettings
+                            identity={identity}
+                            onClose={() => setIsEditingProfile(false)}
+                            onUpdate={(updatedData) => {
+                                if (onProfileUpdate) onProfileUpdate(updatedData);
+                                setProfileData(prev => ({
+                                    ...prev,
+                                    name: updatedData.username || updatedData.name,
+                                    bio: updatedData.bio,
+                                    role: updatedData.role,
+                                    location: updatedData.location,
+                                    experience: updatedData.experience_years
+                                }));
+                            }}
+                        />
+                    ) : (
+                        <>
+                            <div style={{ display: 'flex', gap: '2rem', alignItems: 'center', marginBottom: '3rem' }}>
+                                <div style={{
+                                    width: '100px', height: '100px', background: 'var(--accent-gradient)',
+                                    borderRadius: '24px', display: 'flex', justifyContent: 'center',
+                                    alignItems: 'center', fontSize: '2.5rem', color: 'white', fontWeight: 800
+                                }}>
+                                    {profileData.name.substring(0, 2).toUpperCase()}
                                 </div>
-                                <div style={{ display: 'flex', gap: '24px', flexWrap: 'wrap', marginBottom: '1.5rem', alignItems: 'center' }}>
-                                    {profileData.role === 'engineer' && (
-                                        <>
-                                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                                <i className="fas fa-check-circle" style={{ color: 'var(--neon-green)', fontSize: '0.8rem' }}></i>
-                                                <span style={{ color: 'var(--text-main)', fontSize: '0.9rem', fontWeight: 600 }}>{profileData.proofs?.length || 0} Problems Solved</span>
-                                            </div>
-                                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                                <i className="fas fa-brain" style={{ color: 'var(--neon-purple)', fontSize: '0.8rem' }}></i>
-                                                <span style={{ color: 'var(--text-main)', fontSize: '0.9rem', fontWeight: 600 }}>{profileData.avgIngenuityScore || 0}% AI Ingenuity</span>
-                                            </div>
-                                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                                <i className="fas fa-chart-pie" style={{ color: 'var(--neon-blue)', fontSize: '0.8rem' }}></i>
-                                                <span style={{ color: 'var(--text-main)', fontSize: '0.9rem', fontWeight: 600 }}>92% Acceptance Rate</span>
-                                            </div>
-                                        </>
-                                    )}
-                                    <div style={{ display: 'flex', gap: '15px', borderLeft: '1px solid var(--glass-border)', paddingLeft: '24px' }}>
-                                        {profileData.github && (
-                                            <a href={profileData.github} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--text-muted)', textDecoration: 'none', fontSize: '0.9rem', transition: 'color 0.2s' }} onMouseOver={e => e.currentTarget.style.color = 'var(--text-main)'} onMouseOut={e => e.currentTarget.style.color = 'var(--text-muted)'}>
-                                                <i className="fab fa-github" style={{ marginRight: '6px' }}></i> GitHub
-                                            </a>
+                                <div style={{ flex: 1 }}>
+                                    <h2 style={{ fontSize: '2rem', marginBottom: '0.2rem', display: 'flex', alignItems: 'center', gap: '10px', color: 'var(--text-main)' }}>
+                                        @{profileData.name}
+                                        <span style={{ fontSize: '0.7rem', padding: '4px 10px', borderRadius: '6px', background: 'rgba(0,0,0,0.05)', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 600 }}>
+                                            {profileData.role}
+                                        </span>
+                                    </h2>
+                                    <p style={{ color: 'var(--text-main)', fontSize: '0.9rem', marginBottom: '1rem', fontStyle: 'italic', maxWidth: '500px', opacity: 0.8 }}>"{profileData.bio}"</p>
+                                    <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap', marginBottom: '1.2rem' }}>
+                                        <span style={{ color: 'var(--neon-blue)', fontWeight: 700, fontSize: '0.9rem' }}>{profileData.tier} Rank</span>
+                                        <span style={{ color: 'var(--neon-purple)', fontWeight: 700, fontSize: '0.9rem' }}>{profileData.vouches} Logic Vouches</span>
+                                        <span style={{ color: 'var(--neon-orange)', fontWeight: 700, fontSize: '0.9rem' }}>{profileData.experience}Y EXP</span>
+                                        <span style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}><i className="fas fa-location-dot"></i> {profileData.location}</span>
+                                    </div>
+                                    <div style={{ display: 'flex', gap: '24px', flexWrap: 'wrap', marginBottom: '1.5rem', alignItems: 'center' }}>
+                                        {profileData.role === 'engineer' && (
+                                            <>
+                                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                                    <i className="fas fa-check-circle" style={{ color: 'var(--neon-green)', fontSize: '0.8rem' }}></i>
+                                                    <span style={{ color: 'var(--text-main)', fontSize: '0.9rem', fontWeight: 600 }}>{profileData.proofs?.length || 0} Problems Solved</span>
+                                                </div>
+                                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                                    <i className="fas fa-brain" style={{ color: 'var(--neon-purple)', fontSize: '0.8rem' }}></i>
+                                                    <span style={{ color: 'var(--text-main)', fontSize: '0.9rem', fontWeight: 600 }}>{profileData.avgIngenuityScore || 0}% AI Ingenuity</span>
+                                                </div>
+                                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                                    <i className="fas fa-chart-pie" style={{ color: 'var(--neon-blue)', fontSize: '0.8rem' }}></i>
+                                                    <span style={{ color: 'var(--text-main)', fontSize: '0.9rem', fontWeight: 600 }}>92% Acceptance Rate</span>
+                                                </div>
+                                            </>
                                         )}
-                                        {profileData.portfolio && (
-                                            <a href={profileData.portfolio} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--text-muted)', textDecoration: 'none', fontSize: '0.9rem', transition: 'color 0.2s' }} onMouseOver={e => e.currentTarget.style.color = 'var(--text-main)'} onMouseOut={e => e.currentTarget.style.color = 'var(--text-muted)'}>
-                                                <i className="fas fa-globe" style={{ marginRight: '6px' }}></i> Portfolio
-                                            </a>
-                                        )}
+                                        <div style={{ display: 'flex', gap: '15px', borderLeft: '1px solid var(--glass-border)', paddingLeft: '24px' }}>
+                                            {profileData.github && (
+                                                <a href={profileData.github} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--text-muted)', textDecoration: 'none', fontSize: '0.9rem', transition: 'color 0.2s' }} onMouseOver={e => e.currentTarget.style.color = 'var(--text-main)'} onMouseOut={e => e.currentTarget.style.color = 'var(--text-muted)'}>
+                                                    <i className="fab fa-github" style={{ marginRight: '6px' }}></i> GitHub
+                                                </a>
+                                            )}
+                                            {profileData.portfolio && (
+                                                <a href={profileData.portfolio} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--text-muted)', textDecoration: 'none', fontSize: '0.9rem', transition: 'color 0.2s' }} onMouseOver={e => e.currentTarget.style.color = 'var(--text-main)'} onMouseOut={e => e.currentTarget.style.color = 'var(--text-muted)'}>
+                                                    <i className="fas fa-globe" style={{ marginRight: '6px' }}></i> Portfolio
+                                                </a>
+                                            )}
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
 
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', minWidth: '160px' }}>
-                                {isOwnProfile ? (
-                                    <>
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', minWidth: '160px' }}>
+                                    {isOwnProfile ? (
+                                        <>
+                                            <button
+                                                onClick={() => setIsEditingProfile(true)}
+                                                style={{ background: 'white', color: 'var(--text-main)', border: '1px solid var(--glass-border)', padding: '12px 24px', borderRadius: '14px', cursor: 'pointer', fontWeight: 700, transition: 'all 0.2s', boxShadow: '0 2px 8px rgba(0,0,0,0.05)', display: 'flex', alignItems: 'center', gap: '8px', justifyContent: 'center' }}
+                                                onMouseOver={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 5px 15px rgba(0,0,0,0.08)'; }}
+                                                onMouseOut={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 2px 8px rgba(0,0,0,0.05)'; }}
+                                            >
+                                                <i className="fas fa-cog"></i> Edit Profile
+                                            </button>
+                                            <button
+                                                onClick={handlePublishToLinkedIn}
+                                                style={{ background: '#0077b5', color: 'white', border: 'none', padding: '12px 24px', borderRadius: '14px', cursor: 'pointer', fontWeight: 700, transition: 'all 0.2s', boxShadow: '0 4px 12px rgba(0, 119, 181, 0.2)', display: 'flex', alignItems: 'center', gap: '8px', justifyContent: 'center' }}
+                                                onMouseOver={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 8px 20px rgba(0, 119, 181, 0.3)'; }}
+                                                onMouseOut={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 119, 181, 0.2)'; }}
+                                            >
+                                                <i className="fab fa-linkedin"></i> Share Stats
+                                            </button>
+                                        </>
+                                    ) : (profileData.role === 'producer' && myProjects.length > 0) && (
                                         <button
-                                            onClick={() => setIsEditingProfile(true)}
-                                            style={{ background: 'white', color: 'var(--text-main)', border: '1px solid var(--glass-border)', padding: '12px 24px', borderRadius: '14px', cursor: 'pointer', fontWeight: 700, transition: 'all 0.2s', boxShadow: '0 2px 8px rgba(0,0,0,0.05)', display: 'flex', alignItems: 'center', gap: '8px', justifyContent: 'center' }}
-                                            onMouseOver={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 5px 15px rgba(0,0,0,0.08)'; }}
-                                            onMouseOut={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 2px 8px rgba(0,0,0,0.05)'; }}
+                                            onClick={() => setShowProposalModal(true)}
+                                            style={{ background: 'var(--neon-purple)', color: 'white', border: 'none', padding: '12px 24px', borderRadius: '14px', cursor: 'pointer', fontWeight: 700, transition: 'all 0.2s', boxShadow: '0 4px 15px rgba(188, 19, 254, 0.2)', display: 'flex', alignItems: 'center', gap: '8px', justifyContent: 'center' }}
+                                            onMouseOver={e => e.currentTarget.style.transform = 'translateY(-2px)'}
+                                            onMouseOut={e => e.currentTarget.style.transform = 'translateY(0)'}
                                         >
-                                            <i className="fas fa-cog"></i> Edit Profile
+                                            <i className="fas fa-file-export"></i> Send Proposal
                                         </button>
-                                        <button
-                                            onClick={handlePublishToLinkedIn}
-                                            style={{ background: '#0077b5', color: 'white', border: 'none', padding: '12px 24px', borderRadius: '14px', cursor: 'pointer', fontWeight: 700, transition: 'all 0.2s', boxShadow: '0 4px 12px rgba(0, 119, 181, 0.2)', display: 'flex', alignItems: 'center', gap: '8px', justifyContent: 'center' }}
-                                            onMouseOver={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 8px 20px rgba(0, 119, 181, 0.3)'; }}
-                                            onMouseOut={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 119, 181, 0.2)'; }}
-                                        >
-                                            <i className="fab fa-linkedin"></i> Share Stats
-                                        </button>
-                                    </>
-                                ) : (profileData.role === 'producer' && myProjects.length > 0) && (
-                                    <button
-                                        onClick={() => setShowProposalModal(true)}
-                                        style={{ background: 'var(--neon-purple)', color: 'white', border: 'none', padding: '12px 24px', borderRadius: '14px', cursor: 'pointer', fontWeight: 700, transition: 'all 0.2s', boxShadow: '0 4px 15px rgba(188, 19, 254, 0.2)', display: 'flex', alignItems: 'center', gap: '8px', justifyContent: 'center' }}
-                                        onMouseOver={e => e.currentTarget.style.transform = 'translateY(-2px)'}
-                                        onMouseOut={e => e.currentTarget.style.transform = 'translateY(0)'}
-                                    >
-                                        <i className="fas fa-file-export"></i> Send Proposal
-                                    </button>
-                                )}
-                            </div>
-                        </div>
-
-                        <h3 style={{ fontSize: '1.2rem', marginBottom: '1.8rem', textTransform: 'uppercase', letterSpacing: '2px', color: 'var(--text-muted)', borderBottom: '1px solid var(--glass-border)', paddingBottom: '1rem' }}>Verified Solutions & Architecture</h3>
-                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '1.5rem' }}>
-                            {profileData.proofs.map((proof, i) => (
-                                <div key={i} style={{ background: 'white', border: '1px solid var(--glass-border)', borderRadius: '24px', padding: '1.8rem', transition: 'all 0.3s', boxShadow: '0 4px 20px rgba(0,0,0,0.03)' }} onMouseOver={e => { e.currentTarget.style.borderColor = 'var(--neon-blue)'; e.currentTarget.style.boxShadow = '0 8px 30px rgba(0, 142, 204, 0.1)'; }} onMouseOut={e => { e.currentTarget.style.borderColor = 'var(--glass-border)'; e.currentTarget.style.boxShadow = '0 4px 20px rgba(0,0,0,0.03)'; }}>
-                                    <h4 style={{ fontSize: '1.1rem', marginBottom: '0.8rem', color: 'var(--text-main)' }}>{proof.title}</h4>
-                                    <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)', marginBottom: '1.5rem', lineHeight: '1.6' }}>{proof.optimization}</p>
-                                    <button onClick={() => setViewingSolution(proof)} style={{ background: 'transparent', border: '1px solid var(--neon-blue)', color: 'var(--neon-blue)', padding: '6px 16px', borderRadius: '8px', fontSize: '0.8rem', cursor: 'pointer', fontWeight: 700, transition: 'all 0.2s' }} onMouseOver={e => { e.currentTarget.style.background = 'var(--neon-blue)'; e.currentTarget.style.color = 'white'; }} onMouseOut={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--neon-blue)'; }}>View Details</button>
-                                </div>
-                            ))}
-                        </div>
-
-                        {/* Verified Assessments Section */}
-                        {assessmentHistory.length > 0 && (
-                            <div style={{ marginTop: '3rem' }}>
-                                <h3 style={{ fontSize: '1.2rem', marginBottom: '1.5rem', textTransform: 'uppercase', letterSpacing: '2px', color: 'var(--text-muted)' }}>
-                                    <i className="fas fa-shield-alt" style={{ color: 'var(--neon-purple)', marginRight: '8px' }}></i>
-                                    Proctored Industry Assessments
-                                </h3>
-                                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '1.5rem' }}>
-                                    {assessmentHistory.map((exam, idx) => (
-                                        <div key={idx} style={{
-                                            background: exam.score >= 60 ? 'rgba(0, 255, 128, 0.05)' : 'rgba(255, 60, 60, 0.05)',
-                                            border: `1px solid ${exam.score >= 60 ? 'rgba(0, 255, 128, 0.3)' : 'rgba(255, 60, 60, 0.3)'}`,
-                                            borderRadius: '20px',
-                                            padding: '1.5rem',
-                                            position: 'relative'
-                                        }}>
-                                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '10px' }}>
-                                                <div>
-                                                    <div style={{ fontSize: '0.7rem', fontWeight: 800, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '1px' }}>
-                                                        {new Date(exam.date).toLocaleDateString()}
-                                                    </div>
-                                                    <div style={{ fontWeight: 800, fontSize: '1.1rem', color: 'var(--text-main)', marginTop: '4px' }}>
-                                                        {exam.company} Requirements
-                                                    </div>
-                                                    <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginTop: '2px' }}>
-                                                        {exam.role} - {exam.week}
-                                                    </div>
-                                                </div>
-                                                <div style={{ fontSize: '1.5rem', fontWeight: 900, color: exam.score >= 60 ? '#00ff80' : '#ff3c3c' }}>
-                                                    {exam.score}%
-                                                </div>
-                                            </div>
-
-                                            <div style={{ marginTop: '1rem', paddingTop: '1rem', borderTop: '1px solid rgba(255,255,255,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                                                <span style={{ fontSize: '0.75rem', fontWeight: 800, padding: '4px 10px', borderRadius: '6px', background: exam.score >= 60 ? 'rgba(0, 255, 128, 0.1)' : 'rgba(255, 60, 60, 0.1)', color: exam.score >= 60 ? '#00ff80' : '#ff3c3c' }}>
-                                                    {exam.status}
-                                                </span>
-                                                {exam.score >= 85 && <i className="fas fa-medal" style={{ color: '#fbbf24', fontSize: '1.2rem' }} title="Expert Level Selection"></i>}
-                                            </div>
-                                        </div>
-                                    ))}
+                                    )}
                                 </div>
                             </div>
-                        )}
-                    </>
+
+                            <h3 style={{ fontSize: '1.2rem', marginBottom: '1.8rem', textTransform: 'uppercase', letterSpacing: '2px', color: 'var(--text-muted)', borderBottom: '1px solid var(--glass-border)', paddingBottom: '1rem' }}>Verified Solutions & Architecture</h3>
+                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '1.5rem' }}>
+                                {profileData.proofs.map((proof, i) => (
+                                    <div key={i} style={{ background: 'white', border: '1px solid var(--glass-border)', borderRadius: '24px', padding: '1.8rem', transition: 'all 0.3s', boxShadow: '0 4px 20px rgba(0,0,0,0.03)' }} onMouseOver={e => { e.currentTarget.style.borderColor = 'var(--neon-blue)'; e.currentTarget.style.boxShadow = '0 8px 30px rgba(0, 142, 204, 0.1)'; }} onMouseOut={e => { e.currentTarget.style.borderColor = 'var(--glass-border)'; e.currentTarget.style.boxShadow = '0 4px 20px rgba(0,0,0,0.03)'; }}>
+                                        <h4 style={{ fontSize: '1.1rem', marginBottom: '0.8rem', color: 'var(--text-main)' }}>{proof.title}</h4>
+                                        <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)', marginBottom: '1.5rem', lineHeight: '1.6' }}>{proof.optimization}</p>
+                                        <button onClick={() => setViewingSolution(proof)} style={{ background: 'transparent', border: '1px solid var(--neon-blue)', color: 'var(--neon-blue)', padding: '6px 16px', borderRadius: '8px', fontSize: '0.8rem', cursor: 'pointer', fontWeight: 700, transition: 'all 0.2s' }} onMouseOver={e => { e.currentTarget.style.background = 'var(--neon-blue)'; e.currentTarget.style.color = 'white'; }} onMouseOut={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--neon-blue)'; }}>View Details</button>
+                                    </div>
+                                ))}
+                            </div>
+
+                            {/* Verified Assessments Section */}
+                            {assessmentHistory.length > 0 && (
+                                <div style={{ marginTop: '3rem' }}>
+                                    <h3 style={{ fontSize: '1.2rem', marginBottom: '1.5rem', textTransform: 'uppercase', letterSpacing: '2px', color: 'var(--text-muted)' }}>
+                                        <i className="fas fa-shield-alt" style={{ color: 'var(--neon-purple)', marginRight: '8px' }}></i>
+                                        Proctored Industry Assessments
+                                    </h3>
+                                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '1.5rem' }}>
+                                        {assessmentHistory.map((exam, idx) => (
+                                            <div key={idx} style={{
+                                                background: exam.score >= 60 ? 'rgba(0, 255, 128, 0.05)' : 'rgba(255, 60, 60, 0.05)',
+                                                border: `1px solid ${exam.score >= 60 ? 'rgba(0, 255, 128, 0.3)' : 'rgba(255, 60, 60, 0.3)'}`,
+                                                borderRadius: '20px',
+                                                padding: '1.5rem',
+                                                position: 'relative'
+                                            }}>
+                                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '10px' }}>
+                                                    <div>
+                                                        <div style={{ fontSize: '0.7rem', fontWeight: 800, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '1px' }}>
+                                                            {new Date(exam.date).toLocaleDateString()}
+                                                        </div>
+                                                        <div style={{ fontWeight: 800, fontSize: '1.1rem', color: 'var(--text-main)', marginTop: '4px' }}>
+                                                            {exam.company} Requirements
+                                                        </div>
+                                                        <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginTop: '2px' }}>
+                                                            {exam.role} - {exam.week}
+                                                        </div>
+                                                    </div>
+                                                    <div style={{ fontSize: '1.5rem', fontWeight: 900, color: exam.score >= 60 ? '#00ff80' : '#ff3c3c' }}>
+                                                        {exam.score}%
+                                                    </div>
+                                                </div>
+
+                                                <div style={{ marginTop: '1rem', paddingTop: '1rem', borderTop: '1px solid rgba(255,255,255,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                                                    <span style={{ fontSize: '0.75rem', fontWeight: 800, padding: '4px 10px', borderRadius: '6px', background: exam.score >= 60 ? 'rgba(0, 255, 128, 0.1)' : 'rgba(255, 60, 60, 0.1)', color: exam.score >= 60 ? '#00ff80' : '#ff3c3c' }}>
+                                                        {exam.status}
+                                                    </span>
+                                                    {exam.score >= 85 && <i className="fas fa-medal" style={{ color: '#fbbf24', fontSize: '1.2rem' }} title="Expert Level Selection"></i>}
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+                        </>
+                    )
                 ) : (
                     <div style={{ textAlign: 'center', padding: '4rem', color: 'var(--text-muted)' }}>
                         <i className="fas fa-search" style={{ fontSize: '3rem', marginBottom: '1.5rem', opacity: 0.3 }}></i>
@@ -362,27 +380,6 @@ It's amazing what we can achieve when we solve problems proactively. Code is pub
                     </div>
                 )}
 
-                {isEditingProfile && (
-                    <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', background: 'rgba(0,0,0,0.4)', backdropFilter: 'blur(10px)', zIndex: 1210, display: 'flex', justifyContent: 'center', alignItems: 'center' }} onClick={() => setIsEditingProfile(false)}>
-                        <div onClick={e => e.stopPropagation()}>
-                            <ProfileSettings
-                                identity={identity}
-                                onClose={() => setIsEditingProfile(false)}
-                                onUpdate={(updatedData) => {
-                                    if (onProfileUpdate) onProfileUpdate(updatedData);
-                                    setProfileData(prev => ({
-                                        ...prev,
-                                        name: updatedData.username || updatedData.name,
-                                        bio: updatedData.bio,
-                                        role: updatedData.role,
-                                        location: updatedData.location,
-                                        experience: updatedData.experience_years
-                                    }));
-                                }}
-                            />
-                        </div>
-                    </div>
-                )}
 
                 {viewingSolution && (
                     <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', background: 'rgba(0,0,0,0.4)', backdropFilter: 'blur(8px)', zIndex: 1220, display: 'flex', justifyContent: 'center', alignItems: 'center' }} onClick={() => setViewingSolution(null)}>
