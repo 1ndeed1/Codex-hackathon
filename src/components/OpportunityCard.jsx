@@ -29,6 +29,11 @@ const OpportunityCard = ({ opp, onClick }) => {
                 visibility: visible !important;
                 transform: translateX(-50%) translateY(-5px) !important;
             }
+            .likelihood-tooltip-container:hover .likelihood-tooltip {
+                opacity: 1 !important;
+                visibility: visible !important;
+                transform: translateY(-5px) !important;
+            }
         `}</style>
             <div
                 className="glass-panel animate-fade"
@@ -205,11 +210,45 @@ const OpportunityCard = ({ opp, onClick }) => {
                                 <span style={{ color: 'var(--neon-orange)', fontWeight: 800, fontSize: '0.75rem' }}>Opportunity to Solve</span>
                             </div>
                         ) : (
-                            <div style={{ marginLeft: 'auto', background: 'rgba(255, 140, 0, 0.1)', border: '1px solid var(--neon-orange)', padding: '4px 12px', borderRadius: '20px', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                                <i className="fas fa-briefcase" style={{ color: 'var(--neon-orange)', fontSize: '0.7rem' }}></i>
-                                <span style={{ color: 'var(--neon-orange)', fontWeight: 800, fontSize: '0.75rem' }}>
-                                    Job Likelihood: {opp.jobProbability}
-                                </span>
+                            <div className="likelihood-tooltip-container" style={{ marginLeft: 'auto', position: 'relative', display: 'flex', alignItems: 'center' }}>
+                                <div style={{
+                                    background: 'rgba(255, 140, 0, 0.1)',
+                                    border: '1px solid var(--neon-orange)',
+                                    width: '32px',
+                                    height: '32px',
+                                    borderRadius: '50%',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    cursor: 'help',
+                                    transition: 'all 0.3s ease',
+                                    boxShadow: '0 0 10px rgba(255, 140, 0, 0.2)'
+                                }}
+                                    onMouseEnter={e => e.currentTarget.style.boxShadow = '0 0 20px rgba(255, 140, 0, 0.4)'}
+                                    onMouseLeave={e => e.currentTarget.style.boxShadow = '0 0 10px rgba(255, 140, 0, 0.2)'}
+                                >
+                                    <i className="fas fa-chart-line" style={{ color: 'var(--neon-orange)', fontSize: '0.8rem' }}></i>
+                                </div>
+                                <div className="likelihood-tooltip" style={{
+                                    position: 'absolute',
+                                    bottom: '100%',
+                                    right: '0',
+                                    marginBottom: '8px',
+                                    background: 'rgba(0,0,0,0.9)',
+                                    color: 'var(--neon-orange)',
+                                    padding: '6px 12px',
+                                    borderRadius: '6px',
+                                    fontSize: '0.7rem',
+                                    whiteSpace: 'nowrap',
+                                    opacity: 0,
+                                    visibility: 'hidden',
+                                    transition: 'all 0.3s ease',
+                                    border: '1px solid var(--neon-orange)',
+                                    zIndex: 10,
+                                    fontWeight: 800
+                                }}>
+                                    Hiring Likelihood: {opp.jobProbability}
+                                </div>
                             </div>
                         )}
                     </div>

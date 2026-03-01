@@ -94,8 +94,9 @@ export const fetchOpportunities = async () => {
         const ghSignals = await fetchLiveGitHubSignals();
         const soSignals = await fetchLiveStackOverflowSignals();
 
-        // Merge and return
-        return [...ghSignals, ...soSignals, ...results];
+        // 3. Combine and Filter out saturated opportunities
+        const allCombined = [...ghSignals, ...soSignals, ...results];
+        return allCombined.filter(opp => (opp.solverCount || 0) < (opp.maxSolvers || 3));
     } catch (err) {
         console.error("Unexpected error fetching opportunities:", err);
         return [];
