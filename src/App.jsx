@@ -19,6 +19,7 @@ import ActivityDashboard from './components/ActivityDashboard';
 import PathfinderDashboard from './components/PathfinderDashboard';
 import PathfinderRoadmap from './components/PathfinderRoadmap';
 import PathfinderTrackSelector from './components/PathfinderTrackSelector';
+import BloomingSectorAnalysis from './components/BloomingSectorAnalysis';
 import AssessmentPlatform from './components/AssessmentPlatform';
 const GapStartDashboard = React.lazy(() => import('./components/GapStartDashboard'));
 import { fetchOpportunities, simulateBackgroundScan } from './services/discovery_service';
@@ -501,6 +502,7 @@ function App() {
             <Route path="/community" element={<ProfilesDirectory onProfileSelect={(id) => setShowProfile(id)} />} />
             <Route path="/activity" element={<ActivityDashboard identity={identity} />} />
             <Route path="/pathfinder" element={<PathfinderTrackSelector />} />
+            <Route path="/pathfinder/blooming-analysis" element={<BloomingSectorAnalysis />} />
             <Route path="/pathfinder/track/:trackId" element={<PathfinderDashboard identity={identity} />} />
             <Route path="/pathfinder/roadmap/:domainId" element={<PathfinderRoadmap identity={identity} />} />
             <Route path="/assessment/:companyName/:weekIndex" element={<AssessmentPlatform identity={identity} />} />

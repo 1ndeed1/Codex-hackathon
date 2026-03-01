@@ -94,43 +94,110 @@ function PathfinderDashboard() {
                 </p>
             </div>
 
-            {/* Custom Company AI Generator Section */}
-            <div className="pf-generator-card">
-                <div>
-                    <h3 style={{ fontSize: '1.4rem', marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <i className="fas fa-magic" style={{ color: 'var(--neon-purple)' }}></i>
-                        Target Specific Company
-                    </h3>
-                    <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem' }}>
-                        Enter a company name to generate a tailored {isBlooming ? 'hybrid integration' : 'technical execution'} plan for their active tech stacks.
-                    </p>
-                </div>
-                <div className="pf-generator-row">
-                    <div style={{ flex: 1 }}>
-                        <input
-                            type="text"
-                            className="pf-input-field"
-                            placeholder="e.g., Netflix, Vercel, SpaceX, Notion..."
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                            onKeyDown={(e) => e.key === 'Enter' && handleGenerateCustom()}
-                        />
-                        {companyError && <div style={{ color: '#ef4444', fontSize: '0.85rem', marginTop: '8px', fontWeight: 'bold' }}>{companyError}</div>}
+            {/* Industry Confidence Dashboard - Only for Blooming Track */}
+            {isBlooming && (
+                <div className="pf-generator-card" style={{
+                    background: 'linear-gradient(135deg, rgba(0,186,255,0.1) 0%, rgba(188,19,254,0.05) 100%)',
+                    border: '1px solid rgba(0,186,255,0.2)',
+                    display: 'block'
+                }}>
+                    <div style={{ marginBottom: '2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                        <div>
+                            <h3 style={{ fontSize: '1.6rem', marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                <i className="fas fa-shield-alt" style={{ color: 'var(--neon-blue)' }}></i>
+                                Why the Blooming Sector?
+                            </h3>
+                            <p style={{ color: 'var(--text-main)', fontSize: '1rem', opacity: 0.9 }}>
+                                India's industrial-tech landscape is undergoing a "Double-Pivot": Rapid digitization of core sectors combined with an aggressive push for self-reliance.
+                            </p>
+                        </div>
+                        <button
+                            onClick={() => navigate('/pathfinder/blooming-analysis')}
+                            style={{
+                                background: 'rgba(0,186,255,0.1)',
+                                border: '1px solid var(--neon-blue)',
+                                color: 'var(--neon-blue)',
+                                padding: '10px 20px',
+                                borderRadius: '12px',
+                                fontWeight: 800,
+                                fontSize: '0.85rem',
+                                cursor: 'pointer',
+                                transition: 'all 0.3s ease',
+                                whiteSpace: 'nowrap'
+                            }}
+                            onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(0,186,255,0.2)'}
+                            onMouseLeave={(e) => e.currentTarget.style.background = 'rgba(0,186,255,0.1)'}
+                        >
+                            <i className="fas fa-chart-pie mr-2"></i> View Deep Analysis
+                        </button>
                     </div>
-                    <button
-                        className="pf-btn-generate"
-                        onClick={handleGenerateCustom}
-                        disabled={generating || !searchQuery.trim()}
-                        style={{ alignSelf: 'flex-start' }}
-                    >
-                        {generating ? (
-                            <><i className="fas fa-circle-notch fa-spin"></i> Analyzing...</>
-                        ) : (
-                            <><i className="fas fa-radar"></i> Generate Strategy</>
-                        )}
-                    </button>
+
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '2rem' }}>
+                        <div style={{ padding: '1.2rem', background: 'rgba(0,0,0,0.2)', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.05)' }}>
+                            <div style={{ color: 'var(--neon-green)', fontWeight: 800, fontSize: '0.8rem', textTransform: 'uppercase', marginBottom: '5px' }}>Total Opportunity</div>
+                            <div style={{ fontSize: '1.8rem', fontWeight: 900 }}>$1.2 Trillion+</div>
+                            <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginTop: '5px' }}>Combined market impact by 2027 across primary blooming domains.</div>
+                        </div>
+
+                        <div style={{ padding: '1.2rem', background: 'rgba(0,0,0,0.2)', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.05)' }}>
+                            <div style={{ color: 'var(--neon-blue)', fontWeight: 800, fontSize: '0.8rem', textTransform: 'uppercase', marginBottom: '5px' }}>Sector Synergy</div>
+                            <div style={{ fontSize: '1.8rem', fontWeight: 900 }}>High Interlink</div>
+                            <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginTop: '5px' }}>Skills in one (e.g., IoT) are 85% transferable across all blooming tracks.</div>
+                        </div>
+
+                        <div style={{ padding: '1.2rem', background: 'rgba(0,0,0,0.2)', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.05)' }}>
+                            <div style={{ color: 'var(--neon-purple)', fontWeight: 800, fontSize: '0.8rem', textTransform: 'uppercase', marginBottom: '5px' }}>Hiring Resilience</div>
+                            <div style={{ fontSize: '1.8rem', fontWeight: 900 }}>Low Automation Risk</div>
+                            <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginTop: '5px' }}>Roles require human-domain expertise which AI cannot easily replicate.</div>
+                        </div>
+                    </div>
+
+                    <div style={{ marginTop: '2rem', display: 'flex', alignItems: 'center', gap: '15px', color: 'var(--text-muted)', fontSize: '0.85rem' }}>
+                        <i className="fas fa-info-circle"></i>
+                        <span>Aggregated from Wheebox ISR 2026, IBEF, and Taggd Research Reports.</span>
+                    </div>
                 </div>
-            </div>
+            )}
+
+            {/* Custom Company AI Generator Section - Only for Classic Track */}
+            {!isBlooming && (
+                <div className="pf-generator-card">
+                    <div>
+                        <h3 style={{ fontSize: '1.4rem', marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                            <i className="fas fa-magic" style={{ color: 'var(--neon-purple)' }}></i>
+                            Target Specific Company
+                        </h3>
+                        <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem' }}>
+                            Enter a company name to generate a tailored technical execution plan for their active tech stacks.
+                        </p>
+                    </div>
+                    <div className="pf-generator-row">
+                        <div style={{ flex: 1 }}>
+                            <input
+                                type="text"
+                                className="pf-input-field"
+                                placeholder="e.g., Netflix, Vercel, SpaceX, Notion..."
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                                onKeyDown={(e) => e.key === 'Enter' && handleGenerateCustom()}
+                            />
+                            {companyError && <div style={{ color: '#ef4444', fontSize: '0.85rem', marginTop: '8px', fontWeight: 'bold' }}>{companyError}</div>}
+                        </div>
+                        <button
+                            className="pf-btn-generate"
+                            onClick={handleGenerateCustom}
+                            disabled={generating || !searchQuery.trim()}
+                            style={{ alignSelf: 'flex-start' }}
+                        >
+                            {generating ? (
+                                <><i className="fas fa-circle-notch fa-spin"></i> Analyzing...</>
+                            ) : (
+                                <><i className="fas fa-radar"></i> Generate Strategy</>
+                            )}
+                        </button>
+                    </div>
+                </div>
+            )}
 
             <div style={{ marginTop: '4rem' }}>
                 <h3 style={{ fontSize: '1.6rem', marginBottom: '2rem', display: 'flex', alignItems: 'center', gap: '12px' }}>

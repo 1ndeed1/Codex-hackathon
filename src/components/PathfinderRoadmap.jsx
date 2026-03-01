@@ -160,6 +160,45 @@ function PathfinderRoadmap({ identity }) {
                 )}
             </div>
 
+            {/* Sector Intelligence Dashboard */}
+            {!isCustom && domainData?.liveStats && (
+                <div className="pf-sector-dashboard" style={{
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+                    gap: '1.5rem',
+                    marginBottom: '3rem',
+                    background: 'rgba(255,255,255,0.03)',
+                    padding: '1.5rem',
+                    borderRadius: '20px',
+                    border: '1px solid var(--glass-border)',
+                }}>
+                    <div className="pf-stat-item">
+                        <div style={{ color: 'var(--text-muted)', fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase', marginBottom: '8px' }}>Market Velocity (CAGR)</div>
+                        <div style={{ fontSize: '1.8rem', fontWeight: 900, color: 'var(--neon-green)' }}>
+                            {domainData.liveStats.cagr}
+                        </div>
+                    </div>
+                    <div className="pf-stat-item">
+                        <div style={{ color: 'var(--text-muted)', fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase', marginBottom: '8px' }}>Projected Market Size</div>
+                        <div style={{ fontSize: '1.8rem', fontWeight: 900, color: 'var(--text-main)' }}>
+                            {domainData.liveStats.marketSize}
+                        </div>
+                    </div>
+                    <div className="pf-stat-item">
+                        <div style={{ color: 'var(--text-muted)', fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase', marginBottom: '8px' }}>Hiring Intent (2025-26)</div>
+                        <div style={{ fontSize: '1.8rem', fontWeight: 900, color: 'var(--neon-blue)' }}>
+                            {domainData.liveStats.hiringIntent}
+                        </div>
+                    </div>
+                    <div className="pf-stat-item" style={{ borderLeft: '1px solid var(--glass-border)', paddingLeft: '1.5rem' }}>
+                        <div style={{ color: 'var(--text-muted)', fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase', marginBottom: '8px' }}>Strategic Context</div>
+                        <div style={{ fontSize: '0.9rem', color: 'var(--text-main)', lineHeight: '1.4' }}>
+                            {domainData.gapAnalysis.substring(0, 100)}...
+                        </div>
+                    </div>
+                </div>
+            )}
+
             <div className="pf-layout">
                 {/* Sidebar */}
                 <div className="pf-sidebar">
