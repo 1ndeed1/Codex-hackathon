@@ -31,6 +31,7 @@ function App() {
   const [showSubmission, setShowSubmission] = useState(false);
   const [activeProof, setActiveProof] = useState(null);
   const [showProfile, setShowProfile] = useState(null);
+  const [filter, setFilter] = useState('All');
 
   // New States for Auth & Projects
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -161,6 +162,15 @@ function App() {
     alert("You have been enlisted as a solver! The signal will be hidden once saturation is reached.");
   };
 
+  const refreshOpportunities = async () => {
+    setLoading(true);
+    const data = await fetchOpportunities();
+    // Shuffle the data to make it feel fresh
+    const shuffled = [...data].sort(() => Math.random() - 0.5);
+    setOpportunities(shuffled);
+    setLoading(false);
+  };
+
   const handleLogout = async () => {
     if (supabase) {
       await supabase.auth.signOut();
@@ -219,7 +229,8 @@ function App() {
       owner_id: identity.id,
       abstract: newOpp.abstract,
       code_snippet: newOpp.codeSnippet,
-      is_anonymous: newOpp.isAnonymous
+      is_anonymous: newOpp.isAnonymous,
+      source_url: newOpp.sourceUrl
     }]).select(`*, profiles!opportunities_owner_id_fkey(username, email)`);
 
     if (error) {
@@ -325,19 +336,95 @@ function App() {
                     <p>Connecting to Supabase and analyzing live network data.</p>
                   </div>
                 ) : identity.role === 'engineer' ? (
-                  <div style={{
-                    display: 'grid',
-                    gridTemplateColumns: 'repeat(auto-fill, minmax(420px, 1fr))',
-                    gap: '2.5rem'
-                  }}>
-                    {opportunities.map(opp => (
-                      <OpportunityCard
-                        key={opp.id}
-                        opp={opp}
-                        onClick={() => setSelectedOpp(opp)}
-                      />
-                    ))}
-                  </div>
+                  <>
+                    <div style={{
+                      display: 'flex',
+                      gap: '10px',
+                      marginBottom: '2.5rem',
+                      flexWrap: 'wrap',
+                      alignItems: 'center',
+                      background: 'var(--glass-bg)',
+                      padding: '1rem',
+                      borderRadius: '16px',
+                      border: '1px solid var(--glass-border)'
+                    }}>
+                      <span style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginRight: '10px', fontWeight: 600 }}>
+                        <i className="fas fa-filter" style={{ marginRight: '8px' }}></i>
+                        Filter Sources:
+                      </span>
+                      {['All', 'GitHub', 'Reddit', 'StackOverflow', 'Quora', 'AWS Community'].map(f => (
+                        <button
+                          key={f}
+                          onClick={() => setFilter(f)}
+                          style={{
+                            background: filter === f ? 'var(--accent-gradient)' : 'rgba(255,255,255,0.05)',
+                            border: filter === f ? 'none' : '1px solid var(--glass-border)',
+                            color: filter === f ? 'white' : 'var(--text-main)',
+                            padding: '8px 18px',
+                            borderRadius: '10px',
+                            cursor: 'pointer',
+                            fontSize: '0.85rem',
+                            fontWeight: 600,
+                            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                            boxShadow: filter === f ? '0 4px 12px rgba(188, 19, 254, 0.3)' : 'none'
+                          }}
+                          onMouseEnter={(e) => {
+                            if (filter !== f) e.currentTarget.style.background = 'rgba(255,255,255,0.1)';
+                          }}
+                          onMouseLeave={(e) => {
+                            if (filter !== f) e.currentTarget.style.background = 'rgba(255,255,255,0.05)';
+                          }}
+                        >
+                          {f}
+                        </button>
+                      ))}
+                      <button
+                        onClick={refreshOpportunities}
+                        style={{
+                          marginLeft: 'auto',
+                          background: 'transparent',
+                          border: '1px solid var(--neon-blue)',
+                          color: 'var(--neon-blue)',
+                          padding: '8px 20px',
+                          borderRadius: '10px',
+                          cursor: 'pointer',
+                          fontSize: '0.85rem',
+                          fontWeight: 700,
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '10px',
+                          transition: 'all 0.3s ease'
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.background = 'rgba(0, 242, 255, 0.1)';
+                          e.currentTarget.style.boxShadow = '0 0 15px rgba(0, 242, 255, 0.2)';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.background = 'transparent';
+                          e.currentTarget.style.boxShadow = 'none';
+                        }}
+                      >
+                        <i className={`fas fa-sync-alt ${loading ? 'fa-spin' : ''}`}></i>
+                        Shuffle Radar
+                      </button>
+                    </div>
+
+                    <div style={{
+                      display: 'grid',
+                      gridTemplateColumns: 'repeat(auto-fill, minmax(420px, 1fr))',
+                      gap: '2.5rem'
+                    }}>
+                      {opportunities
+                        .filter(opp => filter === 'All' || opp.source?.toLowerCase().includes(filter.toLowerCase()))
+                        .map(opp => (
+                          <OpportunityCard
+                            key={opp.id}
+                            opp={opp}
+                            onClick={() => setSelectedOpp(opp)}
+                          />
+                        ))}
+                    </div>
+                  </>
                 ) : identity.role === 'sponsor' ? (
                   <SponsorDashboard identity={identity} />
                 ) : identity.role === 'producer' ? (

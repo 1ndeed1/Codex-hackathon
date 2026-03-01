@@ -45,10 +45,12 @@ const ProducerDashboard = ({ identity }) => {
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
                             {agreements.map(ag => (
                                 <div key={ag.id} style={{
-                                    background: 'rgba(255,255,255,0.8)',
-                                    padding: '1.5rem',
-                                    borderRadius: '12px',
-                                    borderLeft: `4px solid ${ag.status === 'accepted' ? 'var(--neon-green)' : 'var(--neon-blue)'}`
+                                    background: 'white',
+                                    padding: '1.8rem',
+                                    borderRadius: '20px',
+                                    border: '1px solid var(--glass-border)',
+                                    borderLeft: `6px solid ${ag.status === 'accepted' ? 'var(--neon-green)' : 'var(--neon-blue)'}`,
+                                    boxShadow: '0 4px 15px rgba(0,0,0,0.02)'
                                 }}>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
                                         <h4 style={{ color: 'white' }}>{ag.projects?.name}</h4>

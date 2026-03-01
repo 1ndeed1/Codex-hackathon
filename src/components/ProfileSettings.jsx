@@ -30,19 +30,19 @@ const ProfileSettings = ({ identity, onClose, onUpdate }) => {
             setMessage('Error: ' + error.message);
         } else {
             setMessage('Profile updated successfully!');
-            setTimeout(() => {
-                onUpdate({
-                    ...identity,
-                    name: username,
-                    bio,
-                    role,
-                    location,
-                    experience_years: parseInt(experienceYears),
-                    github_url: githubUrl,
-                    portfolio_url: portfolioUrl
-                });
-                onClose();
-            }, 1000);
+            // Immediate update and close (perceived performance)
+            onUpdate({
+                ...identity,
+                username: username, // Sync key name
+                name: username,     // Provide both for compatibility
+                bio,
+                role,
+                location,
+                experience_years: parseInt(experienceYears),
+                github_url: githubUrl,
+                portfolio_url: portfolioUrl
+            });
+            setTimeout(() => onClose(), 500); // Shorter exit animation
         }
     };
 
@@ -63,81 +63,60 @@ const ProfileSettings = ({ identity, onClose, onUpdate }) => {
     };
 
     return (
-        <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', background: 'rgba(255,255,255,0.8)', zIndex: 3000, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-            <div style={{ background: 'var(--bg-dark)', border: '1px solid var(--neon-blue)', borderRadius: '24px', padding: '3rem', width: '90%', maxWidth: '500px', position: 'relative', boxShadow: '0 10px 30px rgba(0,0,0,0.1)' }}>
-                <button onClick={onClose} style={{ position: 'absolute', top: '20px', right: '20px', background: 'transparent', border: 'none', color: 'var(--text-muted)', fontSize: '1.5rem', cursor: 'pointer' }}>&times;</button>
-
-                <h2 style={{ fontSize: '1.8rem', marginBottom: '2rem', color: 'var(--text-main)' }}>Profile Settings</h2>
-
-                {message && (
-                    <div style={{ padding: '10px', background: message.includes('Error') ? 'rgba(255,0,0,0.1)' : 'rgba(0,255,0,0.1)', color: message.includes('Error') ? 'red' : 'green', borderRadius: '8px', marginBottom: '1.5rem' }}>
-                        {message}
-                    </div>
-                )}
-
-                <div style={{ marginBottom: '1.5rem' }}>
-                    <label style={{ display: 'block', color: 'var(--neon-purple)', fontSize: '0.8rem', textTransform: 'uppercase', marginBottom: '8px', fontWeight: 'bold' }}>Username</label>
-                    <input
-                        type="text"
-                        value={username}
-                        onChange={e => setUsername(e.target.value)}
-                        style={{ width: '100%', padding: '12px', background: 'rgba(255,255,255,0.8)', border: '1px solid var(--glass-border)', borderRadius: '8px', color: 'var(--text-main)', fontSize: '1rem' }}
-                    />
+        <div style={{ background: 'var(--bg-dark)', border: '1px solid var(--neon-blue)', borderRadius: '24px', padding: '3rem', width: '450px', maxWidth: '95vw', position: 'relative', boxShadow: '0 20px 60px rgba(0,0,0,0.5)', zIndex: 3000 }}>
+            <button onClick={onClose} style={{ position: 'absolute', top: '20px', right: '20px', background: 'transparent', border: 'none', color: 'var(--text-muted)', fontSize: '1.5rem', cursor: 'pointer' }}>&times;</button>
+            <h2 style={{ fontSize: '1.8rem', marginBottom: '2rem', color: 'var(--text-main)' }}>Profile Settings</h2>
+            {message && (
+                <div style={{ padding: '10px', background: message.includes('Error') ? 'rgba(255,0,0,0.1)' : 'rgba(0,255,0,0.1)', color: message.includes('Error') ? 'red' : 'green', borderRadius: '8px', marginBottom: '1.5rem' }}>
+                    {message}
                 </div>
-
-                <div style={{ marginBottom: '1.5rem' }}>
-                    <label style={{ display: 'block', color: 'var(--neon-blue)', fontSize: '0.8rem', textTransform: 'uppercase', marginBottom: '8px', fontWeight: 'bold' }}>Current Role</label>
-                    <select
-                        value={role}
-                        onChange={e => setRole(e.target.value)}
-                        style={{ width: '100%', padding: '12px', background: 'rgba(255,255,255,0.8)', border: '1px solid var(--glass-border)', borderRadius: '8px', color: 'var(--text-main)', fontSize: '1rem', appearance: 'none', cursor: 'pointer' }}
-                    >
-                        <option value="engineer">Engineer (Solver)</option>
-                        <option value="producer">Producer (Agreements)</option>
-                        <option value="sponsor">Sponsor (Funding)</option>
-                    </select>
+            )}
+            <div style={{ marginBottom: '1.5rem' }}>
+                <label style={{ display: 'block', color: 'var(--neon-purple)', fontSize: '0.8rem', textTransform: 'uppercase', marginBottom: '8px', fontWeight: 'bold' }}>Username</label>
+                <input type="text" value={username} onChange={e => setUsername(e.target.value)} style={{ width: '100%', padding: '12px', background: 'rgba(0,0,0,0.03)', border: '1px solid var(--glass-border)', borderRadius: '8px', color: 'var(--text-main)', fontSize: '1rem', outline: 'none' }} />
+            </div>
+            <div style={{ marginBottom: '1.5rem' }}>
+                <label style={{ display: 'block', color: 'var(--neon-blue)', fontSize: '0.8rem', textTransform: 'uppercase', marginBottom: '8px', fontWeight: 'bold' }}>Current Role</label>
+                <select value={role} onChange={e => setRole(e.target.value)} style={{ width: '100%', padding: '12px', background: 'rgba(0,0,0,0.03)', border: '1px solid var(--glass-border)', borderRadius: '8px', color: 'var(--text-main)', fontSize: '1rem', appearance: 'none', cursor: 'pointer', outline: 'none' }}>
+                    <option value="engineer" style={{ background: 'white', color: 'black' }}>Engineer (Solver)</option>
+                    <option value="producer" style={{ background: 'white', color: 'black' }}>Producer (Agreements)</option>
+                    <option value="sponsor" style={{ background: 'white', color: 'black' }}>Sponsor (Funding)</option>
+                </select>
+            </div>
+            <div style={{ marginBottom: '1.5rem' }}>
+                <label style={{ display: 'block', color: 'var(--neon-orange)', fontSize: '0.8rem', textTransform: 'uppercase', marginBottom: '8px', fontWeight: 'bold' }}>Bio / Mission Statement</label>
+                <textarea
+                    value={bio}
+                    onChange={e => setBio(e.target.value)}
+                    rows="4"
+                    placeholder="Tell the community..."
+                    style={{
+                        width: '100%',
+                        padding: '12px',
+                        background: 'rgba(0,0,0,0.03)',
+                        border: '1px solid var(--glass-border)',
+                        borderRadius: '8px',
+                        color: 'var(--text-main)',
+                        fontSize: '1rem',
+                        resize: 'none',
+                        lineHeight: '1.5',
+                        outline: 'none'
+                    }}
+                ></textarea>
+            </div>
+            <div style={{ display: 'flex', gap: '1rem', marginBottom: '2rem' }}>
+                <div style={{ flex: 1 }}>
+                    <label style={{ display: 'block', color: 'var(--neon-blue)', fontSize: '0.8rem', textTransform: 'uppercase', marginBottom: '8px', fontWeight: 'bold' }}>GitHub</label>
+                    <input type="url" value={githubUrl} onChange={e => setGithubUrl(e.target.value)} style={{ width: '100%', padding: '12px', background: 'rgba(0,0,0,0.03)', border: '1px solid var(--glass-border)', borderRadius: '8px', color: 'var(--text-main)', fontSize: '0.9rem', outline: 'none' }} />
                 </div>
-
-                <div style={{ marginBottom: '1.5rem' }}>
-                    <label style={{ display: 'block', color: 'var(--neon-orange)', fontSize: '0.8rem', textTransform: 'uppercase', marginBottom: '8px', fontWeight: 'bold' }}>Bio / Mission Statement</label>
-                    <textarea
-                        value={bio}
-                        onChange={e => setBio(e.target.value)}
-                        rows="3"
-                        placeholder="Tell the community about your goals or investment thesis..."
-                        style={{ width: '100%', padding: '12px', background: 'rgba(255,255,255,0.8)', border: '1px solid var(--glass-border)', borderRadius: '8px', color: 'var(--text-main)', fontSize: '0.9rem', resize: 'vertical' }}
-                    ></textarea>
+                <div style={{ flex: 1 }}>
+                    <label style={{ display: 'block', color: 'var(--neon-purple)', fontSize: '0.8rem', textTransform: 'uppercase', marginBottom: '8px', fontWeight: 'bold' }}>Portfolio</label>
+                    <input type="url" value={portfolioUrl} onChange={e => setPortfolioUrl(e.target.value)} style={{ width: '100%', padding: '12px', background: 'rgba(0,0,0,0.03)', border: '1px solid var(--glass-border)', borderRadius: '8px', color: 'var(--text-main)', fontSize: '0.9rem', outline: 'none' }} />
                 </div>
-
-                <div style={{ display: 'flex', gap: '1rem', marginBottom: '2rem' }}>
-                    <div style={{ flex: 1 }}>
-                        <label style={{ display: 'block', color: 'var(--neon-blue)', fontSize: '0.8rem', textTransform: 'uppercase', marginBottom: '8px', fontWeight: 'bold' }}>GitHub URL</label>
-                        <input
-                            type="url"
-                            value={githubUrl}
-                            onChange={e => setGithubUrl(e.target.value)}
-                            style={{ width: '100%', padding: '12px', background: 'rgba(255,255,255,0.8)', border: '1px solid var(--glass-border)', borderRadius: '8px', color: 'var(--text-main)', fontSize: '0.9rem' }}
-                        />
-                    </div>
-                    <div style={{ flex: 1 }}>
-                        <label style={{ display: 'block', color: 'var(--neon-purple)', fontSize: '0.8rem', textTransform: 'uppercase', marginBottom: '8px', fontWeight: 'bold' }}>Portfolio</label>
-                        <input
-                            type="url"
-                            value={portfolioUrl}
-                            onChange={e => setPortfolioUrl(e.target.value)}
-                            style={{ width: '100%', padding: '12px', background: 'rgba(255,255,255,0.8)', border: '1px solid var(--glass-border)', borderRadius: '8px', color: 'var(--text-main)', fontSize: '0.9rem' }}
-                        />
-                    </div>
-                </div>
-
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <button onClick={handleDeleteAccount} style={{ background: 'transparent', border: '1px solid red', color: 'red', padding: '8px 16px', borderRadius: '8px', cursor: 'pointer', fontWeight: 'bold', fontSize: '0.8rem' }}>
-                        Delete Profile
-                    </button>
-                    <button onClick={handleSave} disabled={loading} style={{ background: 'var(--neon-blue)', border: 'none', color: 'white', padding: '10px 24px', borderRadius: '8px', cursor: 'pointer', fontWeight: 'bold', fontSize: '1rem' }}>
-                        {loading ? 'Saving...' : 'Save Settings'}
-                    </button>
-                </div>
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <button onClick={handleDeleteAccount} style={{ background: 'transparent', border: '1px solid red', color: 'red', padding: '8px 16px', borderRadius: '8px', cursor: 'pointer', fontWeight: 'bold', fontSize: '0.8rem' }}>Delete Profile</button>
+                <button onClick={handleSave} disabled={loading} style={{ background: 'var(--neon-blue)', border: 'none', color: 'white', padding: '10px 24px', borderRadius: '8px', cursor: 'pointer', fontWeight: 'bold', fontSize: '1rem' }}>{loading ? 'Saving...' : 'Save Settings'}</button>
             </div>
         </div>
     );
