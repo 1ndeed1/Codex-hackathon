@@ -13,7 +13,7 @@
  * while delivering the promised live-fidelity statistics.
  */
 
-const DOMAIN_DATA = {
+export const DOMAIN_DATA = {
     healthtech: {
         id: 'healthtech',
         title: 'Health-Tech & AI',
@@ -183,6 +183,135 @@ const DOMAIN_DATA = {
             {
                 name: 'ESG Analytics Dashboard',
                 desc: 'A reporting dashboard that aggregates and visualizes a mock company’s carbon footprint.'
+            }
+        ]
+    },
+    mechanical: {
+        id: 'mechanical',
+        title: 'Mechanical Engineering (Robotics & Auto)',
+        icon: 'fa-robot',
+        color: '#ef4444',
+        liveStats: {
+            marketSize: '$1.5 Trillion (Global Auto)',
+            cagr: '6.5%',
+            hiringIntent: 'High for EV/Robotics'
+        },
+        sources: [
+            { name: 'Engineer.org', url: '#' },
+            { name: 'AutoTrends', url: '#' }
+        ],
+        roadmap: {
+            month1_2: {
+                focus: 'CAD & Design Foundations',
+                skills: ['SolidWorks/AutoCAD', 'Material Science', 'Thermodynamics'],
+            },
+            month3_4: {
+                focus: 'Robotics & Automation',
+                skills: ['ROS (Robot Operating System)', 'Mechatronics', 'Control Systems'],
+            },
+            month5_6: {
+                focus: 'Advanced Manufacturing',
+                skills: ['3D Printing/Additive Mfg', 'Industry 4.0 standards', 'EV Powertrain basics'],
+            }
+        },
+        certifications: [
+            'CSWA/CSWP (SolidWorks)',
+            'SME Certified Manufacturing Engineer'
+        ],
+        projects: [
+            {
+                name: 'Autonomous Rover Chassis',
+                desc: 'Design and simulate a 4-wheel drive chassis optimized for rough terrain.'
+            },
+            {
+                name: 'Heat Exchanger Optimization',
+                desc: 'Thermal analysis and redesign of a compact liquid cooling system.'
+            }
+        ]
+    },
+    electrical: {
+        id: 'electrical',
+        title: 'Electrical & Power Systems',
+        icon: 'fa-bolt',
+        color: '#fbbf24',
+        liveStats: {
+            marketSize: '$500 Billion (Smart Grid)',
+            cagr: '12.3%',
+            hiringIntent: 'Critical for Semi-conductor'
+        },
+        sources: [
+            { name: 'IEEE Spectrum', url: '#' },
+            { name: 'PowerWorld', url: '#' }
+        ],
+        roadmap: {
+            month1_2: {
+                focus: 'Circuit Design & Embedded Systems',
+                skills: ['Altium/KiCad', 'Microcontrollers (STM32/ESP32)', 'C/C++ for Embedded'],
+            },
+            month3_4: {
+                focus: 'Power Electronics & Grids',
+                skills: ['VLSI Design', 'Smart Grid Architecture', 'Inverter/Converter design'],
+            },
+            month5_6: {
+                focus: 'Digital Signal Processing',
+                skills: ['FPGA Programming (Verilog/VHDL)', 'Control Theory', 'Wireless Comm (5G/LoRa)'],
+            }
+        },
+        certifications: [
+            'IPC CID (Circuit Design)',
+            'AWS Certified IoT Specialty'
+        ],
+        projects: [
+            {
+                name: 'Solar Inverter Logic',
+                desc: 'Firmware for a 1kW solar inverter with MPPT (Maximum Power Point Tracking).'
+            },
+            {
+                name: 'Smart Meter Prototype',
+                desc: 'An IoT-enabled energy meter that pushes real-time usage to a cloud dashboard.'
+            }
+        ]
+    },
+    civil: {
+        id: 'civil',
+        title: 'Civil & Smart Infrastructure',
+        icon: 'fa-city',
+        color: '#60a5fa',
+        liveStats: {
+            marketSize: '$12 Trillion (Construction)',
+            cagr: '5.2%',
+            hiringIntent: 'Rising for BIM Specialists'
+        },
+        sources: [
+            { name: 'ASCE', url: '#' },
+            { name: 'ConstructionDive', url: '#' }
+        ],
+        roadmap: {
+            month1_2: {
+                focus: 'Structural Analysis & BIM',
+                skills: ['Revit/Navisworks', 'Structural Dynamics', 'Geo-technical Engineering'],
+            },
+            month3_4: {
+                focus: 'Smart Cities & Materials',
+                skills: ['BIM Level 3 Certification', 'Sustainable Materials', 'Urban Planning AI'],
+            },
+            month5_6: {
+                focus: 'Infrastructure Project Management',
+                skills: ['PMP for Construction', 'Large-scale Hydrology', 'Asset Lifecycle Mgmt'],
+            }
+        },
+        certifications: [
+            'Autodesk Certified Professional (Revit)',
+            'PMP (Project Management Professional)'
+        ],
+        projects: [
+            {
+                name: 'BIM Smart Hospital',
+                desc: 'Full 3D architecture and MEP (Mechanical, Electrical, Plumbing) coordination for a clinic.'
+            },
+            {
+                name: 'Flood Mitigation Study',
+                desc: 'Hydrological simulation and structural plan for an urban drainage system.'
             }
         ]
     }

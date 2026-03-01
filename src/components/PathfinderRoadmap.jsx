@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import PathfinderService from '../services/pathfinder_service';
 import { generateCompanyRoadmaps } from '../services/pseudo_ai_generator';
+import { DOMAIN_DATA } from '../services/liveDataService';
 import './Pathfinder.css';
 
 function PathfinderRoadmap({ identity }) {
@@ -15,6 +16,7 @@ function PathfinderRoadmap({ identity }) {
     const [loading, setLoading] = useState(true);
     const [selectedCompany, setSelectedCompany] = useState(null);
     const [isCustom, setIsCustom] = useState(false);
+    const [isSaturated, setIsSaturated] = useState(false);
 
     // Interactive State
     const [isEnrolled, setIsEnrolled] = useState(false);
@@ -34,6 +36,7 @@ function PathfinderRoadmap({ identity }) {
     useEffect(() => {
         async function loadData() {
             setLoading(true);
+            setIsSaturated(false);
 
             if (domainId === 'custom') {
                 const searchParams = new URLSearchParams(location.search);
@@ -50,24 +53,56 @@ function PathfinderRoadmap({ identity }) {
                 return;
             }
 
-            // Normal Domain fetching (with mock interactive data injected for demo)
+            // Define "Low Demand" domains that shouldn't have roadmaps (as requested)
+            const lowDemandIds = ['manual-qa', 'desktop-dev'];
+            if (lowDemandIds.includes(domainId)) {
+                setIsSaturated(true);
+                setDomainName(domainId === 'manual-qa' ? "Manual QA Tester" : "Native Desktop Developer");
+                setLoading(false);
+                return;
+            }
+
+            // Normal Domain fetching
             const allDomains = await PathfinderService.getTrendingDomains();
             const currentDomain = allDomains.find(d => d.id === domainId);
             if (currentDomain) {
                 setDomainName(currentDomain.name);
+            } else if (DOMAIN_DATA[domainId]) {
+                setDomainName(DOMAIN_DATA[domainId].title);
             } else {
                 setDomainName("Domain Roadmap");
             }
 
             let roadmapData = await PathfinderService.getRoadmapsForDomain(domainId);
 
-            // Inject mock resources, quizzes, and internships into database-fetched roadmaps if missing
+            // Fallback for domains added via mock/liveDataService but not in DB yet
+            if (roadmapData.length === 0 && DOMAIN_DATA[domainId]) {
+                const fallback = DOMAIN_DATA[domainId];
+                roadmapData = [{
+                    id: `fallback-${fallback.id}`,
+                    company_name: "Industry Standard",
+                    company_target: "Global Market Entry",
+                    market_context: `This roadmap aggregates requirements from current high-growth firms in the ${fallback.title} sector.`,
+                    required_skills: [...new Set([
+                        ...(fallback.roadmap.month1_2.skills || []),
+                        ...(fallback.roadmap.month3_4.skills || []),
+                        ...(fallback.roadmap.month5_6?.skills || [])
+                    ])],
+                    weekly_plan: [
+                        { phase: "1", duration: "Months 1-2", focus: fallback.roadmap.month1_2.focus, tasks: fallback.roadmap.month1_2.skills },
+                        { phase: "2", duration: "Months 3-4", focus: fallback.roadmap.month3_4.focus, tasks: fallback.roadmap.month3_4.skills },
+                        { phase: "3", duration: "Months 5-6", focus: fallback.roadmap.month5_6?.focus || "Advanced Skills", tasks: fallback.roadmap.month5_6?.skills || [] }
+                    ]
+                }];
+            }
+
+            // Inject mock resources, quizzes, and internships into roadmaps
             roadmapData = roadmapData.map(rm => ({
                 ...rm,
                 internships: rm.internships || [
-                    { role: "Backend Developer Intern", link: "#", term: "Ongoing" }
+                    { role: `${domainName} Intern`, link: "#", term: "Ongoing" }
                 ],
-                weekly_plan: rm.weekly_plan.map(wp => ({
+                weekly_plan: (rm.weekly_plan || []).map(wp => ({
                     ...wp,
                     resources: wp.resources || [
                         { type: "youtube", title: `${wp.focus} Tutorial`, link: "https://youtube.com" },
@@ -87,7 +122,7 @@ function PathfinderRoadmap({ identity }) {
         }
 
         loadData();
-    }, [domainId, location.search]);
+    }, [domainId, location.search, domainName]);
 
     const handleEnroll = () => {
         if (!identity || !identity.id) {
@@ -104,10 +139,7 @@ function PathfinderRoadmap({ identity }) {
         const encodeName = encodeURIComponent(selectedCompany.company_name);
         const examUrl = `/assessment/${encodeName}/${weekIndex}`;
 
-        // Open the proctored exam in a new tab/window as requested by the user
         window.open(examUrl, '_blank', 'noopener,noreferrer');
-
-        // Let the user know the exam has launched in another tab
         alert(`The Proctored Industry Assessment for Week ${weekIndex + 1} has been opened in a new secure tab. \n\nPlease navigate to that tab. Keep in mind that leaving that tab or minimizing it will result in an automatic failure warning.`);
     };
 
@@ -116,6 +148,34 @@ function PathfinderRoadmap({ identity }) {
             <div className="pf-loader">
                 <div className="pf-spinner"></div>
                 <span>Analyzing Market Data for {domainId === 'custom' ? 'Target Company' : 'Domain'}...</span>
+            </div>
+        );
+    }
+
+    if (isSaturated) {
+        return (
+            <div className="pathfinder-container">
+                <button onClick={() => navigate('/pathfinder')} className="pf-back-btn">
+                    <i className="fas fa-arrow-left"></i> Back to Domains
+                </button>
+                <div className="pf-card" style={{ textAlign: 'center', padding: '4rem', marginTop: '2rem' }}>
+                    <i className="fas fa-exclamation-triangle" style={{ fontSize: '4rem', color: '#f59e0b', marginBottom: '1.5rem' }}></i>
+                    <h2 style={{ fontSize: '2.2rem', marginBottom: '1rem', color: 'var(--text-main)' }}>{domainName}: Market Alert</h2>
+                    <p style={{ color: 'var(--text-muted)', maxWidth: '600px', margin: '0 auto 2rem', fontSize: '1.1rem', lineHeight: '1.6' }}>
+                        Our 24/7 market scanner identifies this domain as <strong>High Saturation / Low Hiring Demand</strong>.
+                        Pursuing this path may lead to significant job vacancy challenges.
+                    </p>
+                    <div className="p-4 bg-blue-900/20 border border-blue-500/50 rounded-xl mb-6 inline-block">
+                        <p style={{ fontWeight: 'bold', color: 'var(--neon-blue)', margin: 0 }}>
+                            <i className="fas fa-lightbulb mr-2"></i> Strategy: Pivot to a High Demand or Core Engineering domain.
+                        </p>
+                    </div>
+                    <div>
+                        <button onClick={() => navigate('/pathfinder')} className="pf-btn-generate">
+                            Browse High Growth Domains
+                        </button>
+                    </div>
+                </div>
             </div>
         );
     }

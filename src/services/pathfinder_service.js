@@ -30,6 +30,14 @@ class PathfinderService {
      * @returns {Promise<Array>} List of roadmaps for the domain
      */
     static async getRoadmapsForDomain(domainId) {
+        // Regex to validate UUID format
+        const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+        
+        if (!uuidRegex.test(domainId)) {
+            console.warn(`Invalid UUID format for domainId: ${domainId}. Skipping database fetch.`);
+            return [];
+        }
+
         try {
             const { data, error } = await supabase
                 .from('pathfinder_roadmaps')

@@ -41,10 +41,23 @@ export const fetchLiveGitHubSignals = async () => {
 export const fetchLiveStackOverflowSignals = async () => {
     try {
         const url = 'https://api.stackexchange.com/2.3/questions?pagesize=3&order=desc&sort=activity&tagged=reactjs;rust;aws;kubernetes&site=stackoverflow';
-        const response = await fetch(url);
-        const data = await response.json();
+        const response = await fetch(url).catch(err => {
+            console.warn("StackOverflow fetch failed (likely CORS or network):", err);
+            return null;
+        });
 
-        if (!data.items) return [];
+        if (!response) return [];
+        if (response.status === 429) {
+            console.warn("StackOverflow API rate limit reached (429).");
+            return [];
+        }
+        if (!response.ok) {
+            console.warn(`StackOverflow API error: ${response.status} ${response.statusText}`);
+            return [];
+        }
+
+        const data = await response.json();
+        if (!data || !data.items) return [];
 
         return data.items.map(item => ({
             id: `so-${item.question_id}`,

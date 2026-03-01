@@ -23,7 +23,12 @@ function PathfinderDashboard() {
 
         // Low / Less Required
         { id: 'desktop-dev', name: 'Native Desktop Developer (Legacy)', demand_score: 35, category: 'Low Demand', description: 'Decreasing demand as web apps replace native desktop software.', tools: ['C++', 'WPF', 'WinForms', 'Electron'], last_verified_at: new Date().toISOString() },
-        { id: 'manual-qa', name: 'Manual QA Tester', demand_score: 41, category: 'Low Demand', description: 'Slowly being replaced by automated integration testing.', tools: ['Jira', 'Postman (Basic)', 'Selenium IDE'], last_verified_at: new Date().toISOString() }
+        { id: 'manual-qa', name: 'Manual QA Tester', demand_score: 41, category: 'Low Demand', description: 'Slowly being replaced by automated integration testing.', tools: ['Jira', 'Postman (Basic)', 'Selenium IDE'], last_verified_at: new Date().toISOString() },
+
+        // Core Engineering (Non-CS)
+        { id: 'mechanical', name: 'Mechanical Engineering (Robotics/EV)', demand_score: 88, category: 'Mid Growth', description: 'High demand for automation and electric vehicle design specialists.', tools: ['SolidWorks', 'ROS', 'Mechatronics', 'MATLAB'], last_verified_at: new Date().toISOString() },
+        { id: 'electrical', name: 'Electrical & Power Systems', demand_score: 85, category: 'Mid Growth', description: 'Critical roles in smart grid management and semiconductor design.', tools: ['Altium', 'VLSI', 'Smart Grids', 'C/C++'], last_verified_at: new Date().toISOString() },
+        { id: 'civil', name: 'Civil & Smart Infrastructure (BIM)', demand_score: 76, category: 'Mid Growth', description: 'Digital transformation of construction through BIM and smart city tech.', tools: ['Revit', 'Navisworks', 'Site Analysis', 'BIM'], last_verified_at: new Date().toISOString() }
     ];
 
     useEffect(() => {
