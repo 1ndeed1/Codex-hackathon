@@ -21,24 +21,32 @@ export const fetchOpportunities = async () => {
                 *,
                 author:profiles!opportunities_owner_id_fkey ( username, email )
             `)
-            .lt('solver_count', 3) // Only show if solver_count < max_solvers (3)
+            .lt('solver_count', 10) // Only show if solver_count < max_solvers (10)
             .order('created_at', { ascending: false });
 
         if (error) {
-            console.error("Supabase error fetching with profiles (Check if solver_count column exists!):", error);
+            // Distinguish between actual schema mismatch (like missing solver_count) and network/generic errors
+            const isMissingColumn = error.message?.includes('column') || error.code === 'PGRST204';
 
-            // Fallback: fetch without profiles AND without the solver_count filter
-            // This ensures the app still works even if the SQL migration hasn't been run.
-            const { data: simpleData, error: simpleError } = await supabase
-                .from('opportunities')
-                .select('*')
-                .order('created_at', { ascending: false });
+            if (isMissingColumn) {
+                console.error("Supabase schema mismatch (Check if solver_count column exists!):", error);
 
-            if (simpleError) {
-                console.error("Supabase fallback error:", simpleError);
+                // Fallback: fetch without profiles AND without the solver_count filter
+                const { data: simpleData, error: simpleError } = await supabase
+                    .from('opportunities')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+
+                if (simpleError) {
+                    console.error("Supabase fallback error:", simpleError);
+                    return [];
+                }
+                return simpleData.map(item => ({ ...mapDbToFrontend(item), authorProfile: null }));
+            } else {
+                // Network error or other Supabase error
+                console.error("Supabase connection or request error:", error);
                 return [];
             }
-            return simpleData.map(item => ({ ...mapDbToFrontend(item), authorProfile: null }));
         }
 
         return data.map(mapDbToFrontend);
@@ -53,30 +61,43 @@ export const simulateBackgroundScan = async () => {
 
     const mockScans = [
         {
-            type: 'scanned',
-            source: 'Medium - Engineering Blog',
-            channel: 'System Architecture',
-            title: 'Latency Spikes in Distributed Caching',
-            signal: 'Several reports of 500ms+ latency in the Redis cluster during peak hours.',
-            inference: 'Likely a synchronization bottleneck or hot key issue.',
-            logic_gap: 'Needs a more efficient cache invalidation strategy.',
-            job_probability: 'High',
-            hiring_urgency: 'Critical',
-            tags: ['Redis', 'Distributed Systems', 'Performance'],
-            difficulty: 'High'
+            type: 'pulse',
+            source: 'Reddit',
+            channel: 'r/webdev',
+            title: 'Technical Debt in Micro-frontends',
+            signal: 'Rising frustration with overlapping dependencies in module federation. Teams seeking local-first orchestration patterns.',
+            inference: 'Market need for lightweight micro-frontend governance tools.',
+            job_probability: '80%',
+            hiring_urgency: 'Medium',
+            tags: ['React', 'Architecture', 'Micro-frontends'],
+            difficulty: 'High',
+            source_url: 'https://reddit.com/r/webdev/mfe-debt'
         },
         {
-            type: 'mined',
-            source: 'StackOverflow - Trending',
-            channel: 'Frontend Frameworks',
-            title: 'Memory Leaks in Large-scale React Apps',
-            signal: 'Rising number of queries regarding heap overflow in Vite-based monorepos.',
-            inference: 'Possibly due to incorrect cleanup in useEffect or closure traps.',
-            logic_gap: 'Unified state management memory profiling tool needed.',
-            job_probability: '85%',
-            hiring_urgency: 'Medium',
-            tags: ['React', 'Vite', 'Memory Management'],
-            difficulty: 'Medium'
+            type: 'coding',
+            source: 'GitHub',
+            channel: 'Optimization Watch',
+            title: 'Global Inefficiency: Unoptimized Docker Images',
+            signal: 'Scan of 10k public repos shows 65% of node apps use default heavy images instead of Alpine/Distroless, wasting PB of registry space.',
+            inference: 'Wasted CI/CD costs and slow deployment cycles across the industry.',
+            job_probability: '75%',
+            hiring_urgency: 'High',
+            tags: ['Docker', 'DevOps', 'GreenTech'],
+            difficulty: 'Medium',
+            source_url: 'https://github.com/analysis/docker-bloat'
+        },
+        {
+            type: 'service',
+            source: 'MNC Internal Scan',
+            channel: 'Enterprise Gaps',
+            title: 'Automated Compliance Drift Detection',
+            signal: 'Fortune 500 fintechs lack real-time visibility into SOC2 compliance drift during fast-paced feature releases.',
+            inference: 'High risk of audit failure; massive manual overhead for compliance teams.',
+            job_probability: '95%',
+            hiring_urgency: 'Critical',
+            tags: ['Fintech', 'Compliance', 'Security'],
+            difficulty: 'High',
+            source_url: 'https://internal-reports.com/compliance-gap'
         }
     ];
 
@@ -91,7 +112,7 @@ export const simulateBackgroundScan = async () => {
 
     if (existing && existing.length > 0) return;
 
-    console.log("Background scanner found new opportunity:", randomScan.title);
+    console.log("Background scanner found new GapStart opportunity:", randomScan.title);
     await supabase.from('opportunities').insert([randomScan]);
 };
 

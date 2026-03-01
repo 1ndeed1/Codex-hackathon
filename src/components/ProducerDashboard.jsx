@@ -52,19 +52,40 @@ const ProducerDashboard = ({ identity }) => {
                                 }}>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
                                         <h4 style={{ color: 'white' }}>{ag.projects?.name}</h4>
-                                        <span style={{
-                                            fontSize: '0.7rem',
-                                            padding: '2px 8px',
-                                            borderRadius: '4px',
-                                            background: 'rgba(0,0,0,0.05)',
-                                            color: ag.status === 'accepted' ? 'var(--neon-green)' : 'var(--neon-blue)'
-                                        }}>{ag.status.toUpperCase()}</span>
+                                        <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                                            <span style={{
+                                                fontSize: '0.6rem',
+                                                padding: '2px 6px',
+                                                borderRadius: '4px',
+                                                background: ag.type === 'proposal' ? 'var(--neon-purple)' : 'var(--neon-blue)',
+                                                color: 'white',
+                                                textTransform: 'uppercase'
+                                            }}>{ag.type || 'BID'}</span>
+                                            <span style={{
+                                                fontSize: '0.7rem',
+                                                padding: '2px 8px',
+                                                borderRadius: '4px',
+                                                background: 'rgba(0,0,0,0.05)',
+                                                color: ag.status === 'accepted' ? 'var(--neon-green)' : ag.status === 'rejected' ? 'red' : 'var(--neon-blue)'
+                                            }}>{ag.status.toUpperCase()}</span>
+                                        </div>
                                     </div>
-                                    <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '1rem' }}>Founder: @{ag.founder?.username || "Unknown"}</p>
+                                    <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '1rem' }}>
+                                        {ag.type === 'proposal' ? `Offer from @${ag.founder?.username}` : `Your Bid to @${ag.founder?.username}`}
+                                    </p>
                                     <div style={{ fontSize: '0.8rem', background: 'rgba(0,0,0,0.05)', padding: '10px', borderRadius: '8px', color: 'var(--text-main)', marginBottom: '1rem' }}>
-                                        {ag.terms.substring(0, 100)}...
+                                        {ag.terms.substring(0, 100)}{ag.terms.length > 100 ? '...' : ''}
                                     </div>
-                                    <div style={{ fontSize: '0.7rem', color: 'gray' }}>Expires: {new Date(ag.expires_at).toLocaleDateString()}</div>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                        <div style={{ fontSize: '0.7rem', color: 'gray' }}>Expires: {new Date(ag.expires_at).toLocaleDateString()}</div>
+                                        {ag.type === 'proposal' && ag.status === 'pending' && (
+                                            <button
+                                                onClick={() => window.location.href = '#'}
+                                                style={{ background: 'transparent', border: '1px solid var(--neon-purple)', color: 'var(--neon-purple)', padding: '4px 8px', borderRadius: '4px', fontSize: '0.7rem', cursor: 'pointer' }}>
+                                                View & Respond
+                                            </button>
+                                        )}
+                                    </div>
                                 </div>
                             ))}
                         </div>

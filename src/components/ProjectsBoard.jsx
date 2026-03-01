@@ -5,7 +5,7 @@ const ProjectsBoard = ({ onProjectSelect, identity }) => {
     const [projects, setProjects] = useState([]);
     const [loading, setLoading] = useState(true);
     const [showNewProject, setShowNewProject] = useState(false);
-    const [newProject, setNewProject] = useState({ name: '', description: '', isPublic: true });
+    const [newProject, setNewProject] = useState({ name: '', description: '', isPublic: true, githubLink: '' });
 
     const fetchProjects = async () => {
         setLoading(true);
@@ -14,12 +14,14 @@ const ProjectsBoard = ({ onProjectSelect, identity }) => {
                 .from('projects')
                 .select(`
                     *,
-                    profiles!projects_owner_id_fkey ( username )
+                    profiles!owner_id ( username )
                 `)
                 .order('created_at', { ascending: false });
 
             if (error) {
-                console.error("Error fetching projects with profiles:", error);
+                const isSchemaError = error.message?.includes('column') || error.code === 'PGRST204';
+                console.error(isSchemaError ? "Projects schema mismatch:" : "Projects connection error:", error);
+
                 // Fallback: fetch without profiles
                 const { data: simpleData, error: simpleError } = await supabase
                     .from('projects')
@@ -32,9 +34,11 @@ const ProjectsBoard = ({ onProjectSelect, identity }) => {
                     setProjects(simpleData.map(p => ({
                         id: p.id,
                         name: p.name,
+                        owner_id: p.owner_id,
                         owner: "Unknown",
                         description: p.description,
                         isPublic: p.is_public,
+                        githubLink: p.github_link,
                         stars: p.stars || 0,
                         contributors: p.contributors || 1
                     })));
@@ -43,9 +47,11 @@ const ProjectsBoard = ({ onProjectSelect, identity }) => {
                 setProjects(data.map(p => ({
                     id: p.id,
                     name: p.name,
+                    owner_id: p.owner_id,
                     owner: p.profiles?.username || "Unknown",
                     description: p.description,
                     isPublic: p.is_public,
+                    githubLink: p.github_link,
                     stars: p.stars || 0,
                     contributors: p.contributors || 1
                 })));
@@ -72,7 +78,8 @@ const ProjectsBoard = ({ onProjectSelect, identity }) => {
             name: newProject.name,
             description: newProject.description,
             is_public: newProject.isPublic,
-            owner_id: identity.id
+            owner_id: identity.id,
+            github_link: newProject.githubLink
         }]).select();
 
         if (error) {
@@ -85,7 +92,7 @@ const ProjectsBoard = ({ onProjectSelect, identity }) => {
         fetchProjects();
 
         setShowNewProject(false);
-        setNewProject({ name: '', description: '', isPublic: true });
+        setNewProject({ name: '', description: '', isPublic: true, githubLink: '' });
     };
 
     return (
@@ -123,6 +130,12 @@ const ProjectsBoard = ({ onProjectSelect, identity }) => {
                             placeholder="Project Repository Name"
                             value={newProject.name}
                             onChange={(e) => setNewProject({ ...newProject, name: e.target.value })}
+                            style={{ padding: '12px', background: 'rgba(255, 255, 255, 0.8)', color: 'var(--text-main)', border: '1px solid var(--glass-border)', borderRadius: '8px' }}
+                        />
+                        <input
+                            placeholder="GitHub Repository URL (e.g., https://github.com/owner/repo)"
+                            value={newProject.githubLink}
+                            onChange={(e) => setNewProject({ ...newProject, githubLink: e.target.value })}
                             style={{ padding: '12px', background: 'rgba(255, 255, 255, 0.8)', color: 'var(--text-main)', border: '1px solid var(--glass-border)', borderRadius: '8px' }}
                         />
                         <textarea
@@ -171,6 +184,12 @@ const ProjectsBoard = ({ onProjectSelect, identity }) => {
                                     {proj.isPublic ? 'Public' : 'Private'}
                                 </span>
                             </div>
+
+                            {proj.githubLink && (
+                                <div style={{ fontSize: '0.75rem', color: 'var(--neon-blue)', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                    <i className="fab fa-github"></i> {proj.githubLink.replace('https://github.com/', '')}
+                                </div>
+                            )}
 
                             <p style={{ color: 'var(--text-main)', fontSize: '0.95rem', flex: 1, marginBottom: '2rem', lineHeight: '1.5' }}>
                                 {proj.description}

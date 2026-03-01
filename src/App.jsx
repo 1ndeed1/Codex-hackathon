@@ -16,9 +16,12 @@ import ProfilesDirectory from './components/ProfilesDirectory';
 import SponsorDashboard from './components/SponsorDashboard';
 import ProducerDashboard from './components/ProducerDashboard';
 import ActivityDashboard from './components/ActivityDashboard';
-import GapStartDashboard from './components/GapStartDashboard';
-import Pathfinder from './components/Pathfinder';
+import PathfinderDashboard from './components/PathfinderDashboard';
+import PathfinderRoadmap from './components/PathfinderRoadmap';
+import AssessmentPlatform from './components/AssessmentPlatform';
+const GapStartDashboard = React.lazy(() => import('./components/GapStartDashboard'));
 import { fetchOpportunities, simulateBackgroundScan } from './services/discovery_service';
+import { startBackgroundScanner } from './services/background_scanner';
 
 function App() {
   const [role, setRole] = useState('engineer');
@@ -56,6 +59,12 @@ function App() {
         .from('profiles')
         .select('*')
         .eq('id', user.id);
+
+      if (profileError) {
+        console.error("Supabase error fetching profile:", profileError);
+        // If it's a network error, don't proceed to create a new profile
+        return;
+      }
 
       const profileData = (profileList && profileList.length > 0) ? profileList[0] : null;
 
@@ -122,7 +131,13 @@ function App() {
       setOpportunities(freshData);
     }, 30000); // Scan every 30 seconds
 
-    return () => clearInterval(scanInterval);
+    // 24/7 Background Scanner for GapStart
+    const stopScanner = startBackgroundScanner();
+
+    return () => {
+      clearInterval(scanInterval);
+      stopScanner();
+    };
   }, []);
 
   const handleAcceptOpportunity = async (oppId) => {
@@ -364,7 +379,9 @@ function App() {
             <Route path="/projects" element={<ProjectsBoard onProjectSelect={(proj) => setSelectedProject(proj)} identity={identity} />} />
             <Route path="/community" element={<ProfilesDirectory onProfileSelect={(id) => setShowProfile(id)} />} />
             <Route path="/activity" element={<ActivityDashboard identity={identity} />} />
-            <Route path="/pathfinder" element={<Pathfinder />} />
+            <Route path="/pathfinder" element={<PathfinderDashboard identity={identity} />} />
+            <Route path="/pathfinder/:domainId" element={<PathfinderRoadmap identity={identity} />} />
+            <Route path="/assessment/:companyName/:weekIndex" element={<AssessmentPlatform identity={identity} />} />
             <Route path="/gapstart" element={<GapStartDashboard identity={identity} />} />
           </Routes>
         </main>

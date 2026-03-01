@@ -180,3 +180,36 @@ export const monitorIndustryGaps = async (userId) => {
     }
     return results;
 };
+/**
+ * Solution Analysis Engine
+ * Evaluates technical strength and provides scoring/feedback.
+ */
+export const analyzeSolution = (solution) => {
+    const text = (solution.explanation || "" + solution.logic || "").toLowerCase();
+    const hasArchitecture = !!solution.architecture_plan;
+    const hasCode = !!solution.code;
+    const hasFile = !!solution.file_url;
+
+    let score = 60; // Base score
+    let feedback = "Valid technical approach detected.";
+
+    if (hasArchitecture) score += 15;
+    if (hasCode) score += 10;
+    if (hasFile) score += 5;
+
+    if (text.includes('complexity') || text.includes('latency') || text.includes('scalable')) {
+        score += 10;
+        feedback = "Strong technical reasoning with focus on system performance. Excellent baseline logic.";
+    }
+
+    if (score > 90) {
+        feedback = "Exceptional architecture and documentation. Remarkable clarity in the proposed optimization.";
+    } else if (score < 70) {
+        feedback = "Good baseline, but could benefit from more detailed architecture diagrams or specific edge-case handling.";
+    }
+
+    return {
+        score: Math.min(score, 100),
+        review_feedback: feedback
+    };
+};

@@ -2,8 +2,13 @@ import React, { useState } from 'react';
 import { supabase } from '../services/supabase';
 
 const SolutionProposer = ({ task, onCancel, onSubmit }) => {
-    const [logic, setLogic] = useState('');
-    const [code, setCode] = useState('');
+    const [solutionData, setSolutionData] = useState({
+        abstract: '',
+        logic: '',
+        explanation: '',
+        architecture_plan: '',
+        code: ''
+    });
     const [file, setFile] = useState(null);
     const [uploading, setUploading] = useState(false);
     const [errorMsg, setErrorMsg] = useState('');
@@ -15,8 +20,8 @@ const SolutionProposer = ({ task, onCancel, onSubmit }) => {
     };
 
     const handleSubmit = async () => {
-        if (!logic || (!code && !file)) {
-            setErrorMsg("Please provide logic and either a code snippet or an attached file.");
+        if (!solutionData.abstract || !solutionData.logic || !solutionData.explanation) {
+            setErrorMsg("Please provide an abstract, logic outline, and detailed explanation.");
             return;
         }
 
@@ -50,8 +55,7 @@ const SolutionProposer = ({ task, onCancel, onSubmit }) => {
         }
 
         onSubmit({
-            logic,
-            code,
+            ...solutionData,
             fileUrl: publicUrl
         });
         setUploading(false);
@@ -71,15 +75,34 @@ const SolutionProposer = ({ task, onCancel, onSubmit }) => {
             </h4>
 
             <div style={{ marginBottom: '1rem' }}>
-                <label style={{ display: 'block', fontSize: '0.7rem', color: 'var(--text-muted)', marginBottom: '8px', textTransform: 'uppercase' }}>Approach / Logic Outline</label>
-                <textarea
-                    value={logic}
-                    onChange={(e) => setLogic(e.target.value)}
-                    placeholder="Explain your unique out-of-the-box approach or reference architecture..."
-                    rows="3"
+                <label style={{ display: 'block', fontSize: '0.7rem', color: 'var(--text-muted)', marginBottom: '8px', textTransform: 'uppercase' }}>Technical Abstract (Quick Summary)</label>
+                <input
+                    value={solutionData.abstract}
+                    onChange={(e) => setSolutionData({ ...solutionData, abstract: e.target.value })}
+                    placeholder="E.g., Reducing DB latency via Redis caching layer..."
                     style={{
                         width: '100%',
-                        background: 'rgba(255, 255, 255, 0.8)', // Lighter for light mode
+                        background: 'rgba(255, 255, 255, 0.8)',
+                        border: '1px solid var(--glass-border)',
+                        borderRadius: '8px',
+                        padding: '12px',
+                        color: 'var(--text-main)',
+                        outline: 'none',
+                        fontSize: '0.9rem'
+                    }}
+                />
+            </div>
+
+            <div style={{ marginBottom: '1rem' }}>
+                <label style={{ display: 'block', fontSize: '0.7rem', color: 'var(--text-muted)', marginBottom: '8px', textTransform: 'uppercase' }}>Approach / Logic Outline</label>
+                <textarea
+                    value={solutionData.logic}
+                    onChange={(e) => setSolutionData({ ...solutionData, logic: e.target.value })}
+                    placeholder="Explain your unique out-of-the-box approach or reference architecture..."
+                    rows="2"
+                    style={{
+                        width: '100%',
+                        background: 'rgba(255, 255, 255, 0.8)',
                         border: '1px solid var(--glass-border)',
                         borderRadius: '8px',
                         padding: '12px',
@@ -90,16 +113,57 @@ const SolutionProposer = ({ task, onCancel, onSubmit }) => {
                 ></textarea>
             </div>
 
-            <div style={{ marginBottom: '1.5rem' }}>
-                <label style={{ display: 'block', fontSize: '0.7rem', color: 'var(--text-muted)', marginBottom: '8px', textTransform: 'uppercase' }}>Optimized Code or Architecture Snippet</label>
+            <div style={{ marginBottom: '1rem' }}>
+                <label style={{ display: 'block', fontSize: '0.7rem', color: 'var(--text-muted)', marginBottom: '8px', textTransform: 'uppercase' }}>Detailed Solution Explanation</label>
                 <textarea
-                    value={code}
-                    onChange={(e) => setCode(e.target.value)}
-                    placeholder="Paste code or repository link here..."
-                    rows="5"
+                    value={solutionData.explanation}
+                    onChange={(e) => setSolutionData({ ...solutionData, explanation: e.target.value })}
+                    placeholder="Elaborate on the 'why' and 'how' of this solution..."
+                    rows="3"
                     style={{
                         width: '100%',
-                        background: 'rgba(255, 255, 255, 0.8)', // Lighter for light mode
+                        background: 'rgba(255, 255, 255, 0.8)',
+                        border: '1px solid var(--glass-border)',
+                        borderRadius: '8px',
+                        padding: '12px',
+                        color: 'var(--text-main)',
+                        outline: 'none',
+                        fontSize: '0.9rem'
+                    }}
+                ></textarea>
+            </div>
+
+            <div style={{ marginBottom: '1rem' }}>
+                <label style={{ display: 'block', fontSize: '0.7rem', color: 'var(--text-muted)', marginBottom: '8px', textTransform: 'uppercase' }}>Architecture Plan</label>
+                <textarea
+                    value={solutionData.architecture_plan}
+                    onChange={(e) => setSolutionData({ ...solutionData, architecture_plan: e.target.value })}
+                    placeholder="1. Layer A... 2. Component B... etc."
+                    rows="3"
+                    style={{
+                        width: '100%',
+                        background: 'rgba(255, 255, 255, 0.8)',
+                        border: '1px solid var(--glass-border)',
+                        borderRadius: '8px',
+                        padding: '12px',
+                        color: 'var(--text-main)',
+                        outline: 'none',
+                        fontSize: '0.9rem',
+                        fontFamily: 'monospace'
+                    }}
+                ></textarea>
+            </div>
+
+            <div style={{ marginBottom: '1.5rem' }}>
+                <label style={{ display: 'block', fontSize: '0.7rem', color: 'var(--text-muted)', marginBottom: '8px', textTransform: 'uppercase' }}>Optimized Code Snippet</label>
+                <textarea
+                    value={solutionData.code}
+                    onChange={(e) => setSolutionData({ ...solutionData, code: e.target.value })}
+                    placeholder="Paste code or repository link here..."
+                    rows="4"
+                    style={{
+                        width: '100%',
+                        background: 'rgba(255, 255, 255, 0.8)',
                         border: '1px solid var(--glass-border)',
                         borderRadius: '8px',
                         padding: '12px',

@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { supabase } from '../services/supabase';
 import SolutionProposer from './SolutionProposer';
 import ProposalGenerator from './ProposalGenerator';
+import { analyzeSolution } from '../services/gapstart_service';
 
 const IngenuityDetail = ({ task, role, identity, onClose, onReward, onDelete, onEdit, onAccept }) => {
     const [showProposer, setShowProposer] = useState(false);
@@ -21,7 +22,6 @@ const IngenuityDetail = ({ task, role, identity, onClose, onReward, onDelete, on
     let accentColor = 'var(--neon-purple)';
     if (isMined) accentColor = 'var(--neon-blue)';
     if (isScanned) accentColor = 'var(--neon-orange)';
-
     const [solutions, setSolutions] = useState([]);
     const [loadingSolutions, setLoadingSolutions] = useState(true);
 
@@ -32,6 +32,7 @@ const IngenuityDetail = ({ task, role, identity, onClose, onReward, onDelete, on
                 .from('solutions')
                 .select(`
                     id, content, status, vouchers, created_at, type, file_url,
+                    abstract, explanation, architecture_plan, score, review_feedback,
                     profiles!user_id ( username )
                 `)
                 .eq('opportunity_id', task.id)
@@ -45,7 +46,12 @@ const IngenuityDetail = ({ task, role, identity, onClose, onReward, onDelete, on
                     vouchers: d.vouchers || 0,
                     isAccepted: d.status === 'accepted',
                     type: d.type,
-                    fileUrl: d.file_url
+                    fileUrl: d.file_url,
+                    abstract: d.abstract,
+                    explanation: d.explanation,
+                    architecture_plan: d.architecture_plan,
+                    score: d.score,
+                    review_feedback: d.review_feedback
                 })));
             }
             setLoadingSolutions(false);
@@ -56,15 +62,21 @@ const IngenuityDetail = ({ task, role, identity, onClose, onReward, onDelete, on
     const handleSolutionSubmit = async (proposal) => {
         if (!identity || !identity.id) return alert("Must be logged in!");
 
-        const contentToSave = `APPROACH:\n${proposal.logic}\n\nIMPLEMENTATION/ARCHITECTURE:\n${proposal.code}`;
+        // Run AI Analysis
+        const analysis = analyzeSolution(proposal);
 
         const { data, error } = await supabase.from('solutions').insert([{
             opportunity_id: task.id,
             user_id: identity.id,
-            content: contentToSave,
+            content: proposal.code || proposal.logic, // Legacy field fallback
+            abstract: proposal.abstract,
+            explanation: proposal.explanation,
+            architecture_plan: proposal.architecture_plan,
             type: 'Architecture/Code',
             status: 'pending',
-            file_url: proposal.fileUrl
+            file_url: proposal.fileUrl,
+            score: analysis.score,
+            review_feedback: analysis.review_feedback
         }]).select(`*, profiles!user_id(username)`);
 
         if (!error && data && data.length > 0) {
@@ -73,10 +85,15 @@ const IngenuityDetail = ({ task, role, identity, onClose, onReward, onDelete, on
                 id: newSol.id,
                 engineer: newSol.profiles?.username || identity.name,
                 logic: newSol.content,
+                abstract: newSol.abstract,
+                explanation: newSol.explanation,
+                architecture_plan: newSol.architecture_plan,
                 vouchers: 0,
                 isAccepted: false,
                 type: 'Architecture/Code',
-                fileUrl: newSol.file_url
+                fileUrl: newSol.file_url,
+                score: newSol.score,
+                review_feedback: newSol.review_feedback
             }, ...solutions]);
         }
         setShowProposer(false);
@@ -282,9 +299,9 @@ const IngenuityDetail = ({ task, role, identity, onClose, onReward, onDelete, on
                                 <div style={{ color: 'var(--neon-orange)', fontWeight: 800, fontSize: '0.85rem' }}>Opening Likelihood: {task.jobProbability}</div>
                             )}
                             <div style={{ color: 'var(--neon-blue)', fontWeight: 800, fontSize: '0.75rem', marginTop: '4px' }}>
-                                <i className="fas fa-users"></i> Solvers: {task.solverCount || 0}/{task.maxSolvers || 3}
+                                <i className="fas fa-users"></i> Solvers: {task.solverCount || 0}/{task.maxSolvers || 10}
                             </div>
-                            {onAccept && (task.solverCount || 0) < (task.maxSolvers || 3) && (
+                            {onAccept && (task.solverCount || 0) < (task.maxSolvers || 10) && (
                                 <button
                                     onClick={() => onAccept(task.id)}
                                     style={{
@@ -436,26 +453,49 @@ const IngenuityDetail = ({ task, role, identity, onClose, onReward, onDelete, on
                                             boxShadow: '0 0 10px rgba(0, 242, 255, 0.3)'
                                         }}>LOGIC VERIFIED</div>
                                     )}
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.8rem' }}>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.8rem', alignItems: 'center' }}>
                                         <span style={{ color: 'var(--neon-blue)', fontWeight: 700, fontSize: '0.9rem' }}>@{sol.engineer}</span>
-                                        <span style={{ color: 'var(--text-muted)', fontSize: '0.75rem', background: 'rgba(255,255,255,0.1)', padding: '2px 8px', borderRadius: '4px', marginLeft: '8px' }}>
-                                            {sol.type}
-                                        </span>
+                                        <div style={{ display: 'flex', gap: '8px' }}>
+                                            <span style={{ color: 'var(--neon-purple)', fontSize: '0.75rem', fontWeight: 900, background: 'rgba(155, 12, 252, 0.1)', padding: '2px 10px', borderRadius: '4px', border: '1px solid var(--neon-purple)' }}>
+                                                SCORE: {sol.score || 0}
+                                            </span>
+                                            <span style={{ color: 'var(--text-muted)', fontSize: '0.75rem', background: 'rgba(255,255,255,0.1)', padding: '2px 8px', borderRadius: '4px' }}>
+                                                {sol.type}
+                                            </span>
+                                        </div>
                                     </div>
-                                    <pre style={{
-                                        fontSize: '0.9rem',
-                                        color: 'var(--text-main)',
-                                        lineHeight: '1.5',
-                                        whiteSpace: 'pre-wrap',
-                                        fontFamily: 'inherit',
-                                        background: 'rgba(240, 240, 240, 0.8)',
-                                        border: '1px solid var(--glass-border)',
-                                        padding: '12px',
-                                        borderRadius: '8px'
-                                    }}>{sol.logic}</pre>
 
-                                    {sol.fileUrl && (
-                                        <div style={{ marginTop: '1rem' }}>
+                                    {sol.abstract && (
+                                        <div style={{ color: 'var(--neon-blue)', fontSize: '0.85rem', fontWeight: 800, marginBottom: '0.5rem', borderLeft: '3px solid var(--neon-blue)', paddingLeft: '10px' }}>
+                                            ABSTRACT: {sol.abstract}
+                                        </div>
+                                    )}
+
+                                    <div style={{ display: 'grid', gridTemplateColumns: sol.architecture_plan ? '1fr 1fr' : '1fr', gap: '1rem', marginBottom: '1rem' }}>
+                                        <div style={{ background: 'rgba(240, 240, 240, 0.8)', padding: '12px', borderRadius: '8px', border: '1px solid var(--glass-border)' }}>
+                                            <h5 style={{ fontSize: '0.7rem', color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '8px' }}>Technical Explanation</h5>
+                                            <p style={{ fontSize: '0.85rem', color: 'var(--text-main)', margin: 0 }}>{sol.explanation || sol.logic}</p>
+                                        </div>
+                                        {sol.architecture_plan && (
+                                            <div style={{ background: 'rgba(0, 0, 0, 0.05)', padding: '12px', borderRadius: '8px', border: '1px dashed var(--neon-blue)' }}>
+                                                <h5 style={{ fontSize: '0.7rem', color: 'var(--neon-blue)', textTransform: 'uppercase', marginBottom: '8px' }}>Architecture Plan</h5>
+                                                <pre style={{ fontSize: '0.8rem', color: 'var(--text-main)', margin: 0, whiteSpace: 'pre-wrap', fontFamily: 'monospace' }}>{sol.architecture_plan}</pre>
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    {sol.review_feedback && (
+                                        <div style={{ marginBottom: '1.2rem', background: 'rgba(0, 242, 255, 0.05)', padding: '1rem', borderRadius: '12px', border: '1px solid rgba(0, 242, 255, 0.2)' }}>
+                                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
+                                                <i className="fas fa-robot" style={{ color: 'var(--neon-blue)', fontSize: '0.8rem' }}></i>
+                                                <span style={{ fontSize: '0.7rem', fontWeight: 900, color: 'var(--neon-blue)', textTransform: 'uppercase' }}>AI Technical Review</span>
+                                            </div>
+                                            <p style={{ fontSize: '0.85rem', color: 'var(--text-main)', margin: 0, fontStyle: 'italic' }}>"{sol.review_feedback}"</p>
+                                        </div>
+                                    )}
+
+                                    <div style={{ display: 'flex', gap: '15px', alignItems: 'center', flexWrap: 'wrap' }}>
+                                        {sol.fileUrl && (
                                             <a
                                                 href={sol.fileUrl}
                                                 target="_blank"
@@ -464,23 +504,20 @@ const IngenuityDetail = ({ task, role, identity, onClose, onReward, onDelete, on
                                                     display: 'inline-flex',
                                                     alignItems: 'center',
                                                     gap: '8px',
-                                                    background: 'rgba(188, 19, 254, 0.1)',
+                                                    background: 'rgba(155, 12, 252, 0.1)',
                                                     border: '1px solid var(--neon-purple)',
                                                     color: 'var(--neon-purple)',
-                                                    padding: '8px 16px',
+                                                    padding: '6px 14px',
                                                     borderRadius: '8px',
                                                     textDecoration: 'none',
-                                                    fontSize: '0.85rem',
-                                                    fontWeight: 'bold',
-                                                    transition: 'all 0.3s'
+                                                    fontSize: '0.8rem',
+                                                    fontWeight: 'bold'
                                                 }}
                                             >
-                                                <i className="fas fa-download"></i> View Attached Architecture / File
+                                                <i className="fas fa-file-code"></i> Working Docs
                                             </a>
-                                        </div>
-                                    )}
+                                        )}
 
-                                    <div style={{ marginTop: '1.2rem', display: 'flex', gap: '15px', alignItems: 'center' }}>
                                         <button style={{ background: 'transparent', border: 'none', color: 'var(--text-muted)', fontSize: '0.8rem', cursor: 'pointer' }}>
                                             <i className="fas fa-certificate"></i> Vouch logic
                                         </button>
