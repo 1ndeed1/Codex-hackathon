@@ -181,13 +181,35 @@ function AssessmentPlatform({ identity }) {
         // Save to global Profile / LocalStorage
         if (identity && identity.id) {
             const history = JSON.parse(localStorage.getItem(`assessment_history_${identity.id}`) || "[]");
+
+            const prevAttempts = history.filter(h => h.company === assessmentData.company && h.role === assessmentData.role && h.week === assessmentData.weekLabel).length;
+            const currentAttempt = prevAttempts + 1;
+
+            let remark = "";
+            if (status.includes("FAILED")) {
+                if (currentAttempt >= 3) {
+                    remark = "System Insight: High failure rate detected. Recommendation: Step back to prerequisite fundamentals and heavily review System Design documentation before re-attempting.";
+                } else {
+                    remark = "System Insight: Exam failed. Please review your incorrect answers and allocate additional study time before retrying.";
+                }
+            } else {
+                remark = `System Insight: Passed successfully on attempt #${currentAttempt}. Solid engineering mindset.`;
+            }
+
             history.push({
                 company: assessmentData.company,
                 role: assessmentData.role,
                 week: assessmentData.weekLabel,
                 score: percentage,
                 status,
-                date: new Date().toISOString()
+                date: new Date().toISOString(),
+                correct: correctCount,
+                wrong: totalWeight - correctCount,
+                total: totalWeight,
+                attempt: currentAttempt,
+                remark,
+                questions: assessmentData.questions,
+                userAnswers: answers
             });
             localStorage.setItem(`assessment_history_${identity.id}`, JSON.stringify(history));
         }

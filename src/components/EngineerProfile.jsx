@@ -12,6 +12,7 @@ const EngineerProfile = ({ userId, currentUser, onClose, identity, onProfileUpda
     const [isEditingProfile, setIsEditingProfile] = useState(false);
     const [viewingSolution, setViewingSolution] = useState(null);
     const [assessmentHistory, setAssessmentHistory] = useState([]);
+    const [viewingExam, setViewingExam] = useState(null);
 
     const [myProjects, setMyProjects] = useState([]);
     const [showProposalModal, setShowProposalModal] = useState(false);
@@ -315,16 +316,46 @@ It's amazing what we can achieve when we solve problems proactively. Code is pub
                                                         {exam.role} - {exam.week}
                                                     </div>
                                                 </div>
-                                                <div style={{ fontSize: '1.5rem', fontWeight: 900, color: exam.score >= 60 ? '#00ff80' : '#ff3c3c' }}>
-                                                    {exam.score}%
+                                                <div style={{ textAlign: 'right' }}>
+                                                    <div style={{ fontSize: '1.5rem', fontWeight: 900, color: exam.score >= 60 ? '#00ff80' : '#ff3c3c' }}>
+                                                        {exam.score}%
+                                                    </div>
+                                                    {exam.attempt && (
+                                                        <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600 }}>
+                                                            Attempt #{exam.attempt}
+                                                        </div>
+                                                    )}
                                                 </div>
                                             </div>
 
+                                            {exam.remark && (
+                                                <div style={{ marginTop: '10px', fontSize: '0.85rem', color: 'var(--text-main)', fontStyle: 'italic', background: 'rgba(0,0,0,0.2)', padding: '8px', borderRadius: '8px', borderLeft: `3px solid ${exam.score >= 60 ? '#00ff80' : '#ff3c3c'}` }}>
+                                                    {exam.remark}
+                                                </div>
+                                            )}
+
                                             <div style={{ marginTop: '1rem', paddingTop: '1rem', borderTop: '1px solid rgba(255,255,255,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                                                <span style={{ fontSize: '0.75rem', fontWeight: 800, padding: '4px 10px', borderRadius: '6px', background: exam.score >= 60 ? 'rgba(0, 255, 128, 0.1)' : 'rgba(255, 60, 60, 0.1)', color: exam.score >= 60 ? '#00ff80' : '#ff3c3c' }}>
-                                                    {exam.status}
-                                                </span>
-                                                {exam.score >= 85 && <i className="fas fa-medal" style={{ color: '#fbbf24', fontSize: '1.2rem' }} title="Expert Level Selection"></i>}
+                                                <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                                                    <span style={{ fontSize: '0.75rem', fontWeight: 800, padding: '4px 10px', borderRadius: '6px', background: exam.score >= 60 ? 'rgba(0, 255, 128, 0.1)' : 'rgba(255, 60, 60, 0.1)', color: exam.score >= 60 ? '#00ff80' : '#ff3c3c' }}>
+                                                        {exam.status}
+                                                    </span>
+                                                    {exam.total && (
+                                                        <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)', fontWeight: 600 }}>
+                                                            {exam.correct} / {exam.total} Correct
+                                                        </span>
+                                                    )}
+                                                </div>
+                                                <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                                                    {exam.questions && (
+                                                        <button
+                                                            onClick={() => setViewingExam(exam)}
+                                                            style={{ border: '1px solid var(--neon-purple)', color: 'var(--neon-purple)', background: 'transparent', padding: '4px 12px', fontSize: '0.75rem', borderRadius: '8px', cursor: 'pointer', fontWeight: 'bold' }}
+                                                        >
+                                                            Review Exam
+                                                        </button>
+                                                    )}
+                                                    {exam.score >= 85 && <i className="fas fa-medal" style={{ color: '#fbbf24', fontSize: '1.2rem' }} title="Expert Level Selection"></i>}
+                                                </div>
                                             </div>
                                         </div>
                                     ))}
@@ -482,6 +513,118 @@ It's amazing what we can achieve when we solve problems proactively. Code is pub
                     </div>
                 )}
             </div>
+
+            {viewingExam && (
+                <div style={{
+                    position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
+                    background: 'rgba(0,0,0,0.85)', backdropFilter: 'blur(10px)',
+                    zIndex: 1000, display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '2rem'
+                }}>
+                    <div style={{
+                        background: 'var(--glass-bg)', border: '1px solid var(--glass-border)',
+                        borderRadius: '24px', padding: '2.5rem', maxWidth: '800px', width: '100%',
+                        maxHeight: '90vh', overflowY: 'auto'
+                    }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '2rem' }}>
+                            <div>
+                                <h2 style={{ fontSize: '1.8rem', fontWeight: 900, margin: 0 }}>Assessment Review</h2>
+                                <p style={{ color: 'var(--text-muted)', margin: '8px 0 0 0' }}>{viewingExam.company} - {viewingExam.role} ({viewingExam.week})</p>
+                                <p style={{ color: 'var(--text-muted)', margin: '4px 0 0 0', fontSize: '0.85rem' }}>Attempt #{viewingExam.attempt} • Completed on {new Date(viewingExam.date).toLocaleString()}</p>
+                            </div>
+                            <div style={{ textAlign: 'right' }}>
+                                <div style={{ fontSize: '2.5rem', fontWeight: 900, color: viewingExam.score >= 60 ? '#00ff80' : '#ff3c3c', lineHeight: 1 }}>
+                                    {viewingExam.score}%
+                                </div>
+                                <span style={{ fontSize: '0.8rem', fontWeight: 'bold', color: viewingExam.score >= 60 ? '#00ff80' : '#ff3c3c', textTransform: 'uppercase' }}>
+                                    {viewingExam.status}
+                                </span>
+                            </div>
+                        </div>
+
+                        <div style={{ display: 'flex', gap: '1.5rem', marginBottom: '2.5rem' }}>
+                            <div style={{ flex: 1, background: 'rgba(0, 255, 128, 0.05)', padding: '1.5rem', borderRadius: '16px', border: '1px solid rgba(0, 255, 128, 0.2)', textAlign: 'center' }}>
+                                <div style={{ fontSize: '2rem', fontWeight: 900, color: '#00ff80' }}>{viewingExam.correct}</div>
+                                <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '1px', fontWeight: 800 }}>Correct</div>
+                            </div>
+                            <div style={{ flex: 1, background: 'rgba(255, 60, 60, 0.05)', padding: '1.5rem', borderRadius: '16px', border: '1px solid rgba(255, 60, 60, 0.2)', textAlign: 'center' }}>
+                                <div style={{ fontSize: '2rem', fontWeight: 900, color: '#ff3c3c' }}>{viewingExam.wrong}</div>
+                                <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '1px', fontWeight: 800 }}>Incorrect</div>
+                            </div>
+                        </div>
+
+                        <h3 style={{ fontSize: '1.2rem', marginBottom: '1.5rem', color: 'var(--text-main)' }}>Question Breakdown</h3>
+
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                            {viewingExam.questions?.map((q, idx) => {
+                                const userAnsData = viewingExam.userAnswers?.[idx];
+                                const isScenario = q.type === 'scenario';
+                                let isCorrect = false;
+
+                                if (isScenario) {
+                                    isCorrect = userAnsData && userAnsData.value && userAnsData.value.length > 20;
+                                } else {
+                                    isCorrect = userAnsData && userAnsData.value === q.ans;
+                                }
+
+                                return (
+                                    <div key={idx} style={{ background: 'rgba(0,0,0,0.2)', padding: '1.5rem', borderRadius: '16px', borderLeft: `4px solid ${isCorrect ? '#00ff80' : '#ff3c3c'}` }}>
+                                        <div style={{ fontWeight: 'bold', fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '8px', textTransform: 'uppercase' }}>
+                                            Question {idx + 1} {isScenario && ' (Scenario)'}
+                                            <span style={{ marginLeft: '10px', color: isCorrect ? '#00ff80' : '#ff3c3c' }}>{isCorrect ? '✓ Correct' : '✗ Incorrect'}</span>
+                                        </div>
+                                        <p style={{ fontSize: '1.05rem', lineHeight: '1.5', margin: '0 0 1rem 0' }}>{q.q}</p>
+
+                                        {isScenario ? (
+                                            <div>
+                                                <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: '4px' }}>Your Reasoning:</div>
+                                                <div style={{ background: 'rgba(255,255,255,0.05)', padding: '1rem', borderRadius: '8px', fontSize: '0.95rem', color: 'var(--text-main)', whiteSpace: 'pre-wrap' }}>
+                                                    {userAnsData?.value || <span style={{ color: '#ff3c3c', fontStyle: 'italic' }}>No answer provided.</span>}
+                                                </div>
+                                            </div>
+                                        ) : (
+                                            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                                                {q.options.map((opt, oIdx) => {
+                                                    const isSelected = userAnsData?.value === oIdx;
+                                                    const isActualCorrect = q.ans === oIdx;
+
+                                                    let bg = 'rgba(255,255,255,0.05)';
+                                                    let border = '1px solid transparent';
+                                                    if (isActualCorrect) {
+                                                        bg = 'rgba(0, 255, 128, 0.15)';
+                                                        border = '1px solid #00ff80';
+                                                    } else if (isSelected && !isActualCorrect) {
+                                                        bg = 'rgba(255, 60, 60, 0.15)';
+                                                        border = '1px solid #ff3c3c';
+                                                    }
+
+                                                    return (
+                                                        <div key={oIdx} style={{ background: bg, border, padding: '10px 15px', borderRadius: '8px', fontSize: '0.95rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                                                            <span>{opt}</span>
+                                                            <div style={{ display: 'flex', gap: '8px' }}>
+                                                                {isSelected && <span style={{ fontSize: '0.75rem', fontWeight: 'bold', background: 'var(--text-main)', color: '#000', padding: '2px 6px', borderRadius: '4px' }}>Your Answer</span>}
+                                                                {isActualCorrect && <span style={{ fontSize: '0.75rem', fontWeight: 'bold', background: '#00ff80', color: '#000', padding: '2px 6px', borderRadius: '4px' }}>Correct Answer</span>}
+                                                            </div>
+                                                        </div>
+                                                    )
+                                                })}
+                                            </div>
+                                        )}
+                                    </div>
+                                )
+                            })}
+                        </div>
+
+                        <div style={{ textAlign: 'right', marginTop: '2rem' }}>
+                            <button
+                                onClick={() => setViewingExam(null)}
+                                className="pf-btn-generate"
+                            >
+                                Close Details
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

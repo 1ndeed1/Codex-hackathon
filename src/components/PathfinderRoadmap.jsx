@@ -61,23 +61,28 @@ function PathfinderRoadmap({ identity }) {
 
             let roadmapData = await PathfinderService.getRoadmapsForDomain(domainId);
 
-            // Inject mock resources, quizzes, and internships into database-fetched roadmaps if missing
-            roadmapData = roadmapData.map(rm => ({
-                ...rm,
-                internships: rm.internships || [
-                    { role: "Backend Developer Intern", link: "#", term: "Ongoing" }
-                ],
-                weekly_plan: rm.weekly_plan.map(wp => ({
-                    ...wp,
-                    resources: wp.resources || [
-                        { type: "youtube", title: `${wp.focus} Tutorial`, link: "https://youtube.com" },
-                        { type: "doc", title: "Official Documentation", link: "#" }
+            if (!roadmapData || roadmapData.length === 0) {
+                // Generate mock roadmaps for standard domains if DB is empty
+                roadmapData = generateCompanyRoadmaps(currentDomain ? currentDomain.name : domainId);
+            } else {
+                // Inject mock resources, quizzes, and internships into database-fetched roadmaps if missing
+                roadmapData = roadmapData.map(rm => ({
+                    ...rm,
+                    internships: rm.internships || [
+                        { role: "Backend Developer Intern", link: "#", term: "Ongoing" }
                     ],
-                    quiz: wp.quiz || [
-                        { q: `What is the most critical concept in ${wp.focus}?`, options: ["Concept A", "Concept B", "System Design", "Testing"], ans: 2 }
-                    ]
-                }))
-            }));
+                    weekly_plan: rm.weekly_plan.map(wp => ({
+                        ...wp,
+                        resources: wp.resources || [
+                            { type: "youtube", title: `${wp.focus} Tutorial`, link: "https://youtube.com" },
+                            { type: "doc", title: "Official Documentation", link: "#" }
+                        ],
+                        quiz: wp.quiz || [
+                            { q: `What is the most critical concept in ${wp.focus}?`, options: ["Concept A", "Concept B", "System Design", "Testing"], ans: 2 }
+                        ]
+                    }))
+                }));
+            }
 
             setRoadmaps(roadmapData);
             if (roadmapData.length > 0) {
