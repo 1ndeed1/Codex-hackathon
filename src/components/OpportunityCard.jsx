@@ -55,21 +55,20 @@ const OpportunityCard = ({ opp, onClick }) => {
                     display: 'flex',
                     flexDirection: 'column',
                     height: '100%',
-                    borderLeft: `4px solid ${accentColor}`,
-                    background: 'white',
+                    background: `linear-gradient(135deg, white 0%, color-mix(in srgb, ${accentColor}, transparent 90%) 100%)`,
                     borderRadius: '24px',
                     boxShadow: '0 4px 20px rgba(0,0,0,0.03)',
-                    border: '1px solid var(--glass-border)',
-                    borderLeftWidth: '6px'
+                    border: `1px solid color-mix(in srgb, ${accentColor}, transparent 85%)`,
+                    borderLeft: `6px solid ${accentColor}`
                 }}
                 onMouseEnter={e => {
                     e.currentTarget.style.transform = 'translateY(-10px) scale(1.01)';
                     e.currentTarget.style.borderColor = accentColor;
-                    e.currentTarget.style.boxShadow = `0 20px 40px ${accentColor}1a`;
+                    e.currentTarget.style.boxShadow = `0 20px 40px color-mix(in srgb, ${accentColor}, transparent 80%)`;
                 }}
                 onMouseLeave={e => {
                     e.currentTarget.style.transform = 'translateY(0) scale(1)';
-                    e.currentTarget.style.borderColor = 'var(--glass-border)';
+                    e.currentTarget.style.borderColor = `color-mix(in srgb, ${accentColor}, transparent 88%)`;
                     e.currentTarget.style.boxShadow = '0 4px 20px rgba(0,0,0,0.03)';
                 }}
             >
@@ -87,7 +86,7 @@ const OpportunityCard = ({ opp, onClick }) => {
                         border: `1px solid ${accentColor}`,
                         color: accentColor,
                         fontWeight: 800,
-                        background: `${accentColor}05`
+                        background: `color-mix(in srgb, ${accentColor}, transparent 95%)`
                     }}>{opp.difficulty || 'Medium'}</span>
                 </div>
 
@@ -149,11 +148,11 @@ const OpportunityCard = ({ opp, onClick }) => {
 
                 <div style={{ flex: 1 }}>
                     <div style={{
-                        background: 'rgba(0,0,0,0.02)',
                         padding: '1.2rem',
                         borderRadius: '16px',
                         marginBottom: '1.2rem',
-                        border: `1px dashed ${accentColor}33`
+                        border: `1px dashed color-mix(in srgb, ${accentColor}, transparent 70%)`,
+                        background: `color-mix(in srgb, ${accentColor}, transparent 95%)`
                     }}>
                         <label style={{ fontSize: '0.65rem', color: accentColor, textTransform: 'uppercase', display: 'block', marginBottom: '6px', fontWeight: 900 }}>
                             {isMined ? 'Detected Market Signal' : (isScanned ? 'Issue Report' : 'Problem Abstract')}
@@ -190,8 +189,8 @@ const OpportunityCard = ({ opp, onClick }) => {
 
                         <div className="likelihood-tooltip-container" style={{ marginLeft: 'auto', position: 'relative', display: 'flex', alignItems: 'center' }}>
                             <div style={{
-                                background: `${accentColor}11`,
-                                border: `1px solid ${accentColor}33`,
+                                background: `color-mix(in srgb, ${accentColor}, transparent 90%)`,
+                                border: `1px solid color-mix(in srgb, ${accentColor}, transparent 70%)`,
                                 padding: '6px 14px',
                                 borderRadius: '20px',
                                 display: 'flex',
