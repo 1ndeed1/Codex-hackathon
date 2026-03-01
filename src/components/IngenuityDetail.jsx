@@ -155,6 +155,13 @@ const IngenuityDetail = ({ task, role, identity, onClose, onReward, onDelete, on
             overflowY: 'auto',
             display: 'block'
         }} onClick={onClose}>
+            <style>{`
+            .likelihood-tooltip-container:hover .likelihood-tooltip {
+                opacity: 1 !important;
+                visibility: visible !important;
+                transform: translateY(-5px) !important;
+            }
+        `}</style>
             <div
                 className="animate-fade"
                 style={{
@@ -296,7 +303,43 @@ const IngenuityDetail = ({ task, role, identity, onClose, onReward, onDelete, on
                             {isScanned ? (
                                 <div style={{ color: 'var(--neon-orange)', fontWeight: 800, fontSize: '0.85rem' }}>Opportunity to Solve</div>
                             ) : task.type === 'direct' ? null : (
-                                <div style={{ color: 'var(--neon-orange)', fontWeight: 800, fontSize: '0.85rem' }}>Opening Likelihood: {task.jobProbability}</div>
+                                <div className="likelihood-tooltip-container" style={{ position: 'relative', display: 'inline-flex', alignItems: 'center' }}>
+                                    <div style={{
+                                        background: 'rgba(255, 140, 0, 0.1)',
+                                        border: '1px solid var(--neon-orange)',
+                                        width: '32px',
+                                        height: '32px',
+                                        borderRadius: '50%',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        cursor: 'help',
+                                        transition: 'all 0.3s ease',
+                                        boxShadow: '0 0 10px rgba(255, 140, 0, 0.2)'
+                                    }}>
+                                        <i className="fas fa-chart-line" style={{ color: 'var(--neon-orange)', fontSize: '0.8rem' }}></i>
+                                    </div>
+                                    <div className="likelihood-tooltip" style={{
+                                        position: 'absolute',
+                                        bottom: '100%',
+                                        right: '0',
+                                        marginBottom: '8px',
+                                        background: 'rgba(0,0,0,0.9)',
+                                        color: 'var(--neon-orange)',
+                                        padding: '6px 12px',
+                                        borderRadius: '6px',
+                                        fontSize: '0.7rem',
+                                        whiteSpace: 'nowrap',
+                                        opacity: 0,
+                                        visibility: 'hidden',
+                                        transition: 'all 0.3s ease',
+                                        border: '1px solid var(--neon-orange)',
+                                        zIndex: 10,
+                                        fontWeight: 800
+                                    }}>
+                                        Hiring Likelihood: {task.jobProbability}
+                                    </div>
+                                </div>
                             )}
                             <div style={{ color: 'var(--neon-blue)', fontWeight: 800, fontSize: '0.75rem', marginTop: '4px' }}>
                                 <i className="fas fa-users"></i> Solvers: {task.solverCount || 0}/{task.maxSolvers || 10}

@@ -8,6 +8,7 @@ const ProblemSubmission = ({ onClose, onPublish }) => {
     const [description, setDescription] = useState('');
     const [abstract, setAbstract] = useState('');
     const [codeSnippet, setCodeSnippet] = useState('');
+    const [sourceUrl, setSourceUrl] = useState('');
     const [isAnonymous, setIsAnonymous] = useState(false);
 
     const [isAnalyzing, setIsAnalyzing] = useState(false);
@@ -17,12 +18,46 @@ const ProblemSubmission = ({ onClose, onPublish }) => {
         if (!title || !description) return;
         setIsAnalyzing(true);
 
+        // Realistic technical patterns based on common March 2026 issues
+        const analysisPool = [
+            {
+                inference: "Pattern matches Agentic Recursion Error: The logic reveals a potential infinite retry loop in your autonomous scaling layer.",
+                logicGap: "Needs a Circuit Breaker pattern with a Token-Bucket rate limiter at the API gateway level.",
+                carbon: "3.8kg CO2e / request (due to excessive retries)"
+            },
+            {
+                inference: "Detected Vibe-Coding Brittle State: The component architecture lacks proper error boundary coverage for AI-generated state transitions.",
+                logicGap: "Requires implementation of a strictly-typed Zod schema for runtime validation of the generated JSON payloads.",
+                carbon: "0.2kg CO2e / request"
+            },
+            {
+                inference: "Memory Safety Risk: Signal points to a heap overflow during the monomorphization of large Rust traits.",
+                logicGap: "Needs a refactor from Static Dispatch to Dynamic Dispatch (Box<dyn Trait>) to reduce binary bloat and compile-time memory pressure.",
+                carbon: "1.1kg CO2e / request"
+            },
+            {
+                inference: "FinOps Alert: Technical pain suggests a lack of cost-attribution tags on your ephemeral development environments.",
+                logicGap: "Needs an automated 'Janitor' script to reap orphaned resources and a centralized OPA policy to enforce resource tagging.",
+                carbon: "8.5kg CO2e / request (wasted idle resources)"
+            }
+        ];
+
         setTimeout(() => {
-            setAnalysis({
-                inference: "The description reveals a deep logic collision in the buffer management layer.",
-                logicGap: "Standard JS garbage collection cannot clear these allocated C++ pointers. Requires custom manual pointer-tracking hook.",
-                carbon: "4.2kg CO2e / request"
-            });
+            // Select analysis based on keywords or random if none match
+            let selected = analysisPool[Math.floor(Math.random() * analysisPool.length)];
+
+            const lowerTitle = title.toLowerCase();
+            if (lowerTitle.includes('memory') || lowerTitle.includes('leak') || lowerTitle.includes('rust')) {
+                selected = analysisPool[2];
+            } else if (lowerTitle.includes('agent') || lowerTitle.includes('loop')) {
+                selected = analysisPool[0];
+            } else if (lowerTitle.includes('ai') || lowerTitle.includes('react') || lowerTitle.includes('vibe')) {
+                selected = analysisPool[1];
+            } else if (lowerTitle.includes('cost') || lowerTitle.includes('bill') || lowerTitle.includes('aws')) {
+                selected = analysisPool[3];
+            }
+
+            setAnalysis(selected);
             setIsAnalyzing(false);
         }, 2000);
     };
@@ -41,7 +76,8 @@ const ProblemSubmission = ({ onClose, onPublish }) => {
             logicGap: analysis.logicGap,
             abstract: abstract,
             codeSnippet: codeSnippet,
-            isAnonymous: isAnonymous
+            isAnonymous: isAnonymous,
+            sourceUrl: sourceUrl
         });
         onClose();
     };
@@ -137,6 +173,26 @@ const ProblemSubmission = ({ onClose, onPublish }) => {
                             lineHeight: '1.5'
                         }}
                     ></textarea>
+                </div>
+
+                <div style={{ marginBottom: '1.5rem' }}>
+                    <label style={{ display: 'block', fontSize: '0.65rem', color: 'var(--neon-green)', marginBottom: '8px', textTransform: 'uppercase', fontWeight: 800 }}>Source / Evidence URL (Optional)</label>
+                    <input
+                        type="url"
+                        placeholder="GitHub repo, StackOverflow link, or Gist for authentication..."
+                        value={sourceUrl}
+                        onChange={(e) => setSourceUrl(e.target.value)}
+                        style={{
+                            width: '100%',
+                            background: 'rgba(255,255,255,0.8)',
+                            border: '1px solid var(--glass-border)',
+                            borderRadius: '12px',
+                            padding: '14px',
+                            color: 'var(--text-main)',
+                            outline: 'none',
+                            fontSize: '1rem'
+                        }}
+                    />
                 </div>
 
                 <div style={{ marginBottom: '1.5rem' }}>

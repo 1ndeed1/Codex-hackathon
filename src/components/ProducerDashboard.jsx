@@ -45,11 +45,14 @@ const ProducerDashboard = ({ identity }) => {
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
                             {agreements.map(ag => (
                                 <div key={ag.id} style={{
-                                    background: 'rgba(255,255,255,0.8)',
-                                    padding: '1.5rem',
-                                    borderRadius: '12px',
-                                    borderLeft: `4px solid ${ag.status === 'accepted' ? 'var(--neon-green)' : 'var(--neon-blue)'}`
+                                    background: 'white',
+                                    padding: '1.8rem',
+                                    borderRadius: '20px',
+                                    border: '1px solid var(--glass-border)',
+                                    borderLeft: `6px solid ${ag.status === 'accepted' ? 'var(--neon-green)' : 'var(--neon-blue)'}`,
+                                    boxShadow: '0 4px 15px rgba(0,0,0,0.02)'
                                 }}>
+<<<<<<< HEAD
                                     <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
                                         <h4 style={{ color: 'white' }}>{ag.projects?.name}</h4>
                                         <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
@@ -85,6 +88,26 @@ const ProducerDashboard = ({ identity }) => {
                                                 View & Respond
                                             </button>
                                         )}
+=======
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.8rem', alignItems: 'center' }}>
+                                        <h4 style={{ color: 'var(--text-main)', margin: 0, fontSize: '1.1rem' }}>{ag.projects?.name}</h4>
+                                        <span style={{
+                                            fontSize: '0.7rem',
+                                            padding: '4px 10px',
+                                            borderRadius: '6px',
+                                            background: ag.status === 'accepted' ? 'rgba(0, 255, 0, 0.05)' : 'rgba(0, 142, 204, 0.05)',
+                                            color: ag.status === 'accepted' ? 'var(--neon-green)' : 'var(--neon-blue)',
+                                            fontWeight: 800,
+                                            letterSpacing: '0.5px'
+                                        }}>{ag.status.toUpperCase()}</span>
+                                    </div>
+                                    <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)', marginBottom: '1.2rem', fontWeight: 500 }}>Founder: <span style={{ color: 'var(--neon-purple)' }}>@{ag.founder?.username || "Unknown"}</span></p>
+                                    <div style={{ fontSize: '0.85rem', background: 'rgba(0,0,0,0.02)', padding: '12px', borderRadius: '12px', color: 'var(--text-main)', marginBottom: '1.2rem', fontStyle: 'italic', border: '1px solid var(--glass-border)' }}>
+                                        "{ag.terms.substring(0, 100)}..."
+                                    </div>
+                                    <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                        <i className="far fa-calendar-alt"></i> Expires: {new Date(ag.expires_at).toLocaleDateString()}
+>>>>>>> 20f4aedcaa374254748e2eb4bab1e560f915991e
                                     </div>
                                 </div>
                             ))}

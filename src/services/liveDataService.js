@@ -24,7 +24,10 @@ const DOMAIN_DATA = {
             cagr: '25.12%',
             hiringIntent: '+52% by H1 2025'
         },
-        sources: ['GrandViewResearch', 'IBEF', 'Taggd'],
+        sources: [
+            { name: 'GrandViewResearch', url: 'https://www.grandviewresearch.com/industry-analysis/digital-health-market' },
+            { name: 'IBEF', url: 'https://www.ibef.org/industry/healthcare-india' }
+        ],
         roadmap: {
             month1_2: {
                 focus: 'Foundational Tech & Healthcare Basics',
@@ -64,7 +67,10 @@ const DOMAIN_DATA = {
             cagr: '30.55%',
             hiringIntent: '+7.5% net banking rise (2024)'
         },
-        sources: ['Entrepreneur.com', 'Talenbrium', 'Xpheno'],
+        sources: [
+            { name: 'Entrepreneur', url: 'https://www.entrepreneur.com/en-in/topic/fintech' },
+            { name: 'Xpheno', url: 'https://xpheno.com/insights/' }
+        ],
         roadmap: {
             month1_2: {
                 focus: 'Core Development & Financial Basics',
@@ -101,10 +107,13 @@ const DOMAIN_DATA = {
         color: 'var(--neon-green)',
         liveStats: {
             marketSize: '$815 Million (2024)',
-            cagr: 'Exponential Growth',
+            cagr: '13.1% CAGR projection',
             hiringIntent: 'Severe Skills Gap in AI/IoT'
         },
-        sources: ['NASSCOM', 'IndiaAI', 'PeopleMatters'],
+        sources: [
+            { name: 'NASSCOM', url: 'https://nasscom.in/knowledge-center/publications/agritech-india-2024' },
+            { name: 'IndiaAI', url: 'https://indiaai.gov.in/article/agritech-the-future-of-farming' }
+        ],
         roadmap: {
             month1_2: {
                 focus: 'Data Acquisition & IoT',
@@ -144,7 +153,10 @@ const DOMAIN_DATA = {
             cagr: '16.1%',
             hiringIntent: '3 Million+ jobs by 2030'
         },
-        sources: ['Mercom India', 'Energetica', 'IBEF'],
+        sources: [
+            { name: 'Mercom India', url: 'https://www.mercomindia.com/research' },
+            { name: 'IBEF', url: 'https://www.ibef.org/industry/renewable-energy' }
+        ],
         roadmap: {
             month1_2: {
                 focus: 'Sustainability Principles & Data Foundations',
