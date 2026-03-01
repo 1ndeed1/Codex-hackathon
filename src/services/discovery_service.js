@@ -82,41 +82,31 @@ export const fetchOpportunities = async () => {
                 *,
                 author:profiles!opportunities_owner_id_fkey ( username, email )
             `)
-<<<<<<< HEAD
             .lt('solver_count', 10) // Only show if solver_count < max_solvers (10)
             .order('created_at', { ascending: false });
 
+        let results = [];
         if (error) {
             // Distinguish between actual schema mismatch (like missing solver_count) and network/generic errors
             const isMissingColumn = error.message?.includes('column') || error.code === 'PGRST204';
 
             if (isMissingColumn) {
-                console.error("Supabase schema mismatch (Check if solver_count column exists!):", error);
-
-                // Fallback: fetch without profiles AND without the solver_count filter
+                console.warn("Supabase schema mismatch (Check if solver_count column exists!):", error);
                 const { data: simpleData, error: simpleError } = await supabase
                     .from('opportunities')
                     .select('*')
                     .order('created_at', { ascending: false });
 
-                if (simpleError) {
+                if (!simpleError && simpleData) {
+                    results = simpleData.map(item => ({ ...mapDbToFrontend(item), authorProfile: null }));
+                } else {
                     console.error("Supabase fallback error:", simpleError);
-                    return [];
                 }
-                return simpleData.map(item => ({ ...mapDbToFrontend(item), authorProfile: null }));
             } else {
-                // Network error or other Supabase error
                 console.error("Supabase connection or request error:", error);
-                return [];
             }
-=======
-            .lt('solver_count', 3)
-            .order('created_at', { ascending: false });
-
-        let results = [];
-        if (dbData) {
+        } else if (dbData) {
             results = dbData.map(mapDbToFrontend);
->>>>>>> refs/remotes/origin/master
         }
 
         // 2. Fetch Live Signals (Real-time Scraping/API)
@@ -163,7 +153,6 @@ export const simulateBackgroundScan = async () => {
 
     const mockScans = [
         {
-<<<<<<< HEAD
             type: 'pulse',
             source: 'Reddit',
             channel: 'r/webdev',
@@ -201,7 +190,8 @@ export const simulateBackgroundScan = async () => {
             tags: ['Fintech', 'Compliance', 'Security'],
             difficulty: 'High',
             source_url: 'https://internal-reports.com/compliance-gap'
-=======
+        },
+        {
             type: 'mined',
             source: 'Reddit',
             channel: 'r/devops',
@@ -242,35 +232,6 @@ export const simulateBackgroundScan = async () => {
             tags: ['AWS', 'Bedrock', 'FinOps', 'LLMOps'],
             difficulty: 'High',
             sourceUrl: 'https://community.aws/'
-        },
-        {
-            type: 'mined',
-            source: 'GitHub',
-            channel: 'Platform Engineering',
-            title: "Major Bottleneck in Internal Developer Platform (IDP) Provisioning",
-            signal: "Issue #881: Terraform providers are timing out when provisioning ephemeral environments for feature branches. Scalability limit reached at 50 concurrent PRs.",
-            inference: "Synchronous provisioning queue is blocking. Need to move to an asynchronous, event-driven architecture using Crossplane or similar.",
-            logic_gap: "Architecture needs to transition from 'Scripted Ops' to true 'Platform as a Product' with decoupled provisioning layers.",
-            job_probability: '85%',
-            hiring_urgency: 'High',
-            tags: ['Platform Engineering', 'Terraform', 'Kubernetes'],
-            difficulty: 'Expert',
-            sourceUrl: 'https://github.com/issues'
-        },
-        {
-            type: 'scanned',
-            source: 'Medium Blogs',
-            channel: 'Software Architecture',
-            title: "The 'Vibe Coding' Debt: Why AI-Generated React Apps are Breaking in Production",
-            signal: "Analysis: Teams using 'prompt-to-app' tools are shipping 3x faster but seeing a 400% increase in unhandled edge cases and accessibility (A11y) violations.",
-            inference: "LLMs are ignoring complex state transitions and accessibility roles. Code looks clean but is logically brittle.",
-            logic_gap: "High demand for 'Human-in-the-loop' auditors to refactor AI-generated technical debt into robust, accessible systems.",
-            job_probability: '92%',
-            hiring_urgency: 'Medium',
-            tags: ['React', 'AI-Generated-Code', 'Quality-Assurance'],
-            difficulty: 'Medium',
-            sourceUrl: 'https://medium.com/tag/software-engineering'
->>>>>>> refs/remotes/origin/master
         }
     ];
 
@@ -285,10 +246,6 @@ export const simulateBackgroundScan = async () => {
 
     if (existing && existing.length > 0) return;
 
-<<<<<<< HEAD
-    console.log("Background scanner found new GapStart opportunity:", randomScan.title);
-    await supabase.from('opportunities').insert([randomScan]);
-=======
     console.log("Background scanner found new opportunity:", randomScan.title);
     await supabase.from('opportunities').insert([{
         type: randomScan.type,
@@ -297,14 +254,13 @@ export const simulateBackgroundScan = async () => {
         title: randomScan.title,
         signal: randomScan.signal,
         inference: randomScan.inference,
-        logic_gap: randomScan.logic_gap,
+        logic_gap: randomScan.logic_gap || randomScan.inference,
         job_probability: randomScan.job_probability,
         hiring_urgency: randomScan.hiring_urgency,
         tags: randomScan.tags,
         difficulty: randomScan.difficulty,
-        source_url: randomScan.sourceUrl
+        source_url: randomScan.sourceUrl || randomScan.source_url
     }]);
->>>>>>> refs/remotes/origin/master
 };
 
 const mapDbToFrontend = (item) => ({
