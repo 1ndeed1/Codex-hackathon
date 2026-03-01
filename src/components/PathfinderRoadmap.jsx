@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import PathfinderService from '../services/pathfinder_service';
+import { fetchLiveDomainDetails } from '../services/liveDataService';
 import { generateCompanyRoadmaps } from '../services/pseudo_ai_generator';
 import './Pathfinder.css';
 
@@ -10,7 +11,7 @@ function PathfinderRoadmap({ identity }) {
     const location = useLocation();
 
     // Core State
-    const [domainName, setDomainName] = useState("Loading...");
+    const [domainData, setDomainData] = useState(null);
     const [roadmaps, setRoadmaps] = useState([]);
     const [loading, setLoading] = useState(true);
     const [selectedCompany, setSelectedCompany] = useState(null);
@@ -19,17 +20,6 @@ function PathfinderRoadmap({ identity }) {
     // Interactive State
     const [isEnrolled, setIsEnrolled] = useState(false);
     const [enrolledTargetId, setEnrolledTargetId] = useState(null);
-    const [quizState, setQuizState] = useState({
-        active: false,
-        weekIndex: null,
-        currentQuestion: 0,
-        score: 0,
-        correct: 0,
-        wrong: 0,
-        attempts: 0,
-        finished: false
-    });
-    const [overallFitness, setOverallFitness] = useState(null); // 'Not Fit', 'Developing', 'Highly Fit'
 
     useEffect(() => {
         async function loadData() {
@@ -39,9 +29,7 @@ function PathfinderRoadmap({ identity }) {
                 const searchParams = new URLSearchParams(location.search);
                 const companyName = searchParams.get('company') || "Unknown Company";
 
-                setDomainName(`${companyName} Target Roadmap`);
                 setIsCustom(true);
-
                 const customRoadmaps = generateCompanyRoadmaps(companyName);
 
                 setRoadmaps(customRoadmaps);
@@ -50,44 +38,69 @@ function PathfinderRoadmap({ identity }) {
                 return;
             }
 
-            // Normal Domain fetching (with mock interactive data injected for demo)
-            const allDomains = await PathfinderService.getTrendingDomains();
-            const currentDomain = allDomains.find(d => d.id === domainId);
-            if (currentDomain) {
-                setDomainName(currentDomain.name);
-            } else {
-                setDomainName("Domain Roadmap");
-            }
+            try {
+                // Try fetching from high-fidelity liveDataService first
+                const liveDomain = await fetchLiveDomainDetails(domainId);
+                setDomainData(liveDomain);
 
-            let roadmapData = await PathfinderService.getRoadmapsForDomain(domainId);
-
-            // Inject mock resources, quizzes, and internships into database-fetched roadmaps if missing
-            roadmapData = roadmapData.map(rm => ({
-                ...rm,
-                internships: rm.internships || [
-                    { role: "Backend Developer Intern", link: "#", term: "Ongoing" }
-                ],
-                weekly_plan: rm.weekly_plan.map(wp => ({
-                    ...wp,
-                    resources: wp.resources || [
-                        { type: "youtube", title: `${wp.focus} Tutorial`, link: "https://youtube.com" },
-                        { type: "doc", title: "Official Documentation", link: "#" }
+                const simulatedRoadmap = {
+                    id: liveDomain.id,
+                    company_name: "Industry Standard",
+                    company_target: liveDomain.title,
+                    market_context: liveDomain.gapAnalysis,
+                    required_skills: [
+                        ...(liveDomain.roadmap.month1_2?.skills || []),
+                        ...(liveDomain.roadmap.month3_4?.skills || []),
+                        ...(liveDomain.roadmap.month5_6?.skills || [])
                     ],
-                    quiz: wp.quiz || [
-                        { q: `What is the most critical concept in ${wp.focus}?`, options: ["Concept A", "Concept B", "System Design", "Testing"], ans: 2 }
+                    weekly_plan: [
+                        { phase: "1-2 Months", duration: "8 Weeks", focus: liveDomain.roadmap.month1_2?.focus, tasks: liveDomain.roadmap.month1_2?.skills },
+                        { phase: "3-4 Months", duration: "8 Weeks", focus: liveDomain.roadmap.month3_4?.focus, tasks: liveDomain.roadmap.month3_4?.skills },
+                        { phase: "5-6 Months", duration: "8 Weeks", focus: liveDomain.roadmap.month5_6?.focus, tasks: liveDomain.roadmap.month5_6?.skills }
+                    ],
+                    internships: liveDomain.projects ? liveDomain.projects.map(p => ({ role: p.name, link: "#", term: "Project Based" })) : [
+                        { role: `${liveDomain.title} Intern`, link: "#", term: "Upcoming Summer" }
                     ]
-                }))
-            }));
+                };
 
-            setRoadmaps(roadmapData);
-            if (roadmapData.length > 0) {
-                setSelectedCompany(roadmapData[0]);
+                setRoadmaps([simulatedRoadmap]);
+                setSelectedCompany(simulatedRoadmap);
+            } catch {
+                // Fallback to Supabase if not in liveDataService
+                const dbDomains = await PathfinderService.getTrendingDomains();
+                const currentDBDomain = dbDomains.find(d => d.id === domainId);
+                setDomainData(currentDBDomain ? { title: currentDBDomain.name, ...currentDBDomain } : null);
+
+                let dbRoadmaps = await PathfinderService.getRoadmapsForDomain(domainId);
+                dbRoadmaps = dbRoadmaps.map(rm => ({
+                    ...rm,
+                    internships: rm.internships || [{ role: "Technical Intern", link: "#", term: "Flexible" }],
+                    weekly_plan: rm.weekly_plan.map(wp => ({
+                        ...wp,
+                        resources: wp.resources || [
+                            { type: "youtube", title: `${wp.focus} Overview`, link: "https://youtube.com" }
+                        ],
+                        quiz: wp.quiz || [{ q: `Primary goal of ${wp.focus}?`, options: ["A", "B", "C", "D"], ans: 0 }]
+                    }))
+                }));
+
+                setRoadmaps(dbRoadmaps);
+                if (dbRoadmaps.length > 0) setSelectedCompany(dbRoadmaps[0]);
             }
+
             setLoading(false);
         }
 
         loadData();
     }, [domainId, location.search]);
+
+    const handleBack = () => {
+        if (domainData?.track) {
+            navigate(`/pathfinder/track/${domainData.track}`);
+        } else {
+            navigate('/pathfinder');
+        }
+    };
 
     const handleEnroll = () => {
         if (!identity || !identity.id) {
@@ -104,11 +117,8 @@ function PathfinderRoadmap({ identity }) {
         const encodeName = encodeURIComponent(selectedCompany.company_name);
         const examUrl = `/assessment/${encodeName}/${weekIndex}`;
 
-        // Open the proctored exam in a new tab/window as requested by the user
         window.open(examUrl, '_blank', 'noopener,noreferrer');
-
-        // Let the user know the exam has launched in another tab
-        alert(`The Proctored Industry Assessment for Week ${weekIndex + 1} has been opened in a new secure tab. \n\nPlease navigate to that tab. Keep in mind that leaving that tab or minimizing it will result in an automatic failure warning.`);
+        alert(`The Proctored Industry Assessment for Week ${weekIndex + 1} has been opened in a new secure tab.`);
     };
 
     if (loading) {
@@ -120,18 +130,22 @@ function PathfinderRoadmap({ identity }) {
         );
     }
 
+    const domainTitle = isCustom ? selectedCompany?.company_name + " Target" : (domainData?.title || domainData?.name || "Domain Roadmap");
+
     return (
         <div className="pathfinder-container">
-            <button onClick={() => navigate('/pathfinder')} className="pf-back-btn">
-                <i className="fas fa-arrow-left"></i> Back to Domains
+            <button onClick={handleBack} className="pf-back-btn">
+                <i className="fas fa-arrow-left"></i> Back to {domainData?.track ? 'Track' : 'Domains'}
             </button>
 
             <div className="pathfinder-header" style={{ marginBottom: '2rem' }}>
-                <h1 className="pathfinder-title">{domainName}</h1>
+                <h1 className="pathfinder-title">{domainTitle}</h1>
                 <p className="pathfinder-subtitle">
                     {isCustom
                         ? `A custom-generated battle plan based on real-time data from ${selectedCompany?.company_name}.`
-                        : `Tailored learning strategies based on hiring requirements. Choose a profile below.`}
+                        : domainData?.track === 'blooming'
+                            ? `Strategic roadmap for India's high-growth ${domainData.title} sector. Focus on the hybrid skills gap.`
+                            : `Tailored learning strategies based on hiring requirements. Choose a profile below.`}
                 </p>
 
                 {selectedCompany && !isEnrolled && (
@@ -271,6 +285,60 @@ function PathfinderRoadmap({ identity }) {
                                     ))}
                                 </div>
                             </div>
+
+                            {/* Authoritative Sources Section */}
+                            {domainData?.sources && domainData.sources.length > 0 && (
+                                <div className="pf-card" style={{ marginTop: '2rem' }}>
+                                    <h4 className="pf-card-title">
+                                        <i className="fas fa-file-invoice" style={{ color: 'var(--neon-blue)' }}></i>
+                                        Research & Authoritative Sources
+                                    </h4>
+                                    <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginBottom: '1.5rem' }}>
+                                        The roadmap and market statistics above are derived from the following industry reports and government releases.
+                                    </p>
+                                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1rem' }}>
+                                        {domainData.sources.map((source, sIdx) => (
+                                            <a
+                                                key={sIdx}
+                                                href={source.url}
+                                                target="_blank"
+                                                rel="noreferrer"
+                                                style={{
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    gap: '12px',
+                                                    padding: '1rem',
+                                                    background: 'rgba(255,255,255,0.03)',
+                                                    border: '1px solid var(--glass-border)',
+                                                    borderRadius: '12px',
+                                                    textDecoration: 'none',
+                                                    transition: 'all 0.3s ease'
+                                                }}
+                                                onMouseEnter={(e) => {
+                                                    e.currentTarget.style.background = 'rgba(255,255,255,0.08)';
+                                                    e.currentTarget.style.borderColor = 'var(--neon-blue)';
+                                                }}
+                                                onMouseLeave={(e) => {
+                                                    e.currentTarget.style.background = 'rgba(255,255,255,0.03)';
+                                                    e.currentTarget.style.borderColor = 'var(--glass-border)';
+                                                }}
+                                            >
+                                                <div style={{
+                                                    width: '32px', height: '32px', borderRadius: '8px',
+                                                    background: 'rgba(0,186,255,0.1)', color: 'var(--neon-blue)',
+                                                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                                    fontSize: '0.9rem'
+                                                }}>
+                                                    <i className="fas fa-link"></i>
+                                                </div>
+                                                <span style={{ fontSize: '0.9rem', color: 'var(--text-main)', fontWeight: 600 }}>
+                                                    {source.name}
+                                                </span>
+                                            </a>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     )}
                 </div>

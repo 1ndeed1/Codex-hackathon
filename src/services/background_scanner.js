@@ -66,6 +66,25 @@ const SAMPLE_CODING_GAPS = [
     }
 ];
 
+const SAMPLE_QUORA_SIGNALS = [
+    {
+        title: "Why is Kubernetes so expensive for small startups?",
+        signal: "Quora: Multiple startup CTOs discussing why their AWS bill jumped 5x after moving to EKS. 'The control plane overhead and managed node costs are killing our margins.'",
+        source: "Quora",
+        channel: "Cloud Engineering Q&A",
+        source_url: "https://quora.com/kubernetes-startup-costs",
+        tags: ["Kubernetes", "FinOps", "Startups"]
+    },
+    {
+        title: "How to scale Postgres for 1M concurrent writes without NoSQL?",
+        signal: "Intense technical debate on Quora regarding partition-key strategies for high-volume Postgres ingestion. Users rejecting 'eventually consistent' NoSQL for rigid ACID requirements.",
+        source: "Quora",
+        channel: "Database Deep-Dive",
+        source_url: "https://quora.com/postgres-scaling-writes",
+        tags: ["PostgreSQL", "Scaling", "Database"]
+    }
+];
+
 export const startBackgroundScanner = () => {
     console.log("🚀 GapStart 24/7 Background Scanner Initialized...");
 
@@ -74,7 +93,8 @@ export const startBackgroundScanner = () => {
         const categories = [
             { type: 'pulse', pool: SAMPLE_PULSE_SIGNALS },
             { type: 'service', pool: SAMPLE_SERVICE_GAPS },
-            { type: 'coding', pool: SAMPLE_CODING_GAPS }
+            { type: 'coding', pool: SAMPLE_CODING_GAPS },
+            { type: 'quora', pool: SAMPLE_QUORA_SIGNALS }
         ];
 
         const category = categories[Math.floor(Math.random() * categories.length)];
@@ -120,5 +140,6 @@ export const getPlatformIcon = (source) => {
     if (source.includes('LinkedIn')) return 'fab fa-linkedin';
     if (source.includes('StackOverflow')) return 'fab fa-stack-overflow';
     if (source.includes('GitHub')) return 'fab fa-github';
+    if (source.includes('Quora')) return 'fab fa-quora';
     return 'fas fa-globe';
 };

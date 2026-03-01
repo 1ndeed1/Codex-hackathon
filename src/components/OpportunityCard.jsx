@@ -3,11 +3,11 @@ import React from 'react';
 import { getPlatformIcon } from '../services/background_scanner';
 
 const OpportunityCard = ({ opp, onClick }) => {
-    const isMined = opp.type === 'mined' || opp.type === 'pulse';
+    const isMined = opp.type === 'mined';
     const isScanned = opp.type === 'scanned' || opp.type === 'coding';
     const isService = opp.type === 'service';
 
-    let accentColor = 'var(--neon-purple)';
+    let accentColor = 'var(--neon-purple)'; // Default (Pink/Pulse)
     if (isMined) accentColor = 'var(--neon-blue)';
     if (isScanned) accentColor = 'var(--neon-orange)';
     if (isService) accentColor = 'var(--neon-green)';
@@ -55,20 +55,20 @@ const OpportunityCard = ({ opp, onClick }) => {
                     display: 'flex',
                     flexDirection: 'column',
                     height: '100%',
-                    background: `linear-gradient(135deg, white 0%, color-mix(in srgb, ${accentColor}, transparent 90%) 100%)`,
+                    background: `linear-gradient(135deg, white 0%, color-mix(in srgb, ${accentColor}, transparent 80%) 100%)`,
                     borderRadius: '24px',
                     boxShadow: '0 4px 20px rgba(0,0,0,0.03)',
-                    border: `1px solid color-mix(in srgb, ${accentColor}, transparent 85%)`,
-                    borderLeft: `6px solid ${accentColor}`
+                    border: `1px solid color-mix(in srgb, ${accentColor}, transparent 70%)`,
+                    borderLeft: `8px solid ${accentColor}`
                 }}
                 onMouseEnter={e => {
                     e.currentTarget.style.transform = 'translateY(-10px) scale(1.01)';
                     e.currentTarget.style.borderColor = accentColor;
-                    e.currentTarget.style.boxShadow = `0 20px 40px color-mix(in srgb, ${accentColor}, transparent 80%)`;
+                    e.currentTarget.style.boxShadow = `0 20px 40px color-mix(in srgb, ${accentColor}, transparent 60%)`;
                 }}
                 onMouseLeave={e => {
                     e.currentTarget.style.transform = 'translateY(0) scale(1)';
-                    e.currentTarget.style.borderColor = `color-mix(in srgb, ${accentColor}, transparent 88%)`;
+                    e.currentTarget.style.borderColor = `color-mix(in srgb, ${accentColor}, transparent 70%)`;
                     e.currentTarget.style.boxShadow = '0 4px 20px rgba(0,0,0,0.03)';
                 }}
             >
@@ -151,8 +151,8 @@ const OpportunityCard = ({ opp, onClick }) => {
                         padding: '1.2rem',
                         borderRadius: '16px',
                         marginBottom: '1.2rem',
-                        border: `1px dashed color-mix(in srgb, ${accentColor}, transparent 70%)`,
-                        background: `color-mix(in srgb, ${accentColor}, transparent 95%)`
+                        border: `1px dashed color-mix(in srgb, ${accentColor}, transparent 60%)`,
+                        background: `color-mix(in srgb, ${accentColor}, transparent 92%)`
                     }}>
                         <label style={{ fontSize: '0.65rem', color: accentColor, textTransform: 'uppercase', display: 'block', marginBottom: '6px', fontWeight: 900 }}>
                             {isMined ? 'Detected Market Signal' : (isScanned ? 'Issue Report' : 'Problem Abstract')}
@@ -189,8 +189,8 @@ const OpportunityCard = ({ opp, onClick }) => {
 
                         <div className="likelihood-tooltip-container" style={{ marginLeft: 'auto', position: 'relative', display: 'flex', alignItems: 'center' }}>
                             <div style={{
-                                background: `color-mix(in srgb, ${accentColor}, transparent 90%)`,
-                                border: `1px solid color-mix(in srgb, ${accentColor}, transparent 70%)`,
+                                background: `color-mix(in srgb, ${accentColor}, transparent 85%)`,
+                                border: `1px solid color-mix(in srgb, ${accentColor}, transparent 60%)`,
                                 padding: '6px 14px',
                                 borderRadius: '20px',
                                 display: 'flex',

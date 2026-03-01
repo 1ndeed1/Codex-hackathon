@@ -18,6 +18,7 @@ import ProducerDashboard from './components/ProducerDashboard';
 import ActivityDashboard from './components/ActivityDashboard';
 import PathfinderDashboard from './components/PathfinderDashboard';
 import PathfinderRoadmap from './components/PathfinderRoadmap';
+import PathfinderTrackSelector from './components/PathfinderTrackSelector';
 import AssessmentPlatform from './components/AssessmentPlatform';
 const GapStartDashboard = React.lazy(() => import('./components/GapStartDashboard'));
 import { fetchOpportunities, simulateBackgroundScan } from './services/discovery_service';
@@ -32,6 +33,7 @@ function App() {
   const [activeProof, setActiveProof] = useState(null);
   const [showProfile, setShowProfile] = useState(null);
   const [filter, setFilter] = useState('All');
+  const [isScrolled, setIsScrolled] = useState(false);
 
   // New States for Auth & Projects
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -125,12 +127,11 @@ function App() {
     }
     loadOpp();
 
-    // Background Scanning Simulation
     const scanInterval = setInterval(async () => {
       await simulateBackgroundScan();
       const freshData = await fetchOpportunities();
       setOpportunities(freshData);
-    }, 30000); // Scan every 30 seconds
+    }, 120000); // Scan every 2 minutes
 
     // 24/7 Background Scanner for GapStart
     const stopScanner = startBackgroundScanner();
@@ -139,6 +140,14 @@ function App() {
       clearInterval(scanInterval);
       stopScanner();
     };
+  }, []);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 200);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   const handleAcceptOpportunity = async (oppId) => {
@@ -297,7 +306,7 @@ function App() {
   };
 
   if (!isLoggedIn) {
-    return <Auth onLogin={(userEmail) => {
+    return <Auth onLogin={() => {
       setIsLoggedIn(true);
     }} />;
   }
@@ -337,75 +346,100 @@ function App() {
                   </div>
                 ) : identity.role === 'engineer' ? (
                   <>
-                    <div style={{
-                      display: 'flex',
-                      gap: '10px',
-                      marginBottom: '2.5rem',
-                      flexWrap: 'wrap',
-                      alignItems: 'center',
-                      background: 'var(--glass-bg)',
-                      padding: '1rem',
-                      borderRadius: '16px',
-                      border: '1px solid var(--glass-border)'
-                    }}>
-                      <span style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginRight: '10px', fontWeight: 600 }}>
-                        <i className="fas fa-filter" style={{ marginRight: '8px' }}></i>
-                        Filter Sources:
-                      </span>
-                      {['All', 'GitHub', 'Reddit', 'StackOverflow', 'Quora', 'AWS Community'].map(f => (
-                        <button
-                          key={f}
-                          onClick={() => setFilter(f)}
-                          style={{
-                            background: filter === f ? 'var(--accent-gradient)' : 'rgba(255,255,255,0.05)',
-                            border: filter === f ? 'none' : '1px solid var(--glass-border)',
-                            color: filter === f ? 'white' : 'var(--text-main)',
-                            padding: '8px 18px',
-                            borderRadius: '10px',
-                            cursor: 'pointer',
-                            fontSize: '0.85rem',
-                            fontWeight: 600,
-                            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                            boxShadow: filter === f ? '0 4px 12px rgba(188, 19, 254, 0.3)' : 'none'
-                          }}
-                          onMouseEnter={(e) => {
-                            if (filter !== f) e.currentTarget.style.background = 'rgba(255,255,255,0.1)';
-                          }}
-                          onMouseLeave={(e) => {
-                            if (filter !== f) e.currentTarget.style.background = 'rgba(255,255,255,0.05)';
-                          }}
-                        >
-                          {f}
-                        </button>
-                      ))}
+                    <div
+                      className={isScrolled ? "sticky-sidebar-filters" : ""}
+                      style={{
+                        display: 'flex',
+                        gap: '10px',
+                        marginBottom: '2.5rem',
+                        flexWrap: 'wrap',
+                        alignItems: 'center',
+                        background: 'var(--glass-bg)',
+                        padding: '1.2rem',
+                        borderRadius: '20px',
+                        border: '1px solid var(--glass-border)',
+                        transition: 'all 0.5s cubic-bezier(0.19, 1, 0.22, 1)',
+                        zIndex: 100,
+                        ...(isScrolled ? {
+                          position: 'fixed',
+                          left: '20px',
+                          top: '120px',
+                          flexDirection: 'column',
+                          width: '70px',
+                          height: 'calc(100vh - 160px)',
+                          justifyContent: 'flex-start',
+                          padding: '1.5rem 0.5rem',
+                          boxShadow: '0 20px 40px rgba(0,0,0,0.08)',
+                          backdropFilter: 'blur(30px)',
+                          borderRight: '1px solid var(--neon-blue)',
+                          overflowY: 'auto'
+                        } : {})
+                      }}
+                    >
+                      {!isScrolled && (
+                        <span style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginRight: '10px', fontWeight: 600 }}>
+                          <i className="fas fa-filter" style={{ marginRight: '8px' }}></i>
+                          Filter Sources:
+                        </span>
+                      )}
+                      {['All', 'GitHub', 'Reddit', 'StackOverflow', 'Quora', 'AWS Community'].map(f => {
+                        const icon = f === 'All' ? 'fas fa-filter' :
+                          (f === 'GitHub' ? 'fab fa-github' :
+                            (f === 'Reddit' ? 'fab fa-reddit' :
+                              (f === 'StackOverflow' ? 'fab fa-stack-overflow' :
+                                (f === 'Quora' ? 'fab fa-quora' : 'fab fa-aws'))));
+                        return (
+                          <button
+                            key={f}
+                            onClick={() => setFilter(f)}
+                            title={f} // Tooltip for icons
+                            style={{
+                              background: filter === f ? 'var(--accent-gradient)' : 'rgba(255,255,255,0.05)',
+                              border: filter === f ? 'none' : '1px solid var(--glass-border)',
+                              color: filter === f ? 'white' : 'var(--text-main)',
+                              padding: isScrolled ? '12px' : '8px 18px',
+                              borderRadius: isScrolled ? '50%' : '11px',
+                              cursor: 'pointer',
+                              fontSize: '0.85rem',
+                              fontWeight: 600,
+                              width: isScrolled ? '50px' : 'auto',
+                              height: isScrolled ? '50px' : 'auto',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                              boxShadow: filter === f ? '0 4px 12px rgba(188, 19, 254, 0.3)' : 'none'
+                            }}
+                          >
+                            {isScrolled ? <i className={icon} style={{ fontSize: '1.2rem' }}></i> : f}
+                          </button>
+                        );
+                      })}
                       <button
                         onClick={refreshOpportunities}
+                        title="Refresh Radar"
                         style={{
-                          marginLeft: 'auto',
+                          marginTop: isScrolled ? 'auto' : '0',
+                          marginLeft: isScrolled ? '0' : 'auto',
+                          width: isScrolled ? '50px' : 'auto',
+                          height: isScrolled ? '50px' : 'auto',
                           background: 'transparent',
-                          border: '1px solid var(--neon-blue)',
-                          color: 'var(--neon-blue)',
-                          padding: '8px 20px',
-                          borderRadius: '10px',
+                          border: `1px solid ${isScrolled ? 'var(--neon-purple)' : 'var(--neon-blue)'}`,
+                          color: isScrolled ? 'var(--neon-purple)' : 'var(--neon-blue)',
+                          padding: isScrolled ? '12px' : '10px 20px',
+                          borderRadius: isScrolled ? '50%' : '12px',
                           cursor: 'pointer',
                           fontSize: '0.85rem',
                           fontWeight: 700,
                           display: 'flex',
                           alignItems: 'center',
+                          justifyContent: 'center',
                           gap: '10px',
                           transition: 'all 0.3s ease'
                         }}
-                        onMouseEnter={(e) => {
-                          e.currentTarget.style.background = 'rgba(0, 242, 255, 0.1)';
-                          e.currentTarget.style.boxShadow = '0 0 15px rgba(0, 242, 255, 0.2)';
-                        }}
-                        onMouseLeave={(e) => {
-                          e.currentTarget.style.background = 'transparent';
-                          e.currentTarget.style.boxShadow = 'none';
-                        }}
                       >
-                        <i className={`fas fa-sync-alt ${loading ? 'fa-spin' : ''}`}></i>
-                        Shuffle Radar
+                        <i className={`fas fa-sync-alt ${loading ? 'fa-spin' : ''}`} style={{ fontSize: isScrolled ? '1.2rem' : 'inherit' }}></i>
+                        {!isScrolled && 'Shuffle Radar'}
                       </button>
                     </div>
 
@@ -466,8 +500,9 @@ function App() {
             <Route path="/projects" element={<ProjectsBoard onProjectSelect={(proj) => setSelectedProject(proj)} identity={identity} />} />
             <Route path="/community" element={<ProfilesDirectory onProfileSelect={(id) => setShowProfile(id)} />} />
             <Route path="/activity" element={<ActivityDashboard identity={identity} />} />
-            <Route path="/pathfinder" element={<PathfinderDashboard identity={identity} />} />
-            <Route path="/pathfinder/:domainId" element={<PathfinderRoadmap identity={identity} />} />
+            <Route path="/pathfinder" element={<PathfinderTrackSelector />} />
+            <Route path="/pathfinder/track/:trackId" element={<PathfinderDashboard identity={identity} />} />
+            <Route path="/pathfinder/roadmap/:domainId" element={<PathfinderRoadmap identity={identity} />} />
             <Route path="/assessment/:companyName/:weekIndex" element={<AssessmentPlatform identity={identity} />} />
             <Route path="/gapstart" element={<GapStartDashboard identity={identity} />} />
           </Routes>
@@ -516,7 +551,7 @@ function App() {
           />
         )}
       </div>
-    </Router>
+    </Router >
   );
 }
 

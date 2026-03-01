@@ -7,16 +7,30 @@ export const OPPORTUNITY_TYPES = {
     SCANNED: 'scanned'
 };
 
+let lastGHFetch = 0;
+let cachedGHData = [];
+
 export const fetchLiveGitHubSignals = async () => {
+    const now = Date.now();
+    if (now - lastGHFetch < 5 * 60 * 1000 && cachedGHData.length > 0) {
+        return cachedGHData;
+    }
+
     try {
-        // Searching for open bugs/performance issues in high-traffic areas
         const query = encodeURIComponent('is:issue is:open label:bug "performance" "memory" sort:updated-desc');
         const response = await fetch(`https://api.github.com/search/issues?q=${query}&per_page=3`);
+
+        if (!response.ok) {
+            console.warn(`GitHub API Rate Limit or Error: ${response.status}`);
+            return cachedGHData;
+        }
+
         const data = await response.json();
+        lastGHFetch = now;
 
         if (!data.items) return [];
 
-        return data.items.map(item => ({
+        cachedGHData = data.items.map(item => ({
             id: `gh-${item.id}`,
             type: OPPORTUNITY_TYPES.MINED,
             source: 'GitHub',
@@ -32,21 +46,43 @@ export const fetchLiveGitHubSignals = async () => {
             sourceUrl: item.html_url,
             isLive: true
         }));
+
+        return cachedGHData;
     } catch (err) {
         console.error("GitHub Live Fetch Error:", err);
-        return [];
+        return cachedGHData;
     }
 };
 
+let lastSOFetch = 0;
+let cachedSOData = [];
+
 export const fetchLiveStackOverflowSignals = async () => {
+    const now = Date.now();
+    if (now - lastSOFetch < 5 * 60 * 1000 && cachedSOData.length > 0) {
+        console.log("Using cached StackOverflow signals (cooldown active)");
+        return cachedSOData;
+    }
+
     try {
-        const url = 'https://api.stackexchange.com/2.3/questions?pagesize=3&order=desc&sort=activity&tagged=reactjs;rust;aws;kubernetes&site=stackoverflow';
+        const url = '/api-stackexchange/2.3/questions?pagesize=3&order=desc&sort=activity&tagged=reactjs;rust;aws;kubernetes&site=stackoverflow';
         const response = await fetch(url);
+
+        if (!response.ok) {
+            if (response.status === 429) {
+                console.warn("StackOverflow API Rate Limit Exceeded (429). Cooling down...");
+            } else {
+                console.error(`StackOverflow API Error: ${response.status}`);
+            }
+            return cachedSOData; // Fallback to cache if available
+        }
+
         const data = await response.json();
+        lastSOFetch = now;
 
         if (!data.items) return [];
 
-        return data.items.map(item => ({
+        cachedSOData = data.items.map(item => ({
             id: `so-${item.question_id}`,
             type: OPPORTUNITY_TYPES.MINED,
             source: 'StackOverflow',
@@ -62,9 +98,11 @@ export const fetchLiveStackOverflowSignals = async () => {
             sourceUrl: item.link,
             isLive: true
         }));
+
+        return cachedSOData;
     } catch (err) {
         console.error("StackOverflow Live Fetch Error:", err);
-        return [];
+        return cachedSOData;
     }
 };
 
@@ -232,6 +270,20 @@ export const simulateBackgroundScan = async () => {
             tags: ['AWS', 'Bedrock', 'FinOps', 'LLMOps'],
             difficulty: 'High',
             sourceUrl: 'https://community.aws/'
+        },
+        {
+            type: 'quora',
+            source: 'Quora',
+            channel: 'Tech Strategy',
+            title: "The Postgres Wall: Scaling to 100TB without Sharding?",
+            signal: "Intense technical debate on Quora regarding partition-key strategies for high-volume Postgres ingestion. Users rejecting 'eventually consistent' NoSQL for rigid ACID requirements.",
+            inference: "High community friction indicates a market gap for specialized consultancy or advanced partitioning toolkits.",
+            logic_gap: "Needs specialized database sharding experts or custom Postgres extensions for multi-petabyte scale.",
+            job_probability: '85%',
+            hiring_urgency: 'Medium',
+            tags: ['PostgreSQL', 'Scaling', 'Quora', 'BackEnd'],
+            difficulty: 'Expert',
+            sourceUrl: 'https://quora.com/postgres-scaling'
         }
     ];
 

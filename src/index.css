@@ -111,3 +111,27 @@ h4 {
   padding-left: 1rem;
   margin: 1rem 0;
 }
+
+/* Sticky Sidebar Transitions */
+.sticky-sidebar-filters {
+  animation: slideInLeft 0.6s cubic-bezier(0.19, 1, 0.22, 1);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1) !important;
+}
+
+@keyframes slideInLeft {
+  from {
+    transform: translateX(-100px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.sticky-sidebar-filters button {
+  margin-bottom: 12px;
+  justify-content: center !important;
+  padding: 0 !important;
+}
